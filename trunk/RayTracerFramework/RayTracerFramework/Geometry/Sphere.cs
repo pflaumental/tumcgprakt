@@ -4,9 +4,8 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
     abstract class Sphere : IGeometricObject {
-        protected Vec3 center; // world space
-        protected float radius, radiusSq; // world space
-
+        protected Vec3 center;
+        protected float radius, radiusSq;
         protected Sphere(Vec3 center, float radius) {
             this.center = center;
             this.radius = radius;
@@ -108,7 +107,6 @@ namespace RayTracerFramework.Geometry {
             }
         }
 
-        // Only Translation and uniform scaling are handled correctly
         public void Transform(Matrix transformation) {
             Vec3 pointOnSphere = new Vec3(center.x + radius, center.y, center.z);
             Vec3 transformedPointOnSphere = new Vec3(Vec3.TransformPosition(pointOnSphere, transformation));
