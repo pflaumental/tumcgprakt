@@ -22,33 +22,38 @@ namespace RayTracerFramework.Geometry {
 
         // Ray direction must be normalized
         public bool Intersect(Ray ray, out IntersectionPoint firstIntersection, out float t) {
-            Vec3 originToCenter = center - ray.position;
-            float distOriginCenterSq = originToCenter.LengthSq;
-            if (distOriginCenterSq < radiusSq) { // ray starts inside sphere (exactly one intersection)
-                float prjOtcRay = Vec3.Dot(originToCenter, ray.direction);
-                float diffRadiusDistCenRaySq = radiusSq - distOriginCenterSq + (prjOtcRay * prjOtcRay) / ray.direction.LengthSq;
-                t = prjOtcRay - (float)Math.Sqrt(diffRadiusDistCenRaySq);
+            // o: (ray-)origin
+            // c: center
+            // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
+            // i: intersection point
+            Vec3 o_cVec = center - ray.position;
+            float o_cSq = o_cVec.LengthSq;
+            if (o_cSq < radiusSq) { // ray starts inside sphere (exactly one intersection)
+                float o_x = Vec3.Dot(o_cVec, ray.direction); // negative if ray points away from center
+                //                       (      c_xSq        )
+                float x_iSq = radiusSq - (o_cSq - (o_x * o_x));
+                t = o_x + (float)Math.Sqrt(x_iSq);
                 Vec3 intersectionPoint = ray.GetPoint(t);
                 Vec3 normal = Vec3.Normalize(intersectionPoint - center);
                 firstIntersection = new IntersectionPoint(intersectionPoint, normal);
                 return true;
             }
             else {
-                float prjOtcRay = Vec3.Dot(originToCenter, ray.direction);
-                if (prjOtcRay < 0.0f) {
+                float o_x = Vec3.Dot(o_cVec, ray.direction); // negative if ray points away from center
+                if (o_x < 0.0f) {
                     t = 0.0f;
                     firstIntersection = null;
                     return false;
                 }
-                float distCenRaySq = distOriginCenterSq - (prjOtcRay * prjOtcRay) / ray.direction.LengthSq; // TODO: remove division
-                float diffRadiusDistCenRaySq = radiusSq - distCenRaySq;
-                if (diffRadiusDistCenRaySq < 0.0f) {
+                //                       (      c_xSq        )
+                float x_iSq = radiusSq - (o_cSq - (o_x * o_x));
+                if (x_iSq < 0.0f) {
                     t = 0.0f;
                     firstIntersection = null;
                     return false;
                 }
-                float diffRadiusDistCenRay = (float)Math.Sqrt(diffRadiusDistCenRaySq);
-                t = prjOtcRay - diffRadiusDistCenRay;
+                // Sphere is hit
+                t = o_x - (float)Math.Sqrt(x_iSq);
                 Vec3 intersectionPoint = ray.GetPoint(t);
                 Vec3 normal = Vec3.Normalize(intersectionPoint - center);
                 firstIntersection = new IntersectionPoint(intersectionPoint, normal);
@@ -59,12 +64,17 @@ namespace RayTracerFramework.Geometry {
         // Returns the number of intersections
         // Ray direction must be normalized
         public int Intersect(Ray ray, out IntersectionPoint[] intersections, out float t1, out float t2) {
-            Vec3 originToCenter = center - ray.position;
-            float distOriginCenterSq = originToCenter.LengthSq;
-            if (distOriginCenterSq < radiusSq) { // ray starts inside sphere (exactly one intersection)
-                float prjOtcRay = Vec3.Dot(originToCenter, ray.direction);
-                float diffRadiusDistCenRaySq = radiusSq - distOriginCenterSq + (prjOtcRay * prjOtcRay) / ray.direction.LengthSq;
-                t1 = prjOtcRay - (float)Math.Sqrt(diffRadiusDistCenRaySq);
+            // o: (ray-)origin
+            // c: center
+            // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
+            // i: intersection point
+            Vec3 o_cVec = center - ray.position;
+            float o_cSq = o_cVec.LengthSq;
+            if (o_cSq < radiusSq) { // ray starts inside sphere (exactly one intersection)
+                float o_x = Vec3.Dot(o_cVec, ray.direction); // negative if ray points away from center
+                //                       (      c_xSq        )
+                float x_iSq = radiusSq - (o_cSq - (o_x * o_x));
+                t1 = o_x + (float)Math.Sqrt(x_iSq);
                 t2 = 0.0f;
                 Vec3 intersectionPoint = ray.GetPoint(t1);
                 Vec3 normal = Vec3.Normalize(intersectionPoint - center);
@@ -72,22 +82,22 @@ namespace RayTracerFramework.Geometry {
                 return 1;
             }
             else {
-                float prjOtcRay = Vec3.Dot(originToCenter, ray.direction);
-                if (prjOtcRay < 0.0f) {
+                float o_x = Vec3.Dot(o_cVec, ray.direction); // negative if ray points away from center
+                if (o_x < 0.0f) {
                     t1 = t2 = 0.0f;
                     intersections = null;
                     return 0;
                 }
-                float distCenRaySq = distOriginCenterSq - (prjOtcRay * prjOtcRay) / ray.direction.LengthSq;
-                float diffRadiusDistCenRaySq = radiusSq - distCenRaySq;
-                if (diffRadiusDistCenRaySq < 0.0f) {
+                //                       (      c_xSq        )
+                float x_iSq = radiusSq - (o_cSq - (o_x * o_x));
+                if (x_iSq < 0.0f) {
                     t1 = t2 = 0.0f;
                     intersections = null;
                     return 0;
                 }
-                float diffRadiusDistCenRay = (float)Math.Sqrt(diffRadiusDistCenRaySq);
-                t1 = prjOtcRay - diffRadiusDistCenRay;
-                t2 = prjOtcRay + diffRadiusDistCenRay;
+                float x_i = (float)Math.Sqrt(x_iSq);
+                t1 = o_x - x_i;
+                t2 = o_x + x_i;
                 Vec3 intersectionPoint1 = ray.GetPoint(t1);
                 Vec3 intersectionPoint2 = ray.GetPoint(t2);
                 Vec3 normal1 = Vec3.Normalize(intersectionPoint1 - center);
