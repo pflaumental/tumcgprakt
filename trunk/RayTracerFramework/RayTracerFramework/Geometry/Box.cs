@@ -11,7 +11,7 @@ namespace RayTracerFramework.Geometry {
         protected float dx, dy, dz;
 
         protected Matrix transform;
-        protected Matrix transformInv;
+        protected Matrix invTransform;
 
 
         protected Box(Vec3 position, float width, float height, float depth) {
@@ -21,10 +21,16 @@ namespace RayTracerFramework.Geometry {
             this.dz = depth;
         }
 
-        public void Transform(Matrix transformation) {
-            transform = transformation;
-            // transformInv = Matrix.Inverse(transformation);
-            
+        public void Transform(Matrix transformation)
+        {
+            this.transform *= transformation;
+            this.invTransform = Matrix.Invert(this.transform);
+        }
+
+        public void Transform(Matrix transformation, Matrix invTransformation)
+        {
+            this.transform *= transformation;
+            this.invTransform = invTransformation * this.invTransform;
         }
        
         public bool Intersect(Ray ray) {

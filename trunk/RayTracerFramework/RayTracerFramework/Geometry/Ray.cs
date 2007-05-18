@@ -15,5 +15,9 @@ namespace RayTracerFramework.Geometry {
         public Vec3 GetPoint(float t) {
             return position + direction * t;
         }
+
+        public Ray Transform(Matrix transformation) {
+            return new Ray(new Vec3(Vec3.TransformPosition(position, transformation)), new Vec3(Vec3.TransformNormal(direction, transformation)));
+        }
     }
 }

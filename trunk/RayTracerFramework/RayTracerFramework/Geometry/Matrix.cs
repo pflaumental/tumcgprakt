@@ -45,6 +45,21 @@ namespace RayTracerFramework.Geometry {
             this.m44 = m44;   
         }
 
+        public static Matrix operator *(Matrix m, float skalar) {
+            return new Matrix(skalar * m.m11, skalar * m.m12, skalar * m.m13, skalar * m.m14,
+                      skalar * m.m21, skalar * m.m22, skalar * m.m23, skalar * m.m24,
+                      skalar * m.m31, skalar * m.m32, skalar * m.m33, skalar * m.m34,
+                      skalar * m.m41, skalar * m.m42, skalar * m.m43, skalar * m.m44);
+        }
+
+        public static Matrix operator *(float skalar, Matrix m)
+        {
+            return new Matrix(skalar * m.m11, skalar * m.m12, skalar * m.m13, skalar * m.m14,
+                      skalar * m.m21, skalar * m.m22, skalar * m.m23, skalar * m.m24,
+                      skalar * m.m31, skalar * m.m32, skalar * m.m33, skalar * m.m34,
+                      skalar * m.m41, skalar * m.m42, skalar * m.m43, skalar * m.m44);
+        }
+
         public static Matrix operator+(Matrix m1, Matrix m2) {
             return new Matrix(m1.m11 + m2.m11, m1.m12 + m2.m12, m1.m13 + m2.m13, m1.m14 + m2.m14,
                               m1.m21 + m2.m21, m1.m22 + m2.m22, m1.m23 + m2.m23, m1.m24 + m2.m24,
@@ -163,6 +178,88 @@ namespace RayTracerFramework.Geometry {
                               -Vec3.Dot(camXAxis, eye), -Vec3.Dot(camYAxis, eye), -Vec3.Dot(camZAxis, eye), 1);
         }
 
+        public static Matrix Invert(Matrix m) {
+            float[] tmp = new float[12];
+            Matrix result = new Matrix();
+            Matrix mT = Matrix.Transpose(m);
+
+            // Calculate pairs for first 8 elements (cofactors) 
+            tmp[0] = mT.m33 * mT.m44;
+            tmp[1] = mT.m34 * mT.m43;
+            tmp[2] = mT.m32 * mT.m44;
+            tmp[3] = mT.m34 * mT.m42;
+            tmp[4] = mT.m32 * mT.m43;
+            tmp[5] = mT.m33 * mT.m42;
+            tmp[6] = mT.m31 * mT.m44;
+            tmp[7] = mT.m34 * mT.m41;
+            tmp[8] = mT.m31 * mT.m43;
+            tmp[9] = mT.m33 * mT.m41;
+            tmp[10] = mT.m31 * mT.m42;
+            tmp[11] = mT.m32 * mT.m41;
+
+            result.m11 = tmp[0] * mT.m22 + tmp[3] * mT.m23 + tmp[4] * mT.m24;
+            result.m11 -= tmp[1] * mT.m22 + tmp[2] * mT.m23 + tmp[5] * mT.m24;
+            result.m12 = tmp[1] * mT.m21 + tmp[6] * mT.m23 + tmp[9] * mT.m24;
+            result.m12 -= tmp[0] * mT.m21 + tmp[7] * mT.m23 + tmp[8] * mT.m24;
+            result.m13 = tmp[2] * mT.m21 + tmp[7] * mT.m22 + tmp[10] * mT.m24;
+            result.m13 -= tmp[3] * mT.m21 + tmp[6] * mT.m22 + tmp[11] * mT.m24;
+            result.m14 = tmp[5] * mT.m21 + tmp[8] * mT.m22 + tmp[11] * mT.m23;
+            result.m14 -= tmp[4] * mT.m21 + tmp[9] * mT.m22 + tmp[10] * mT.m23;
+            result.m21 = tmp[1] * mT.m12 + tmp[2] * mT.m13 + tmp[5] * mT.m14;
+            result.m21 -= tmp[0] * mT.m12 + tmp[3] * mT.m13 + tmp[4] * mT.m14;
+            result.m22 = tmp[0] * mT.m11 + tmp[7] * mT.m13 + tmp[8] * mT.m14;
+            result.m22 -= tmp[1] * mT.m11 + tmp[6] * mT.m13 + tmp[9] * mT.m14;
+            result.m23 = tmp[3] * mT.m11 + tmp[6] * mT.m12 + tmp[11] * mT.m14;
+            result.m23 -= tmp[2] * mT.m11 + tmp[7] * mT.m12 + tmp[10] * mT.m14;
+            result.m24 = tmp[4] * mT.m11 + tmp[9] * mT.m12 + tmp[10] * mT.m13;
+            result.m24 -= tmp[5] * mT.m11 + tmp[8] * mT.m12 + tmp[11] * mT.m13;
+
+            // Calculate pairs for second 8 elements (cofactors)
+            tmp[0] = mT.m13 * mT.m24;
+            tmp[1] = mT.m14 * mT.m23;
+            tmp[2] = mT.m12 * mT.m24;
+            tmp[3] = mT.m14 * mT.m22;
+            tmp[4] = mT.m12 * mT.m23;
+            tmp[5] = mT.m13 * mT.m22;
+            tmp[6] = mT.m11 * mT.m24;
+            tmp[7] = mT.m14 * mT.m21;
+            tmp[8] = mT.m11 * mT.m23;
+            tmp[9] = mT.m13 * mT.m21;
+            tmp[10] = mT.m11 * mT.m22;
+            tmp[11] = mT.m12 * mT.m21;
+
+            result.m31 = tmp[0] * mT.m42 + tmp[3] * mT.m43 + tmp[4] * mT.m44;
+            result.m31 -= tmp[1] * mT.m42 + tmp[2] * mT.m43 + tmp[5] * mT.m44;
+            result.m32 = tmp[1] * mT.m41 + tmp[6] * mT.m43 + tmp[9] * mT.m44;
+            result.m32 -= tmp[0] * mT.m41 + tmp[7] * mT.m43 + tmp[8] * mT.m44;
+            result.m33 = tmp[2] * mT.m41 + tmp[7] * mT.m42 + tmp[10] * mT.m44;
+            result.m33 -= tmp[3] * mT.m41 + tmp[6] * mT.m42 + tmp[11] * mT.m44;
+            result.m34 = tmp[5] * mT.m41 + tmp[8] * mT.m42 + tmp[11] * mT.m43;
+            result.m34 -= tmp[4] * mT.m41 + tmp[9] * mT.m42 + tmp[10] * mT.m43;
+            result.m41 = tmp[2] * mT.m33 + tmp[5] * mT.m34 + tmp[1] * mT.m32;
+            result.m41 -= tmp[4] * mT.m34 + tmp[0] * mT.m32 + tmp[3] * mT.m33;
+            result.m42 = tmp[8] * mT.m34 + tmp[0] * mT.m31 + tmp[7] * mT.m33;
+            result.m42 -= tmp[6] * mT.m33 + tmp[9] * mT.m34 + tmp[1] * mT.m31;
+            result.m43 = tmp[6] * mT.m32 + tmp[11] * mT.m34 + tmp[3] * mT.m31;
+            result.m43 -= tmp[10] * mT.m34 + tmp[2] * mT.m31 + tmp[7] * mT.m32;
+            result.m44 = tmp[10] * mT.m33 + tmp[4] * mT.m31 + tmp[9] * mT.m32;
+            result.m44 -= tmp[8] * mT.m32 + tmp[11] * mT.m33 + tmp[5] * mT.m31;
+            
+            // Calculate determinant
+            float det = mT.m11 * result.m11 + mT.m12 * result.m12 + mT.m13 * result.m13 + mT.m14 * result.m14;
+            
+            // Calculate matrix inverse
+            float detInv = 1.0f / det;
+            return result * detInv;
+        }
+
+        public static Matrix Transpose(Matrix m) {
+            return new Matrix(m.m11, m.m21, m.m31, m.m41, 
+                              m.m12, m.m22, m.m32, m.m42, 
+                              m.m13, m.m23, m.m33, m.m43, 
+                              m.m14, m.m24, m.m34, m.m44);
+        }
+
         public static Matrix Identity {
             get {
                 return identity; 
@@ -175,6 +272,13 @@ namespace RayTracerFramework.Geometry {
             }
         }
 
+        public Matrix Inverse() {
+            return Invert(this);
+        }
+
+        public Matrix Transposition() {
+            return Transpose(this);
+        }
 
     }
 }
