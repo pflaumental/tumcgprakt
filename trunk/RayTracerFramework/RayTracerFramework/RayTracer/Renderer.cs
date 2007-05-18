@@ -5,6 +5,7 @@ using System.Drawing;
 using RayTracerFramework.Geometry;
 using System.Drawing.Imaging;
 using RayTracerFramework.Shading;
+using Color = RayTracerFramework.Shading.Color;
 
 namespace RayTracerFramework.RayTracer {
     class Renderer {
@@ -77,13 +78,13 @@ namespace RayTracerFramework.RayTracer {
                     // Shade pixel      
                     Color color;
                     if (nearestObject != null)
-                        color = nearestObject.Shade(ray, nearestIntersection);
+                        color = nearestObject.Shade(ray, nearestIntersection, scene.lightingModel, scene.lightManager);
                     else
                         color = scene.backgroundColor;
 
-                    rgbValues[rgbValuesPos] = color.B;
-                    rgbValues[rgbValuesPos + 1] = color.G;
-                    rgbValues[rgbValuesPos + 2] = color.R;                    
+                    rgbValues[rgbValuesPos] = color.BlueInt;
+                    rgbValues[rgbValuesPos + 1] = color.GreenInt;
+                    rgbValues[rgbValuesPos + 2] = color.RedInt;                    
 
                     rgbValuesPos += 3;
 
