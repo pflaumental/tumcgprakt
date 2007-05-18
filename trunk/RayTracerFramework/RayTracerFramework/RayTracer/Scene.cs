@@ -33,6 +33,12 @@ namespace RayTracerFramework.RayTracer {
             DSphere sphere = new DSphere(Vec3.Zero, radius, material);
             geoMng.AddInstance(sphere, Matrix.GetTranslation(worldPos));
             return sphere;
+        }
+
+        public DBox AddDBox(Vec3 worldPos, float width, float height, float depth, Material material) {
+            DBox box = new DBox(Vec3.Zero, width, height, depth, material);
+            geoMng.AddInstance(box, Matrix.GetTranslation(worldPos));
+            return box;
         }        
     }
 }

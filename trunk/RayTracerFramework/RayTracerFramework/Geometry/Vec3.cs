@@ -109,6 +109,7 @@ namespace RayTracerFramework.Geometry {
                             v.x * m.m14 + v.y * m.m24 + v.z * m.m34);
         }
 
+        // vectors may not be normalized after the transformation
         public static Vec3 TransformNormal3(Vec3 v, Matrix m)
         {
             float x = v.x * m.m11 + v.y * m.m21 + v.z * m.m31;
@@ -124,6 +125,7 @@ namespace RayTracerFramework.Geometry {
             return new Vec3(x, y, z);
         }
 
+        // Normalize after transformation
         public static Vec3 TransformNormal3n(Vec3 v, Matrix m)
         {
             float x = v.x * m.m11 + v.y * m.m21 + v.z * m.m31;
