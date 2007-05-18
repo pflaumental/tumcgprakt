@@ -17,7 +17,7 @@ namespace RayTracerFramework.Geometry {
         }
 
         public Ray Transform(Matrix transformation) {
-            return new Ray(new Vec3(Vec3.TransformPosition(position, transformation)), new Vec3(Vec3.TransformNormal(direction, transformation)));
+            return new Ray(new Vec3(Vec3.TransformPosition(position, transformation)), Vec3.Normalize(new Vec3(Vec3.TransformNormal(direction, transformation))));
         }
     }
 }

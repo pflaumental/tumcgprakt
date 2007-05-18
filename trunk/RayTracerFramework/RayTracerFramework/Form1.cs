@@ -39,7 +39,8 @@ namespace RayTracerFramework {
             scene.lightManager.AddLight(new PointLight(new Vec3(pos++, 0, 0)));
 
             scene.AddDSphere(new Vec3(0.6f, 0.0f, 2.0f), 1.5f, new Material(Color.Green, Color.Green, Color.White, Color.Green, 1, 1, 1));
-            scene.AddDSphere(new Vec3(-1.0f, 0.0f, 6.0f), 3, Material.GreenMaterial);
+            DSphere secondSphere = scene.AddDSphere(new Vec3(-1.0f, 0.0f, 6.0f), 3, Material.GreenMaterial);
+            secondSphere.Transform(Matrix.GetScale(1, 2, 1));
 
             scene.geoMng.TransformAll();
 
