@@ -18,7 +18,7 @@ namespace RayTracerFramework.RayTracer {
             lightingModel = new BlinnPhongLightingModel();
             lightManager = new LightManager();
             cam = new Camera();
-            backgroundColor = Color.Red;
+            backgroundColor = Color.LightSlateGray;
         }
 
         public void AddInstance(IObject geoObj, Matrix worldMatrix) {
