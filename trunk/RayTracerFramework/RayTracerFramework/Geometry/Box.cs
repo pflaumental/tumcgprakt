@@ -4,18 +4,16 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
 
-    // A box with lower left top corner centered at the object space origin (0,0,0) and
+    // A box with lower left for corner centered at the object space origin (0,0,0) and
     // the upper right back corner at (dx, dy, dz)
-    abstract class Box : IGeometricObject {
-        protected Vec3 position; // Position of the lower left front corner
+    abstract class Box : IGeometricObject {        
         protected float dx, dy, dz;
 
         protected Matrix transform;
         protected Matrix invTransform;
 
 
-        protected Box(Vec3 position, float width, float height, float depth) {
-            this.position = position;
+        protected Box(Vec3 position, float width, float height, float depth) {            
             this.dx = width;
             this.dy = height;
             this.dz = depth;

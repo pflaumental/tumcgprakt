@@ -87,12 +87,59 @@ namespace RayTracerFramework.Geometry {
                             v.x * m.m14 + v.y * m.m24 + v.z * m.m34 + m.m44);
         }
 
+        public static Vec3 TransformPosition3(Vec3 v, Matrix m)
+        {
+            float x = v.x * m.m11 + v.y * m.m21 + v.z * m.m31 + m.m41;
+            float y = v.x * m.m12 + v.y * m.m22 + v.z * m.m32 + m.m42;
+            float z = v.x * m.m13 + v.y * m.m23 + v.z * m.m33 + m.m43;
+            float w = v.x * m.m14 + v.y * m.m24 + v.z * m.m34 + m.m44;
+            if (w != 0 && w != 1) {
+                x /= w;
+                y /= w;
+                z /= w;
+            }
+            return new Vec3(x, y, z);
+        }
+
         // vectors may not be normalized after the transformation
         public static Vec4 TransformNormal(Vec3 v, Matrix m) {
             return new Vec4(v.x * m.m11 + v.y * m.m21 + v.z * m.m31,
                             v.x * m.m12 + v.y * m.m22 + v.z * m.m32,
                             v.x * m.m13 + v.y * m.m23 + v.z * m.m33,
                             v.x * m.m14 + v.y * m.m24 + v.z * m.m34);
+        }
+
+        public static Vec3 TransformNormal3(Vec3 v, Matrix m)
+        {
+            float x = v.x * m.m11 + v.y * m.m21 + v.z * m.m31;
+            float y = v.x * m.m12 + v.y * m.m22 + v.z * m.m32;
+            float z = v.x * m.m13 + v.y * m.m23 + v.z * m.m33;
+            float w = v.x * m.m14 + v.y * m.m24 + v.z * m.m34;
+            if (w != 0 && w != 1)
+            {
+                x /= w;
+                y /= w;
+                z /= w;
+            }
+            return new Vec3(x, y, z);
+        }
+
+        public static Vec3 TransformNormal3n(Vec3 v, Matrix m)
+        {
+            float x = v.x * m.m11 + v.y * m.m21 + v.z * m.m31;
+            float y = v.x * m.m12 + v.y * m.m22 + v.z * m.m32;
+            float z = v.x * m.m13 + v.y * m.m23 + v.z * m.m33;
+            float w = v.x * m.m14 + v.y * m.m24 + v.z * m.m34;
+            if (w != 0 && w != 1) {
+                x /= w;
+                y /= w;
+                z /= w;
+            }
+            float length = (float)Math.Sqrt(x * x + y * y + z * z);
+            x /= length;
+            y /= length;
+            z /= length;
+            return new Vec3(x, y, z);
         }
 
         //-------------- Overloaded operators -------------------
