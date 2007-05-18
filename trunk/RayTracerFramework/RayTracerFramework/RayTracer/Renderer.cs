@@ -23,8 +23,11 @@ namespace RayTracerFramework.RayTracer {
             //bitmapData.
 
             // View frustrum starts at 1.0f
-            float viewPlaneWidth = (float)Math.Tan(scene.cam.hFov) * 2;
-            float viewPlaneHeight = (float)Math.Tan(scene.cam.vFov) * 2;
+            //float viewPlaneWidth = (float)Math.Tan(scene.cam.hFov) * 2;
+            //float viewPlaneHeight = (float)Math.Tan(scene.cam.vFov) * 2;
+            float viewPlaneWidth = scene.cam.GetViewPlaneWidth();
+            float viewPlaneHeight = scene.cam.GetViewPlaneHeight();
+            
             float pixelWidth = viewPlaneWidth / targetWidth;
             float pixelHeight = viewPlaneHeight / targetHeight;
 
