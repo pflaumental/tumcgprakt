@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,13 +28,13 @@ namespace RayTracerFramework {
             System.Drawing.Color c = System.Drawing.Color.LightSlateGray;
             Console.WriteLine(c.R + "," + c.G + "," + c.B);
 
-            pictureBox.Size = new Size(766, 430);
+            //pictureBox.Size = new Size(766, 430);
             Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)b.Width / b.Height;
             //scene.cam.hFov /= 2;
             //scene.cam.AdjustVerticalFov(aspectRatio);
             scene.cam.aspectRatio = aspectRatio;
-            scene.cam.eyePos = new Vec3(0.0f, 0.0f, -5.0f);
+            scene.cam.eyePos = new Vec3(0f, 0f, -5.0f);
             scene.cam.lookAtPos = new Vec3(0.0f, 0.0f, 0.0f);
             scene.geoMng.viewMatrix = scene.cam.GetViewMatrix();
 
@@ -67,6 +67,10 @@ namespace RayTracerFramework {
             scene.AddDSphere(new Vec3(0.0f, 0.0f, 0.0f), 1.5f, new Material(Color.White, Color.Red, Color.Red, Color.Red, 10, 1, 1));
             scene.AddDSphere(new Vec3(-2.0f, 0.0f, 5.0f), 3, Material.GreenMaterial);
             scene.AddDSphere(new Vec3(4.0f, 0.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 30, 1, 1));
+            DBox box1 = scene.AddDBox(new Vec3(-1.0f, -1.5f, -1.5f), 2.0f, 1.0f, 2.0f, Material.GreenMaterial);
+            box1.Transform(Matrix.GetRotationX((float)Math.PI * 0.125f));
+            box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
+            box1.Transform(Matrix.GetTranslation(-2.0f, 0.0f, 0.0f));
 
             scene.geoMng.TransformAll();
 
