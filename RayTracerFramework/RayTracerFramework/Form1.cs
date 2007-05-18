@@ -64,7 +64,10 @@ namespace RayTracerFramework {
             scene.lightManager.AddLight(l3);
             scene.lightManager.AddLight(l4);
 
-            scene.AddDSphere(new Vec3(0.0f, 0.0f, 0.0f), 1.5f, new Material(Color.White, Color.Red, Color.Red, Color.Red, 10, 1, 1));
+            DSphere sphere1 = scene.AddDSphere(new Vec3(0.0f, 0.0f, -1.0f), 1.5f, new Material(Color.White, Color.Red, Color.Red, Color.Red, 10, 1, 1));
+            sphere1.Transform(Matrix.GetScale(1.0f, 0.5f, 1.0f));
+            sphere1.Transform(Matrix.GetRotationX((float)-Math.PI * 0.25f));
+            sphere1.Transform(Matrix.GetRotationZ((float)Math.PI * 0.25f));
             scene.AddDSphere(new Vec3(-2.0f, 0.0f, 5.0f), 3, Material.GreenMaterial);
             scene.AddDSphere(new Vec3(4.0f, 0.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 30, 1, 1));
             DBox box1 = scene.AddDBox(new Vec3(-1.0f, -1.5f, -1.5f), 2.0f, 1.0f, 2.0f, Material.GreenMaterial);
