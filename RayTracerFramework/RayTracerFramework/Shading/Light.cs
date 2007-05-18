@@ -16,12 +16,10 @@ namespace RayTracerFramework.Shading {
         public Color specular;
 
         public LightType lightType;
-        public bool enabled;   
 
         protected Light() {
             ambient = diffuse = specular = Color.White;
             lightType = LightType.Point;
-            enabled = true;
         }
 
 

@@ -5,76 +5,81 @@ using System.Text;
 namespace RayTracerFramework.Shading {
     
     class Color {
-        private byte red, green, blue;      // integer color channel values in range [0, 255] 
-        private float redF, greenF, blueF; // float color channel values in range [0,1]
+        private float red, green, blue;  // float color channel values in range [0,1]
 
         public static readonly Color Red = new Color(255, 0, 0);
         public static readonly Color Green = new Color(0, 255, 0);
         public static readonly Color Blue = new Color(0, 0, 255);
+        public static readonly Color LightSlateGray = new Color(119, 136, 153);
+
         public static readonly Color Black = new Color(0, 0, 0);
         public static readonly Color White = new Color(255, 255, 255);
 
-        public Color() : this(1f, 1f, 1f) { }
+        public Color() : this(0f, 0f, 0f) { }
 
         public Color(byte red, byte green, byte blue) {
-            redF = red / 255f;
-            greenF = green / 255f;
-            blueF = blue / 255f;
+            this.red = red / 255f;
+            this.green = green / 255f;
+            this.blue = blue / 255f;
         }
 
         public Color(float red, float green, float blue) {
-            this.redF = red;
-            this.greenF = green;
-            this.blueF = blue;
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
         }
 
         // Clamps the float color channels to [0, 1]
         public void Saturate() {
-            redF = redF < 0f ? 0 : (redF > 1f ? 1 : redF);
-            greenF = greenF < 0f ? 0 : (greenF > 1f ? 1 : greenF);
-            blueF = blueF < 0f ? 0 : (blueF > 1f ? 1 : blueF); 
+            red = red < 0f ? 0 : (red > 1f ? 1 : red);
+            green = green < 0f ? 0 : (green > 1f ? 1 : green);
+            blue = blue < 0f ? 0 : (blue > 1f ? 1 : blue); 
         }
 
         public static Color operator *(Color c1, Color c2) {
-            return new Color(c1.redF * c2.redF, c1.greenF * c2.greenF, c1.blueF * c2.blueF);
+            return new Color(c1.red * c2.red, c1.green * c2.green, c1.blue * c2.blue);
         }
 
         public static Color operator *(Color c, float factor) {
-            return new Color(c.redF * factor, c.greenF * factor, c.blueF * factor);
+            return new Color(c.red * factor, c.green * factor, c.blue * factor);
         }
 
         public static Color operator *(float factor, Color c) {
-            return new Color(c.redF * factor, c.greenF * factor, c.blueF * factor);
+            return new Color(c.red * factor, c.green * factor, c.blue * factor);
+        }
+
+        public static Color operator +(Color c1, Color c2) {
+            return new Color(c1.red + c2.red, c1.green + c2.green, c1.blue + c2.blue);    
         }
 
         public byte RedInt {
-            get { return (byte)(redF * 255); }
-            set { redF = value / 255f; }
+            get { return (byte)(red * 255); }
+            set { red = value / 255f; }
         }
 
         public byte GreenInt {
-            get { return (byte)(greenF * 255); }
-            set { greenF = value / 255f; }
+            get { return (byte)(green * 255); }
+            set { green = value / 255f; }
         }
 
         public byte BlueInt {
-            get { return (byte)(blueF * 255); }
-            set { blueF = value / 255f; }
+            get { return (byte)(blue * 255); }
+            set { blue = value / 255f; }
         }
 
         public float RedFloat {
-            get { return redF; }
-            set { redF = value; }
+            get { return red; }
+            set { red = value; }
         }
 
         public float GreenFloat {
-            get { return greenF; }
-            set { greenF = value; }
+            get { return green; }
+            set { green = value; }
         }
 
         public float BlueFloat {
-            get { return blueF; }
-            set { blueF = value; }
+            get { return blue; }
+            set { blue = value; }
         }
     }
 
