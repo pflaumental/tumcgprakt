@@ -12,6 +12,11 @@ namespace RayTracerFramework.Shading {
             this.emissive = emissiveColor;
         }
 
+        private DSphere(float radius, Matrix transform, Matrix invTransform, Color emmisveColor)
+            : base(radius, transform, invTransform) {
+                this.emissive = emmisveColor;
+        }
+
         public System.Drawing.Color Shade(Ray ray, IntersectionPoint intersection) {
             // Use simple diffuse lighing with fixed directional light
             float factor = Vec3.Dot(-Vec3.StdZAxis, intersection.normal);
@@ -19,7 +24,7 @@ namespace RayTracerFramework.Shading {
         }
 
         public IObject Clone() {
-            return new DSphere(center, radius, emissive);
+            return new DSphere(radius, transform, invTransform, emissive);
         }
     }
 }
