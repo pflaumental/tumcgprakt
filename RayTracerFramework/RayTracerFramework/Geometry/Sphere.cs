@@ -68,8 +68,8 @@ namespace RayTracerFramework.Geometry {
                 t = o_x + (float)Math.Sqrt(x_iSq);
                 Vec3 iPos = rayOS.GetPoint(t);
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
-                Vec3 intersectionPoint = new Vec3(Vec3.TransformPosition(iPos, transform));
-                Vec3 normal = Vec3.Normalize(new Vec3(Vec3.TransformNormal(c_iVec, transform)));
+                Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
+                Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
                 firstIntersection = new IntersectionPoint(intersectionPoint, normal);
                 return true;
             }
@@ -91,8 +91,8 @@ namespace RayTracerFramework.Geometry {
                 t = o_x - (float)Math.Sqrt(x_iSq);
                 Vec3 iPos = rayOS.GetPoint(t);
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
-                Vec3 intersectionPoint = new Vec3(Vec3.TransformPosition(iPos, transform));
-                Vec3 normal = Vec3.Normalize(new Vec3(Vec3.TransformNormal(c_iVec, transform)));
+                Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
+                Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
                 firstIntersection = new IntersectionPoint(intersectionPoint, normal);
                 return true;
             }
@@ -118,8 +118,8 @@ namespace RayTracerFramework.Geometry {
                 t2 = 0.0f;
                 Vec3 iPos = rayOS.GetPoint(t1);
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
-                Vec3 intersectionPoint = new Vec3(Vec3.TransformPosition(iPos, transform));
-                Vec3 normal = Vec3.Normalize(new Vec3(Vec3.TransformNormal(c_iVec, transform)));                
+                Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
+                Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);                
                 intersections = new IntersectionPoint[]{ new IntersectionPoint(intersectionPoint, normal) };
                 return 1;
             }
@@ -145,10 +145,10 @@ namespace RayTracerFramework.Geometry {
                 Vec3 i2Pos = rayOS.GetPoint(t2);
                 Vec3 c_i1Vec = i1Pos - Vec3.Zero; // Center at (0,0,0)
                 Vec3 c_i2Vec = i2Pos - Vec3.Zero; // Center at (0,0,0)
-                Vec3 intersectionPoint1 = new Vec3(Vec3.TransformPosition(i1Pos, transform));
-                Vec3 intersectionPoint2 = new Vec3(Vec3.TransformPosition(i2Pos, transform));
-                Vec3 normal1 = Vec3.Normalize(new Vec3(Vec3.TransformNormal(c_i1Vec, transform)));
-                Vec3 normal2 = Vec3.Normalize(new Vec3(Vec3.TransformNormal(c_i2Vec, transform)));
+                Vec3 intersectionPoint1 = Vec3.TransformPosition3(i1Pos, transform);
+                Vec3 intersectionPoint2 = Vec3.TransformPosition3(i2Pos, transform);
+                Vec3 normal1 = Vec3.TransformNormal3n(c_i1Vec, transform);
+                Vec3 normal2 = Vec3.TransformNormal3n(c_i2Vec, transform);
                 intersections = new IntersectionPoint[] {new IntersectionPoint(intersectionPoint1, normal1),
                                                          new IntersectionPoint(intersectionPoint2, normal2) };
                 return 2;
