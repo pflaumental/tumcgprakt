@@ -43,6 +43,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Geometry\Box.cs" />
+    <Compile Include="Shading\BlinnPhongLightingModel.cs" />
+    <Compile Include="Shading\Color.cs" />
     <Compile Include="Shading\DBox.cs" />
     <Compile Include="Geometry\IGeometricObject.cs" />
     <Compile Include="Geometry\Vec2.cs" />
@@ -51,6 +53,7 @@
     <Compile Include="Geometry\IBounding.cs" />
     <Compile Include="Geometry\IIntersectable.cs" />
     <Compile Include="Geometry\IntersectionPoint.cs" />
+    <Compile Include="Shading\ILightingModel.cs" />
     <Compile Include="Shading\IObject.cs" />
     <Compile Include="Shading\IShadable.cs" />
     <Compile Include="Geometry\Matrix.cs" />
@@ -87,6 +90,10 @@
     <Compile Include="RayTracer\Renderer.cs" />
     <Compile Include="RayTracer\Scene.cs" />
     <Compile Include="RayTracer\Test.cs" />
+    <Compile Include="Shading\Light.cs" />
+    <Compile Include="Shading\LightManager.cs" />
+    <Compile Include="Shading\Material.cs" />
+    <Compile Include="Shading\PointLight.cs" />
     <Compile Include="Utility\Trigonometric.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

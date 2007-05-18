@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.Geometry {
     interface IShadable {
-        Color Shade(Ray ray,
-                    IntersectionPoint intersection);
+        Color Shade(Ray ray, IntersectionPoint intersection, ILightingModel lightingModel,
+                    LightManager lightManager);
     }
 }
