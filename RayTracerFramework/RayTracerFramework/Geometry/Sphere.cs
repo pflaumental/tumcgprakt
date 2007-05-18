@@ -26,7 +26,28 @@ namespace RayTracerFramework.Geometry {
         }
 
         public bool Intersect(Ray ray) {
-            return false;
+            // o: (ray-)origin
+            // c: center
+            // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
+            // i: intersection point
+
+            // Transform ray to object space
+            Ray rayOS = ray.Transform(invTransform);
+            Vec3 o_cVec = Vec3.Zero - rayOS.position; // Center at (0,0,0)
+            float o_cSq = o_cVec.LengthSq;
+            if (o_cSq < radiusSq)// ray starts inside sphere (exactly one intersection)
+                return true;
+            else
+            {
+                float o_x = Vec3.Dot(o_cVec, rayOS.direction); // negative if ray points away from center
+                if (o_x < 0.0f)
+                    return false;
+                //                       (      c_xSq        )
+                float x_iSq = radiusSq - (o_cSq - (o_x * o_x));
+                if (x_iSq < 0.0f)
+                    return false;
+                return true;
+            }
         }
 
         // Ray direction must be normalized
