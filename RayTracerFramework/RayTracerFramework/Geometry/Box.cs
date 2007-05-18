@@ -28,8 +28,9 @@ namespace RayTracerFramework.Geometry {
         }
        
         public bool Intersect(Ray ray) {
+            return true;
             // Transform ray into object space
-            Ray rayTransformed = Vec3.TransformNormal(ray.direction, transformInv);
+            //Ray rayTransformed = Vec3.TransformNormal(ray.direction, transformInv);
 
         }
 

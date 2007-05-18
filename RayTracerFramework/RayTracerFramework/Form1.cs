@@ -21,7 +21,8 @@ namespace RayTracerFramework {
             Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)b.Width / b.Height;
             //scene.cam.hFov /= 2;
-            scene.cam.AdjustVerticalFov(aspectRatio);
+            //scene.cam.AdjustVerticalFov(aspectRatio);
+            scene.cam.aspectRatio = aspectRatio;
             scene.cam.eyePos = new Vec3(0.0f, 0.0f, -5.0f);
             scene.cam.lookAtPos = new Vec3(0.0f, 0.0f, 0.0f);
             scene.geoMng.viewMatrix = scene.cam.GetViewMatrix();            
