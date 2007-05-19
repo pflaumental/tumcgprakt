@@ -12,7 +12,9 @@ namespace RayTracerFramework.Shading {
                                              Material material, LightManager lightManager, GeometryManager geoMng) {
             Color iTotal = new Color();
             bool lighting = true;
-            foreach (Light light in lightManager.lights) {
+            
+            foreach (Light light in lightManager.LightsViewSpace) {
+               
                 switch (light.lightType) {
                     case LightType.Point:
                         PointLight pointLight = (PointLight)light;
@@ -20,8 +22,8 @@ namespace RayTracerFramework.Shading {
                         Vec3 posToLight = pointLight.position - intersection.position;
                         Vec3 L = Vec3.Normalize(posToLight);
                         float distanceToLight = posToLight.Length;
-                        float currentT = -1;
-                      /*
+                       
+                        /* // Schattenberechnung
                         Vec3 pos = new Vec3(intersection.position + new Vec3(0.1f, 0.0f, -0.1f));
                         Ray ray2 = new Ray(pos, L);
 
@@ -32,32 +34,34 @@ namespace RayTracerFramework.Shading {
                                     lighting = false;
                                     break;
                                 }
-                                       
-                                
+  
                             }
                         }
                         */
-                        if(lighting) {
-                       
-                            float diffuse = Vec3.Dot(L, N);
-                            if (diffuse < 0)
-                                diffuse = 0;
-
+                        
+                        float diffuse = Vec3.Dot(L, N);
+                        if (diffuse < 0) { // Point faces away from the point light
+                            iTotal = iTotal + material.ambient * pointLight.ambient;
+                            
+                        
+                        } else {
                             Vec3 V = -ray.direction;
                             Vec3 H = Vec3.Normalize(L + V);
-                            float HN = Vec3.Dot(H, N);
-                            if (HN < 0.0f)
-                                HN = 0.0f;
+
                             float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
-                            Color diffuseColor = material.diffuse * pointLight.diffuse * diffuse;
-                            Color specularColor = material.specular * pointLight.specular * specular;
-                            Color ambientColor = material.ambient * pointLight.ambient;
-                            iTotal = iTotal + specularColor + diffuseColor + ambientColor;
-                        }
-                        lighting = true;
+                            iTotal = iTotal + (material.ambient * pointLight.ambient) +
+                                              (material.diffuse * pointLight.diffuse * diffuse) +
+                                              (material.specular * pointLight.specular * specular);
+                        }  
                         break;
-                }
+                    case LightType.Directional:
+
+                        break;
+                } // end switch
+                
+
             }
+
             iTotal.Saturate();
             return iTotal;
             
