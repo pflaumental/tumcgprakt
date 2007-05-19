@@ -9,8 +9,9 @@ namespace RayTracerFramework.Shading {
 
         public Vec3 position;
 
-        public PointLight(Vec3 position) {
-            this.position = position;
+        public PointLight(Vec3 position) : base(LightType.Point) {
+            this.position = new Vec3(position);
+           
         }
 
         

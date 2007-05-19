@@ -17,9 +17,9 @@ namespace RayTracerFramework.Shading {
 
         public LightType lightType;
 
-        protected Light() {
+        protected Light(LightType lightType) {
             ambient = diffuse = specular = Color.White;
-            lightType = LightType.Point;
+            this.lightType = lightType;
         }
 
 

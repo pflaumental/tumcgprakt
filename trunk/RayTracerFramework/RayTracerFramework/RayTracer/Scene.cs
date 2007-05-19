@@ -13,11 +13,14 @@ namespace RayTracerFramework.RayTracer {
         public Camera cam;
         public Color backgroundColor;
 
-        public Scene() {
+        public Scene(Camera cam) {       
+            this.cam = cam;
             geoMng = new GeometryManager();
+            geoMng.viewMatrix = cam.GetViewMatrix();
+            
             lightingModel = new BlinnPhongLightingModel();
-            lightManager = new LightManager();
-            cam = new Camera();
+            lightManager = new LightManager(cam.GetViewMatrix());
+
             backgroundColor = Color.LightSlateGray;
         }
 
