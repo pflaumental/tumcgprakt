@@ -6,7 +6,7 @@ using RayTracerFramework.Utility;
 using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.RayTracer {
-    class Scene {
+    class Scene : IIntersectable {
         public GeometryManager geoMng;
         public ILightingModel lightingModel;
         public LightManager lightManager;
@@ -42,6 +42,48 @@ namespace RayTracerFramework.RayTracer {
             DBox box = new DBox(Vec3.Zero, width, height, depth, material);
             geoMng.AddInstance(box, Matrix.GetTranslation(worldPos));
             return box;
-        }        
+        }
+
+        public bool Intersect(Ray ray) {
+            foreach (IObject geoObj in geoMng.TransformedObjects) {
+                if (geoObj.Intersect(ray))
+                    return true;                
+            }
+            return false;
+        }
+
+        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
+            firstIntersection = null;
+            float nearestT = float.PositiveInfinity;
+            RayIntersectionPoint currentIntersection;
+            foreach (IObject geoObj in geoMng.TransformedObjects) {                
+                if (geoObj.Intersect(ray, out currentIntersection)) {
+                    if (currentIntersection.t < nearestT) {
+                        nearestT = currentIntersection.t;
+                        firstIntersection = currentIntersection;
+                    }
+                }
+            }
+            return firstIntersection != null;
+        }
+
+        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
+            intersections = new SortedList<float,RayIntersectionPoint>();
+            int numIntersections = 0, numCurrentIntersections;
+            float nearestT = float.PositiveInfinity;
+            SortedList<float, RayIntersectionPoint> currentIntersections;
+            foreach (IObject geoObj in geoMng.TransformedObjects) {
+                numCurrentIntersections = geoObj.Intersect(ray, out currentIntersections);
+                if(numCurrentIntersections > 0) {
+                    numIntersections += numCurrentIntersections;
+                    foreach (KeyValuePair<float, RayIntersectionPoint> intersectionPair in currentIntersections) {
+                        intersections.Add(intersectionPair.Key, intersectionPair.Value);
+                        numIntersections++;
+                    }
+                }
+            }
+            return numIntersections;
+        }
+
     }
 }

@@ -119,7 +119,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdZAxis, transform);                        
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
                         return true;
                     }
                 }
@@ -133,7 +133,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
                         return true;
                     }
                 }
@@ -149,7 +149,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
                         return true;
                     }
                 }
@@ -163,7 +163,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
                         return true;
                     }
                 }
@@ -179,7 +179,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
                         return true;
                     }
                 }
@@ -193,7 +193,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
                         return true;
                     }
                 }
@@ -222,7 +222,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdZAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         firstFound = true;
                     }
                 }
@@ -236,7 +236,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         if (firstFound)
                             return 2;
                         else
@@ -254,7 +254,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         if (firstFound)
                             return 2;
                         else
@@ -271,7 +271,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         if (firstFound)
                             return 2;
                         else
@@ -289,7 +289,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         if (firstFound)
                             return 2;
                         else
@@ -306,7 +306,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         if (firstFound)
                             return 2;
                         else

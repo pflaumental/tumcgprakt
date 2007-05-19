@@ -79,12 +79,12 @@ namespace RayTracerFramework {
             //sphere1.Transform(Matrix.GetRotationX((float)-Math.PI * 0.25f));
             //sphere1.Transform(Matrix.GetRotationZ((float)Math.PI * 0.25f));
             scene.AddDSphere(Vec3.Zero, 1.5f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0, 0, 0));
-            //scene.AddDSphere(new Vec3(4.0f, 0.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 15, 0, 0, 0));
+            scene.AddDSphere(new Vec3(4.0f, 0.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 15, 0.5f, 0, 0));
 
-            //DBox box1 = scene.AddDBox(new Vec3(-1.0f, -0.5f, -1.0f), 2.0f, 1.0f, 2.0f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
+            DBox box1 = scene.AddDBox(new Vec3(-1.0f, -0.5f, -1.0f), 2.0f, 1.0f, 2.0f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * 0.125f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
-            //box1.Transform(Matrix.GetTranslation(0.0f, -1.0f, -2.8f));
+            box1.Transform(Matrix.GetTranslation(0.0f, -1.0f, -2.8f));
 
             scene.geoMng.TransformAll();
 
