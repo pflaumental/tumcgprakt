@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using RayTracerFramework.Geometry;
+using RayTracerFramework.RayTracer;
 
 namespace RayTracerFramework.Shading {
 
@@ -9,11 +10,11 @@ namespace RayTracerFramework.Shading {
 
 
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
-                                             Material material, LightManager lightManager, GeometryManager geoMng) {
+                                             Material material, Scene scene) {
             Color iTotal = new Color();
             bool lighting = true;
             
-            foreach (Light light in lightManager.LightsViewSpace) {
+            foreach (Light light in scene.lightManager.LightsViewSpace) {
                
                 switch (light.lightType) {
                     case LightType.Point:
@@ -23,21 +24,13 @@ namespace RayTracerFramework.Shading {
                         Vec3 L = Vec3.Normalize(posToLight);
                         float distanceToLight = posToLight.Length;
                        
-                        /* // Schattenberechnung
-                        Vec3 pos = new Vec3(intersection.position + new Vec3(0.1f, 0.0f, -0.1f));
-                        Ray ray2 = new Ray(pos, L);
-
-                        IntersectionPoint firstIntersection;
-                        foreach (IObject geoObj in geoMng.TransformedObjects) {
-                            if (geoObj.Intersect(ray2, out firstIntersection, out currentT)) {
-                                if (currentT <= distanceToLight) {
-                                    lighting = false;
-                                    break;
-                                }
-  
-                            }
-                        }
-                        */
+                        //// Is light in shadow?
+                        //Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * L);
+                        //Ray toLightRay = new Ray(toLightRayPos, L);
+                        //RayIntersectionPoint firstIntersection;
+                        //scene.Intersect(ray, out firstIntersection);
+                        //if (firstIntersection != null && firstIntersection.t < distanceToLight)
+                        //    continue;
                         
                         float diffuse = Vec3.Dot(L, N);
                         if (diffuse < 0) { // Point faces away from the point light

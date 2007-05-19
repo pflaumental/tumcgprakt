@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class Ray {        
+    class Ray {
+        public readonly static float positionEpsilon = 0.0001f;
+
         public Vec3 position;
         public Vec3 direction;  // Must be normalized
 
