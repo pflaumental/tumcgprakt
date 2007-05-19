@@ -43,6 +43,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Geometry\Box.cs" />
+    <Compile Include="Geometry\RayIntersectionPoint.cs" />
     <Compile Include="Shading\BlinnPhongLightingModel.cs" />
     <Compile Include="Shading\Color.cs" />
     <Compile Include="Shading\DBox.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Shading\LightManager.cs" />
     <Compile Include="Shading\Material.cs" />
     <Compile Include="Shading\PointLight.cs" />
+    <Compile Include="Shading\StdShading.cs" />
     <Compile Include="Utility\Trigonometric.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

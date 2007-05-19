@@ -46,11 +46,10 @@ namespace RayTracerFramework.RayTracer {
             Vec3 rayDir = Vec3.Normalize(pixelCenterPos);
             Ray ray = new Ray(Vec3.Zero, rayDir);
 
-            IntersectionPoint firstIntersection;
+            RayIntersectionPoint firstIntersection;
             float nearestT = float.PositiveInfinity;
-            float currentT;
             IObject nearestObject = null;
-            IntersectionPoint nearestIntersection = null;
+            RayIntersectionPoint nearestIntersection = null;
 
             // Setup bitmap
             BitmapData bitmapData = target.LockBits(new Rectangle(0, 0, targetWidth, targetHeight),
@@ -67,9 +66,9 @@ namespace RayTracerFramework.RayTracer {
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection
                     foreach (IObject geoObj in scene.geoMng.TransformedObjects) {
-                        if (geoObj.Intersect(ray, out firstIntersection, out currentT)) {
-                            if (currentT < nearestT) {
-                                nearestT = currentT;
+                        if (geoObj.Intersect(ray, out firstIntersection)) {
+                            if (firstIntersection.t < nearestT) {
+                                nearestT = firstIntersection.t;
                                 nearestObject = geoObj; ;
                                 nearestIntersection = firstIntersection;
                             }
@@ -78,7 +77,7 @@ namespace RayTracerFramework.RayTracer {
                     // Shade pixel      
                     Color color;
                     if (nearestObject != null)
-                        color = nearestObject.Shade(ray, nearestIntersection, scene.lightingModel, scene.lightManager, scene.geoMng);
+                        color = nearestObject.Shade(ray, nearestIntersection, scene, 1.0f);
                     else
                         color = scene.backgroundColor;
 

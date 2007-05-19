@@ -7,7 +7,7 @@ using System.Drawing;
 namespace RayTracerFramework.Shading {
     interface ILightingModel {
 
-        Color calculateColor(Ray ray, IntersectionPoint intersection,
+        Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                              Material material, LightManager lightManager, GeometryManager geoMng);
 
     }

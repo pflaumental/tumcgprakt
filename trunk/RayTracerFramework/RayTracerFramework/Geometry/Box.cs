@@ -102,12 +102,13 @@ namespace RayTracerFramework.Geometry {
             return false;
         }
 
-        public bool Intersect(Ray ray, out IntersectionPoint firstIntersection, out float t) {
+        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);
 
             float tOS, x, y, z;
             Vec3 intersectionPos, intersectionNormal;
+            float t = 0.0f;
             if (rayOS.direction.z > 0 && rayOS.position.z < 0)
             { // Test against front plane
                 tOS = -rayOS.position.z / rayOS.direction.z;
@@ -116,9 +117,9 @@ namespace RayTracerFramework.Geometry {
                     y = rayOS.position.y + rayOS.direction.y * tOS;
                     if (x >= 0 && x <= dx && y >= 0 && y <= dy) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdZAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
+                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdZAxis, transform);                        
                         t = Vec3.GetLength(intersectionPos - ray.position);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
                         return true;
                     }
                 }
@@ -131,8 +132,8 @@ namespace RayTracerFramework.Geometry {
                     if (x >= 0 && x <= dx && y >= 0 && y <= dy) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
                         t = Vec3.GetLength(intersectionPos - ray.position);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
                         return true;
                     }
                 }
@@ -147,8 +148,8 @@ namespace RayTracerFramework.Geometry {
                     if (x >= 0 && x <= dx && z >= 0 && z <= dz) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
                         t = Vec3.GetLength(intersectionPos - ray.position);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
                         return true;
                     }
                 }
@@ -161,8 +162,8 @@ namespace RayTracerFramework.Geometry {
                     if (x >= 0 && x <= dx && z >= 0 && z <= dz) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
                         t = Vec3.GetLength(intersectionPos - ray.position);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
                         return true;
                     }
                 }
@@ -177,8 +178,8 @@ namespace RayTracerFramework.Geometry {
                     if (y >= 0 && y <= dy && z >= 0 && z <= dz) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
                         t = Vec3.GetLength(intersectionPos - ray.position);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
                         return true;
                     }
                 }
@@ -191,8 +192,8 @@ namespace RayTracerFramework.Geometry {
                     if (y >= 0 && y <= dy && z >= 0 && z <= dz) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
                         t = Vec3.GetLength(intersectionPos - ray.position);
+                        firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t);
                         return true;
                     }
                 }
@@ -202,16 +203,16 @@ namespace RayTracerFramework.Geometry {
             return false;
         }
 
-        public int Intersect(Ray ray, out IntersectionPoint[] intersections, out float t1, out float t2) {
+        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);
             bool firstFound = false;
-            t1 = t2 = float.PositiveInfinity;
+            float t = float.PositiveInfinity;
             intersections = null;
 
             float tOS, x, y, z;
             Vec3 intersectionPos, intersectionNormal;
-            IntersectionPoint firstIntersection = null, secondIntersection = null;
+            intersections = new SortedList<float,RayIntersectionPoint>();
             if (rayOS.direction.z > 0 && rayOS.position.z < 0) { // Test against front plane
                 tOS = -rayOS.position.z / rayOS.direction.z;
                 if (tOS >= 0) {
@@ -220,8 +221,8 @@ namespace RayTracerFramework.Geometry {
                     if (x >= 0 && x <= dx && y >= 0 && y <= dy) {
                         intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdZAxis, transform);
-                        firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                        t1 = Vec3.GetLength(intersectionPos - ray.position);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
                         firstFound = true;
                     }
                 }
@@ -232,19 +233,14 @@ namespace RayTracerFramework.Geometry {
                     x = rayOS.position.x + rayOS.direction.x * tOS;
                     y = rayOS.position.y + rayOS.direction.y * tOS;
                     if (x >= 0 && x <= dx && y >= 0 && y <= dy) {
-                        if (firstFound) {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
-                            secondIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t2 = Vec3.GetLength(intersectionPos - ray.position);
-                            OrderIntersections(ref t1, firstIntersection, ref t2, secondIntersection, out intersections);
+                        intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        if (firstFound)
                             return 2;
-                        } else {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
-                            firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t1 = Vec3.GetLength(intersectionPos - ray.position);
-                        }
+                        else
+                            firstFound = true;
                     }
                 }
             }
@@ -255,20 +251,15 @@ namespace RayTracerFramework.Geometry {
                     x = rayOS.position.x + rayOS.direction.x * tOS;
                     z = rayOS.position.z + rayOS.direction.z * tOS;
                     if (x >= 0 && x <= dx && z >= 0 && z <= dz) {
-                        if (firstFound) {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
-                            secondIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t2 = Vec3.GetLength(intersectionPos - ray.position);
-                            OrderIntersections(ref t1, firstIntersection, ref t2, secondIntersection, out intersections);
+                        intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        if (firstFound)
                             return 2;
-                        } else {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
-                            firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t1 = Vec3.GetLength(intersectionPos - ray.position);
-                        }
-                    }
+                        else
+                            firstFound = true;
+                    }                    
                 }
             }
             if (rayOS.direction.y < 0 && rayOS.position.y > dy) { // Test against upper plane
@@ -277,19 +268,14 @@ namespace RayTracerFramework.Geometry {
                     x = rayOS.position.x + rayOS.direction.x * tOS;
                     z = rayOS.position.z + rayOS.direction.z * tOS;
                     if (x >= 0 && x <= dx && z >= 0 && z <= dz) {
-                        if (firstFound) {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
-                            secondIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t2 = Vec3.GetLength(intersectionPos - ray.position);
-                            OrderIntersections(ref t1, firstIntersection, ref t2, secondIntersection, out intersections);
+                        intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        if (firstFound)
                             return 2;
-                        } else {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
-                            firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t1 = Vec3.GetLength(intersectionPos - ray.position);
-                        }
+                        else
+                            firstFound = true;
                     }
                 }
             }
@@ -300,19 +286,14 @@ namespace RayTracerFramework.Geometry {
                     y = rayOS.position.y + rayOS.direction.y * tOS;
                     z = rayOS.position.z + rayOS.direction.z * tOS;
                     if (y >= 0 && y <= dy && z >= 0 && z <= dz) {
-                        if (firstFound) {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
-                            secondIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t2 = Vec3.GetLength(intersectionPos - ray.position);
-                            OrderIntersections(ref t1, firstIntersection, ref t2, secondIntersection, out intersections);
+                        intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        if (firstFound)
                             return 2;
-                        } else {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
-                            firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t1 = Vec3.GetLength(intersectionPos - ray.position);
-                        }
+                        else
+                            firstFound = true;
                     }
                 }
             }
@@ -322,39 +303,19 @@ namespace RayTracerFramework.Geometry {
                     y = rayOS.position.y + rayOS.direction.y * tOS;
                     z = rayOS.position.z + rayOS.direction.z * tOS;
                     if (y >= 0 && y <= dy && z >= 0 && z <= dz) {
-                        if (firstFound) {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
-                            secondIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t2 = Vec3.GetLength(intersectionPos - ray.position);
-                            OrderIntersections(ref t1, firstIntersection, ref t2, secondIntersection, out intersections);
+                        intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t));
+                        if (firstFound)
                             return 2;
-                        } else {
-                            intersectionPos = Vec3.TransformPosition3(ray.GetPoint(tOS), transform);
-                            intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
-                            firstIntersection = new IntersectionPoint(intersectionPos, intersectionNormal);
-                            t1 = Vec3.GetLength(intersectionPos - ray.position);
-                        }
+                        else
+                            firstFound = true;
                     }
                 }
             }
             return firstFound ? 1 : 0;
         }
 
-        private void OrderIntersections(ref float t1, IntersectionPoint ip1, 
-                                        ref float t2, IntersectionPoint ip2,
-                                        out IntersectionPoint[] intersections) {
-            intersections = new IntersectionPoint[2];
-            if (t1 < t2) {
-                intersections[0] = ip1;
-                intersections[1] = ip2;
-                return;
-            }
-            intersections[0] = ip2;
-            intersections[1] = ip1;
-            float tmpT = t1;
-            t1 = t2;
-            t2 = tmpT;
-        }
     }
 }
