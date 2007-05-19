@@ -38,19 +38,19 @@ namespace RayTracerFramework {
             scene.cam.lookAtPos = new Vec3(0.0f, 0.0f, 0.0f);
             scene.geoMng.viewMatrix = scene.cam.GetViewMatrix();
 
-            Light l = new PointLight(new Vec3(-5, -5, 0));
+            Light l = new PointLight(new Vec3(-10, 0, -2));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l.diffuse = new Color(0.2f, 0.3f, 0.2f);
+            l.diffuse = new Color(0.2f, 0.3f, 0.5f);
             l.specular = new Color(0.8f, 0.8f, 0.8f);
 
-            Light l2 = new PointLight(new Vec3(-5, 5, 5));
+            Light l2 = new PointLight(new Vec3(-5, 10, -2));
             l2.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l2.diffuse = new Color(0.2f, 0.5f, 0.2f);
-            l2.specular = new Color(0.5f, 0.5f, 0.5f);
+            l2.diffuse = new Color(0.2f, 0.3f, 0.6f);
+            l2.specular = new Color(0.6f, 0.5f, 0.5f);
 
             Light l3 = new PointLight(new Vec3(5, 5, 5));
             l3.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l3.diffuse = new Color(0.5f, 0.2f, 0.2f);
+            l3.diffuse = new Color(0.0f, 0.2f, 0.8f);
             l3.specular = new Color(0.5f, 0.5f, 0.5f);
 
             Light l4 = new PointLight(new Vec3(5, -5, 5));
@@ -61,8 +61,13 @@ namespace RayTracerFramework {
             scene.lightManager.AddLight(l);
             scene.lightManager.AddLight(l2);
 
-            scene.lightManager.AddLight(l3);
-            scene.lightManager.AddLight(l4);
+            //scene.lightManager.AddLight(l3);
+            //scene.lightManager.AddLight(l4);
+
+
+            scene.AddDSphere(new Vec3(-2.0f, 0.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 1, 1));
+            scene.AddDSphere(new Vec3(0.0f, 0.0f, 0.0f), 1, Material.GreenMaterial);
+            scene.AddDSphere(new Vec3(3.0f, 0.0f, 3.0f), 3, new Material(Color.Blue, Color.White, Color.White, Color.White, 30, 1, 1));
 
             DSphere sphere1 = scene.AddDSphere(new Vec3(0.0f, 0.0f, -1.0f), 1.5f, new Material(Color.White, Color.Red, Color.Red, Color.Red, 10, 1, 1));
             sphere1.Transform(Matrix.GetScale(1.0f, 0.5f, 1.0f));
@@ -70,6 +75,7 @@ namespace RayTracerFramework {
             sphere1.Transform(Matrix.GetRotationZ((float)Math.PI * 0.25f));
             scene.AddDSphere(new Vec3(-2.0f, 0.0f, 5.0f), 3, Material.GreenMaterial);
             scene.AddDSphere(new Vec3(4.0f, 0.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 30, 1, 1));
+
             DBox box1 = scene.AddDBox(new Vec3(-1.0f, -1.5f, -1.5f), 2.0f, 1.0f, 2.0f, Material.GreenMaterial);
             box1.Transform(Matrix.GetRotationX((float)Math.PI * 0.125f));
             box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));

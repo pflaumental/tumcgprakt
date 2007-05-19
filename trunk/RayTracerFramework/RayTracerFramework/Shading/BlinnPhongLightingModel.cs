@@ -9,26 +9,49 @@ namespace RayTracerFramework.Shading {
 
 
         public Color calculateColor(Ray ray, IntersectionPoint intersection,
-                                             Material material, LightManager lightManager) {
+                                             Material material, LightManager lightManager, GeometryManager geoMng) {
             Color iTotal = new Color();
+            bool lighting = true;
             foreach (Light light in lightManager.lights) {
                 switch (light.lightType) {
                     case LightType.Point:
                         PointLight pointLight = (PointLight)light;
                         Vec3 N = intersection.normal;
-                        Vec3 L = Vec3.Normalize(pointLight.position - intersection.position);
-                        float diffuse = Vec3.Dot(L, N);
-                        if (diffuse < 0)
-                            diffuse = 0;
+                        Vec3 posToLight = pointLight.position - intersection.position;
+                        Vec3 L = Vec3.Normalize(posToLight);
+                        float distanceToLight = posToLight.Length;
+                        float currentT = -1;
+                      /*
+                        Vec3 pos = new Vec3(intersection.position + new Vec3(0.1f, 0.0f, -0.1f));
+                        Ray ray2 = new Ray(pos, L);
 
-                        Vec3 V = -ray.direction;
-                        Vec3 H = Vec3.Normalize(L + V);
-                        float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
-                        Color diffuseColor = material.diffuse * pointLight.diffuse * diffuse;
-                        Color specularColor = material.specular * pointLight.specular * specular;
-                        Color ambientColor = material.ambient * pointLight.ambient;
-                        iTotal = iTotal + specularColor + diffuseColor + ambientColor;
+                        IntersectionPoint firstIntersection;
+                        foreach (IObject geoObj in geoMng.TransformedObjects) {
+                            if (geoObj.Intersect(ray2, out firstIntersection, out currentT)) {
+                                if (currentT <= distanceToLight) {
+                                    lighting = false;
+                                    break;
+                                }
+                                       
+                                
+                            }
+                        }
+                        */
+                        if(lighting) {
+                       
+                            float diffuse = Vec3.Dot(L, N);
+                            if (diffuse < 0)
+                                diffuse = 0;
 
+                            Vec3 V = -ray.direction;
+                            Vec3 H = Vec3.Normalize(L + V);
+                            float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
+                            Color diffuseColor = material.diffuse * pointLight.diffuse * diffuse;
+                            Color specularColor = material.specular * pointLight.specular * specular;
+                            Color ambientColor = material.ambient * pointLight.ambient;
+                            iTotal = iTotal + specularColor + diffuseColor + ambientColor;
+                        }
+                        lighting = true;
                         break;
                 }
             }

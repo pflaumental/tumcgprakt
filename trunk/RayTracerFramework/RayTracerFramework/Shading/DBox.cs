@@ -29,8 +29,8 @@ namespace RayTracerFramework.Geometry {
         }
 
         public Color Shade(Ray ray, IntersectionPoint intersection, ILightingModel lightingModel,
-                           LightManager lightManager) {
-            return lightingModel.calculateColor(ray, intersection, material, lightManager);
+                           LightManager lightManager, GeometryManager geoMng) {
+            return lightingModel.calculateColor(ray, intersection, material, lightManager, geoMng);
 
             //float factor = Vec3.Dot(-Vec3.StdZAxis, intersection.normal);
             //return Color.FromArgb((int)(((float)emissive.R) * factor), (int)(((float)emissive.G) * factor), (int)(((float)emissive.B) * factor));

@@ -8,7 +8,7 @@ namespace RayTracerFramework.Shading {
     interface ILightingModel {
 
         Color calculateColor(Ray ray, IntersectionPoint intersection,
-                             Material material, LightManager lightManager);
+                             Material material, LightManager lightManager, GeometryManager geoMng);
 
     }
 }

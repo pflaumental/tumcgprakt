@@ -78,7 +78,7 @@ namespace RayTracerFramework.RayTracer {
                     // Shade pixel      
                     Color color;
                     if (nearestObject != null)
-                        color = nearestObject.Shade(ray, nearestIntersection, scene.lightingModel, scene.lightManager);
+                        color = nearestObject.Shade(ray, nearestIntersection, scene.lightingModel, scene.lightManager, scene.geoMng);
                     else
                         color = scene.backgroundColor;
 
