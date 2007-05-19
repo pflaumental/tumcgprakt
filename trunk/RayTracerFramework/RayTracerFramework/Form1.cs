@@ -26,8 +26,8 @@ namespace RayTracerFramework {
             Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)b.Width / b.Height;
 
-            Camera cam = new Camera(new Vec3(0.0f, 0.0f, -5.0f),
-                                    new Vec3(0.0f, 0.0f, 0.0f),
+            Camera cam = new Camera(new Vec3(0.0f, 0.0f, -4.5f),
+                                    new Vec3(1.0f, -1.0f, 0.0f),
                                     Vec3.StdYAxis, Trigonometric.PI_QUARTER, 1);
             cam.aspectRatio = aspectRatio;
             Scene scene = new Scene(cam);
@@ -84,7 +84,7 @@ namespace RayTracerFramework {
             DBox box1 = scene.AddDBox(new Vec3(-1.0f, -0.5f, -1.0f), 2.0f, 1.0f, 2.0f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * 0.125f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
-            box1.Transform(Matrix.GetTranslation(0.0f, -1.0f, -2.8f));
+            box1.Transform(Matrix.GetTranslation(0.5f, -1.0f, -2.4f));
 
             scene.geoMng.TransformAll();
 
