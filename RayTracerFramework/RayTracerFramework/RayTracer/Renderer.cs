@@ -60,12 +60,9 @@ namespace RayTracerFramework.RayTracer {
             RayIntersectionPoint firstIntersection;
             for (int y = 0; y < targetHeight; y++) { // pixel lines
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
-                    // Find nearest object intersection
-                    scene.Intersect(ray, out firstIntersection);
-
-                    // Shade pixel      
+                    // Find nearest object intersection and Shade pixel      
                     Color color;
-                    if (firstIntersection != null) {
+                    if (scene.Intersect(ray, out firstIntersection)) {
                         IObject hitObject = (IObject)firstIntersection.hitObject;
                         color = hitObject.Shade(ray, firstIntersection, scene, 1.0f);
                     } else

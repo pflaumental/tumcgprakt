@@ -44,13 +44,10 @@ namespace RayTracerFramework.Shading {
                     Vec3 reflectionPos = intersection.position + Ray.positionEpsilon * reflectionDir;
                     Ray reflectionRay = new Ray(reflectionPos, reflectionDir);
 
-                    // Find nearest object intersection
+                    // Find nearest object intersection and shade reflection  
                     RayIntersectionPoint firstIntersection;
-                    scene.Intersect(reflectionRay, out firstIntersection);
-
-                    // Shade reflection      
                     Color reflectionColor;
-                    if (firstIntersection != null) {
+                    if (scene.Intersect(reflectionRay, out firstIntersection)) {
                         IObject firstHitObject = (IObject)firstIntersection.hitObject;
                         reflectionColor = firstHitObject.Shade(ray, firstIntersection, scene, reflectionContribution);
                     } else

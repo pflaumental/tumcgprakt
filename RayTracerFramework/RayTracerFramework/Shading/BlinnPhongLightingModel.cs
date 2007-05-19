@@ -12,7 +12,7 @@ namespace RayTracerFramework.Shading {
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
             Color iTotal = new Color();
-            bool lighting = true;
+            //bool lighting = true;
             
             foreach (Light light in scene.lightManager.LightsViewSpace) {
                
@@ -23,14 +23,15 @@ namespace RayTracerFramework.Shading {
                         Vec3 posToLight = pointLight.position - intersection.position;
                         Vec3 L = Vec3.Normalize(posToLight);
                         float distanceToLight = posToLight.Length;
-                       
-                        //// Is light in shadow?
-                        //Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * L);
-                        //Ray toLightRay = new Ray(toLightRayPos, L);
-                        //RayIntersectionPoint firstIntersection;
-                        //scene.Intersect(ray, out firstIntersection);
-                        //if (firstIntersection != null && firstIntersection.t < distanceToLight)
-                        //    continue;
+
+                        // Is light in shadow?
+                        Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * L);
+                        Ray toLightRay = new Ray(toLightRayPos, L);
+                        RayIntersectionPoint firstIntersection;
+                        if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
+                            iTotal = iTotal + material.ambient * pointLight.ambient;
+                            continue;
+                        }
                         
                         float diffuse = Vec3.Dot(L, N);
                         if (diffuse < 0) { // Point faces away from the point light
