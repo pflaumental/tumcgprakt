@@ -48,24 +48,15 @@ namespace RayTracerFramework.Shading {
                     Ray reflectionRay = new Ray(reflectionPos, reflectionDir);
 
                     // Find nearest object intersection
-                    RayIntersectionPoint firstIntersection = null, nearestIntersection = null;
-                    float nearestT = float.PositiveInfinity;
-                    IObject nearestObject = null;
-                    foreach (IObject geoObj in scene.geoMng.TransformedObjects) {
-                        if (geoObj.Intersect(reflectionRay, out firstIntersection)) {
-                            if (firstIntersection.t < nearestT) {
-                                nearestT = firstIntersection.t;
-                                nearestObject = geoObj; ;
-                                nearestIntersection = firstIntersection;
-                            }
-                        }
-                    }
+                    RayIntersectionPoint firstIntersection;
+                    scene.Intersect(reflectionRay, out firstIntersection);
 
                     // Shade reflection      
                     Color reflectionColor;
-                    if (nearestObject != null)
-                        reflectionColor = nearestObject.Shade(ray, nearestIntersection, scene, reflectionContribution);
-                    else
+                    if (firstIntersection != null) {
+                        IObject firstHitObject = (IObject)firstIntersection.hitObject;
+                        reflectionColor = firstHitObject.Shade(ray, firstIntersection, scene, reflectionContribution);
+                    } else
                         reflectionColor = scene.backgroundColor;
 
                     // Add reflection color to resultColor
