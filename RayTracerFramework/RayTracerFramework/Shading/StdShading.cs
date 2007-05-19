@@ -10,9 +10,7 @@ namespace RayTracerFramework.Shading {
         private readonly static float localThreshold = 0.05f;
         private readonly static float reflectionThreshold = 0.05f;
         private readonly static float refractionThreshold = 0.05f;        
-        private readonly static float contributionThreshold = 0.05f;
-
-        private readonly static float positionEpsilon = 0.0001f;
+        private readonly static float contributionThreshold = 0.05f;        
 
         public static Color RecursiveShade(
                 Ray ray, 
@@ -30,8 +28,7 @@ namespace RayTracerFramework.Shading {
                         ray,
                         intersection,
                         material,
-                        scene.lightManager,
-                        scene.geoMng);
+                        scene);
                 resultColor += (localColor * localPart);
             }
 
@@ -44,7 +41,7 @@ namespace RayTracerFramework.Shading {
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 if (NV > 0) {
                     Vec3 reflectionDir = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
-                    Vec3 reflectionPos = intersection.position + positionEpsilon * reflectionDir;
+                    Vec3 reflectionPos = intersection.position + Ray.positionEpsilon * reflectionDir;
                     Ray reflectionRay = new Ray(reflectionPos, reflectionDir);
 
                     // Find nearest object intersection
