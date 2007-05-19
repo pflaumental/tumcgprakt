@@ -66,8 +66,8 @@ namespace RayTracerFramework {
             scene.lightManager.AddWorldSpaceLight(l);
             scene.lightManager.AddWorldSpaceLight(l2);
 
-            scene.lightManager.AddWorldSpaceLight(l3);
-            scene.lightManager.AddWorldSpaceLight(l4);
+            //scene.lightManager.AddWorldSpaceLight(l3);
+            //scene.lightManager.AddWorldSpaceLight(l4);
 
 
             //scene.AddDSphere(new Vec3(-2.0f, 0.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0, 0, 0));
