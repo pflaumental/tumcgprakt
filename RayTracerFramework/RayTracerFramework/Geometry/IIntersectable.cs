@@ -5,7 +5,7 @@ using System.Text;
 namespace RayTracerFramework.Geometry {
     interface IIntersectable {
         bool Intersect(Ray ray);
-        bool Intersect(Ray ray, out IntersectionPoint firstIntersection, out float t);
-        int Intersect(Ray ray, out IntersectionPoint[] intersections, out float t1, out float t2);
+        bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection);
+        int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections);
     }
 }

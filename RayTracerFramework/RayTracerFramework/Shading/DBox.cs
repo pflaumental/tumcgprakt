@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using RayTracerFramework.Shading;
+using RayTracerFramework.RayTracer;
 
 namespace RayTracerFramework.Geometry {
     class DBox : Box, IObject {
@@ -28,12 +29,8 @@ namespace RayTracerFramework.Geometry {
             this.material = material;
         }
 
-        public Color Shade(Ray ray, IntersectionPoint intersection, ILightingModel lightingModel,
-                           LightManager lightManager, GeometryManager geoMng) {
-            return lightingModel.calculateColor(ray, intersection, material, lightManager, geoMng);
-
-            //float factor = Vec3.Dot(-Vec3.StdZAxis, intersection.normal);
-            //return Color.FromArgb((int)(((float)emissive.R) * factor), (int)(((float)emissive.G) * factor), (int)(((float)emissive.B) * factor));
+        public Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution) {
+            return StdShading.RecursiveShade(ray, intersection, scene, material, contribution);
         }
 
         public IObject Clone() {

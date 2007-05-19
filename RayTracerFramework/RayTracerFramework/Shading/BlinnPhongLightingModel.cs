@@ -8,7 +8,7 @@ namespace RayTracerFramework.Shading {
     class BlinnPhongLightingModel : ILightingModel {
 
 
-        public Color calculateColor(Ray ray, IntersectionPoint intersection,
+        public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, LightManager lightManager, GeometryManager geoMng) {
             Color iTotal = new Color();
             bool lighting = true;
@@ -45,6 +45,9 @@ namespace RayTracerFramework.Shading {
 
                             Vec3 V = -ray.direction;
                             Vec3 H = Vec3.Normalize(L + V);
+                            float HN = Vec3.Dot(H, N);
+                            if (HN < 0.0f)
+                                HN = 0.0f;
                             float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
                             Color diffuseColor = material.diffuse * pointLight.diffuse * diffuse;
                             Color specularColor = material.specular * pointLight.specular * specular;

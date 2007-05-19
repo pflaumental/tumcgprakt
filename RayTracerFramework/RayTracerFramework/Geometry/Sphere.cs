@@ -51,7 +51,7 @@ namespace RayTracerFramework.Geometry {
         }
 
         // Ray direction must be normalized
-        public bool Intersect(Ray ray, out IntersectionPoint firstIntersection, out float t) {
+        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
             // o: (ray-)origin
             // c: center
             // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
@@ -60,6 +60,7 @@ namespace RayTracerFramework.Geometry {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);
             Vec3 o_cVec = Vec3.Zero - rayOS.position; // Center at (0,0,0)
+            float t = 0.0f;
             float o_cSq = o_cVec.LengthSq;
             if (o_cSq < radiusSq) { // ray starts inside sphere (exactly one intersection)
                 float o_x = Vec3.Dot(o_cVec, rayOS.direction); // negative if ray points away from center
@@ -70,7 +71,7 @@ namespace RayTracerFramework.Geometry {
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
                 Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
-                firstIntersection = new IntersectionPoint(intersectionPoint, normal);
+                firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t);
                 return true;
             }
             else {
@@ -93,14 +94,14 @@ namespace RayTracerFramework.Geometry {
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
                 Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
-                firstIntersection = new IntersectionPoint(intersectionPoint, normal);
+                firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t);
                 return true;
             }
         }
 
         // Returns the number of intersections
         // Ray direction must be normalized
-        public int Intersect(Ray ray, out IntersectionPoint[] intersections, out float t1, out float t2) {
+        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
             // o: (ray-)origin
             // c: center
             // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
@@ -109,18 +110,19 @@ namespace RayTracerFramework.Geometry {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);
             Vec3 o_cVec = Vec3.Zero - rayOS.position; // Center at (0,0,0)
+            intersections = new SortedList<float, RayIntersectionPoint>();
+            float t1 = 0.0f, t2 = 0.0f;
             float o_cSq = o_cVec.LengthSq;
             if (o_cSq < radiusSq) { // ray starts inside sphere (exactly one intersection)
                 float o_x = Vec3.Dot(o_cVec, rayOS.direction); // negative if ray points away from center
                 //                       (      c_xSq        )
                 float x_iSq = radiusSq - (o_cSq - (o_x * o_x));
                 t1 = o_x + (float)Math.Sqrt(x_iSq);
-                t2 = 0.0f;
                 Vec3 iPos = rayOS.GetPoint(t1);
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
                 Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);                
-                intersections = new IntersectionPoint[]{ new IntersectionPoint(intersectionPoint, normal) };
+                intersections.Add(t1, new RayIntersectionPoint(intersectionPoint, normal, t1));
                 return 1;
             }
             else {
@@ -149,8 +151,8 @@ namespace RayTracerFramework.Geometry {
                 Vec3 intersectionPoint2 = Vec3.TransformPosition3(i2Pos, transform);
                 Vec3 normal1 = Vec3.TransformNormal3n(c_i1Vec, transform);
                 Vec3 normal2 = Vec3.TransformNormal3n(c_i2Vec, transform);
-                intersections = new IntersectionPoint[] {new IntersectionPoint(intersectionPoint1, normal1),
-                                                         new IntersectionPoint(intersectionPoint2, normal2) };
+                intersections.Add(t1, new RayIntersectionPoint(intersectionPoint1, normal1, t1));
+                intersections.Add(t2, new RayIntersectionPoint(intersectionPoint2, normal2, t2));
                 return 2;
             }
         }
