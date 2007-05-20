@@ -25,15 +25,8 @@ namespace RayTracerFramework.RayTracer {
             lightManager = new LightManager(cam.GetViewMatrix());
 
             backgroundColor = Color.LightSlateGray;
-            cubeMap = new CubeMap(-2, 2, -2, 2, -2, 2);
-            cubeMap.xMinImage = Image.FromFile("../../Textures/NX_stpeters.png");
-            cubeMap.xMaxImage = Image.FromFile("../../Textures/PX_stpeters.png");
-
-            cubeMap.yMinImage = Image.FromFile("../../Textures/NY_stpeters.png");
-            cubeMap.yMaxImage = Image.FromFile("../../Textures/PY_stpeters.png");
-
-            cubeMap.zMinImage = Image.FromFile("../../Textures/NZ_stpeters.png");
-            cubeMap.zMaxImage = Image.FromFile("../../Textures/PZ_stpeters.png");
+            cubeMap = new CubeMap(-100, 100, -100, 100, -100, 100);
+            
 
 
         }

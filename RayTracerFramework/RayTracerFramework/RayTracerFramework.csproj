@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -97,6 +98,7 @@
     <Compile Include="Shading\Material.cs" />
     <Compile Include="Shading\PointLight.cs" />
     <Compile Include="Shading\StdShading.cs" />
+    <Compile Include="Utility\FastBitmap.cs" />
     <Compile Include="Utility\Trigonometric.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
