@@ -4,6 +4,8 @@ using System.Text;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.Utility;
 using RayTracerFramework.Shading;
+using System.Drawing;
+using Color = RayTracerFramework.Shading.Color;
 
 namespace RayTracerFramework.RayTracer {
     class Scene : IIntersectable {
@@ -12,6 +14,7 @@ namespace RayTracerFramework.RayTracer {
         public LightManager lightManager;
         public Camera cam;
         public Color backgroundColor;
+        public CubeMap cubeMap;
 
         public Scene(Camera cam) {       
             this.cam = cam;
@@ -22,6 +25,17 @@ namespace RayTracerFramework.RayTracer {
             lightManager = new LightManager(cam.GetViewMatrix());
 
             backgroundColor = Color.LightSlateGray;
+            cubeMap = new CubeMap(-2, 2, -2, 2, -2, 2);
+            cubeMap.xMinImage = Image.FromFile("../../Textures/NX_stpeters.png");
+            cubeMap.xMaxImage = Image.FromFile("../../Textures/PX_stpeters.png");
+
+            cubeMap.yMinImage = Image.FromFile("../../Textures/NY_stpeters.png");
+            cubeMap.yMaxImage = Image.FromFile("../../Textures/PY_stpeters.png");
+
+            cubeMap.zMinImage = Image.FromFile("../../Textures/NZ_stpeters.png");
+            cubeMap.zMaxImage = Image.FromFile("../../Textures/PZ_stpeters.png");
+
+
         }
 
         public void AddInstance(IObject geoObj, Matrix worldMatrix) {
