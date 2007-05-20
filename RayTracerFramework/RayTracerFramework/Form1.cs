@@ -22,7 +22,21 @@ namespace RayTracerFramework {
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
-             
+
+            CubeMap cm = new CubeMap(-2,2, -2, 2, -1, 1);
+            cm.xMinImage = Image.FromFile("../../Textures/NX_stpeters.png");
+            cm.xMaxImage = Image.FromFile("../../Textures/PX_stpeters.png");
+
+            cm.yMinImage = Image.FromFile("../../Textures/NY_stpeters.png");
+            cm.yMaxImage = Image.FromFile("../../Textures/PY_stpeters.png");
+
+            cm.zMinImage = Image.FromFile("../../Textures/NZ_stpeters.png");
+            cm.zMaxImage = Image.FromFile("../../Textures/PZ_stpeters.png");
+
+            Ray r = new Ray(Vec3.Zero, new Vec3(0f, 1f, 2f));
+            cm.getColor(r);
+
+
             Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)b.Width / b.Height;
 
@@ -36,12 +50,12 @@ namespace RayTracerFramework {
            
             //scene.cam.hFov /= 2;
             //scene.cam.AdjustVerticalFov(aspectRatio);
-           // scene.cam.aspectRatio = aspectRatio;
-           // scene.cam.eyePos = new Vec3(0.0f, 0.0f, -5.0f);
-           // scene.cam.lookAtPos = new Vec3(0.0f, 0.0f, 0.0f);
-          //  scene.geoMng.viewMatrix = scene.cam.GetViewMatrix();
+            // scene.cam.aspectRatio = aspectRatio;
+            // scene.cam.eyePos = new Vec3(0.0f, 0.0f, -5.0f);
+            // scene.cam.lookAtPos = new Vec3(0.0f, 0.0f, 0.0f);
+            //  scene.geoMng.viewMatrix = scene.cam.GetViewMatrix();
 
-            Light l = new PointLight(new Vec3(-2, 2, -2));
+            Light l = new PointLight(new Vec3(pos++, 2, -2));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
             l.diffuse = new Color(0.3f, 0.6f, 0.6f);
             l.specular = new Color(0.6f, 0.5f, 0.9f);
@@ -61,10 +75,10 @@ namespace RayTracerFramework {
             l4.diffuse = new Color(0.2f, 0.3f, 0.2f);
             l4.specular = new Color(0.5f, 0.5f, 0.3f);
 
-            Console.WriteLine(((PointLight)l).position);
+           
 
             scene.lightManager.AddWorldSpaceLight(l);
-            scene.lightManager.AddWorldSpaceLight(l2);
+            //scene.lightManager.AddWorldSpaceLight(l2);
 
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
