@@ -46,6 +46,7 @@
     <Compile Include="Geometry\RayIntersectionPoint.cs" />
     <Compile Include="Shading\BlinnPhongLightingModel.cs" />
     <Compile Include="Shading\Color.cs" />
+    <Compile Include="Shading\CubeMap.cs" />
     <Compile Include="Shading\DBox.cs" />
     <Compile Include="Geometry\IGeometricObject.cs" />
     <Compile Include="Geometry\Vec2.cs" />

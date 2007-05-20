@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
 
-    // A box with lower left for corner centered at the object space origin (0,0,0) and
+    // A box with lower left corner centered at the object space origin (0,0,0) and
     // the upper right back corner at (dx, dy, dz)
     abstract class Box : IGeometricObject {        
         protected float dx, dy, dz;
