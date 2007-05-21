@@ -69,14 +69,14 @@ namespace RayTracerFramework.Shading {
                     && ray.recursionDepth + 1 <= Renderer.MaxRecursionDepth)
             {
                 // Calculate refraction ray
-                // ((ni/nr)*(N*V) - sqrt(1 - (ni/nr)^2*(N*V)^2)) * N - (ni/nr) * V
+                // ((ni/nr)*(N*V) - sqrt(1 - (ni/nr)^2*(1.0f-(N*V)^2))) * N - (ni/nr) * V
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 // assert if(NV < 0) throw new Execption("NV < 0")
 
                 float refractionRatio = scene.refractionIndex / material.refractionIndex;
                 // assert if (refractionRatio < 0 || refractionRatio > 1) throw new Exception("refractionRatio < 0 || refractionRatio > 1");
                 Vec3 refractionDir = Vec3.Normalize(
-                        (float)(refractionRatio * NV - Math.Sqrt(1f - refractionRatio * refractionRatio * NV * NV)) * intersection.normal
+                        (float)(refractionRatio * NV - Math.Sqrt(1f - refractionRatio * refractionRatio * (1f - NV * NV))) * intersection.normal
                         + refractionRatio * ray.direction);
 
                 // assert if(Vec3.Dot(refractionDir, intersection.normal) > 0) throw new Exception("Vec3.Dot(refractionDir, intersection.normal) > 0");
@@ -89,15 +89,16 @@ namespace RayTracerFramework.Shading {
                 // Get refraction-ray intersection with the object
                 RayIntersectionPoint refractionIntersection;
                 // assert bool refractionIntersect =
-                intersection.hitObject.Intersect(refractionRay, out refractionIntersection);
+                if(!intersection.hitObject.Intersect(refractionRay, out refractionIntersection))
+                    return resultColor += material.refractionPart * scene.GetBackgroundColor(refractionRay);
                 // assert if (!refractionIntersect) throw new Exception("!refractionIntersect");
 
                 // Calculate second (outside) refraction ray                    
                 NV = Vec3.Dot(refractionIntersection.normal, -refractionDir);
                 // assert if(NV < 0) throw new Execption("NV < 0")
-                refractionRatio = 1 - refractionRatio;
+                refractionRatio = 1f - refractionRatio;
                 refractionDir = Vec3.Normalize(
-                    (float)(refractionRatio * NV - Math.Sqrt(1f - refractionRatio * refractionRatio * NV * NV)) * refractionIntersection.normal
+                    (float)(refractionRatio * NV - Math.Sqrt(1f - refractionRatio * refractionRatio * (1f - NV * NV))) * refractionIntersection.normal
                     + refractionRatio * refractionDir);
                 refractionPos = refractionIntersection.position - Ray.positionEpsilon * refractionIntersection.normal;
                 refractionRay = new Ray(refractionPos, refractionDir, ray.recursionDepth + 2);
