@@ -50,5 +50,7 @@ namespace RayTracerFramework.Shading {
             get { return material.specularPower; }
             set { material.specularPower = value; }
         }
+
+        public Material Material { get { return material; } set { material = value; } }
     }
 }

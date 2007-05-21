@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
     class Ray {
-        public readonly static float positionEpsilon = 0.0001f;
+        public readonly static float positionEpsilon = 0.001f;
 
         public Vec3 position;
         public Vec3 direction;  // Must be normalized

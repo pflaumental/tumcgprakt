@@ -15,12 +15,12 @@ namespace RayTracerFramework.Shading {
         public float refractionIndex;
 
         public static readonly Material WhiteMaterial = new Material();
-        public static readonly Material RedMaterial = new Material(Color.Red, Color.Red, Color.Red, Color.Red, 10, 0, 0, 0);
-        public static readonly Material GreenMaterial = new Material(Color.Green, Color.Green, Color.Green, Color.Green, 10, 0, 0, 0);
-        public static readonly Material BlueMaterial = new Material(Color.Blue, Color.Blue, Color.Blue, Color.Blue, 10, 0, 0, 0);
+        public static readonly Material RedMaterial = new Material(Color.Red, Color.Red, Color.Red, Color.Red, 10, 0, 0, 5f);
+        public static readonly Material GreenMaterial = new Material(Color.Green, Color.Green, Color.Green, Color.Green, 10, 0, 0, 5);
+        public static readonly Material BlueMaterial = new Material(Color.Blue, Color.Blue, Color.Blue, Color.Blue, 10, 0, 0, 5f);
 
 
-        public Material() : this(Color.White, Color.White, Color.White, Color.White, 10, 0.0f, 0.0f, 0.0f) { }
+        public Material() : this(Color.White, Color.White, Color.White, Color.White, 10, 0.0f, 0.0f, 5f) { }
 
         public Material(Color emissive, Color ambient, Color diffuse,
                         Color specular, float specularPower,
