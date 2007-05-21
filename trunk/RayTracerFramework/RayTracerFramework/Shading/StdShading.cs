@@ -50,41 +50,52 @@ namespace RayTracerFramework.Shading {
                     Color reflectionColor;
                     if (scene.Intersect(reflectionRay, out firstIntersection)) {
                         IObject firstHitObject = (IObject)firstIntersection.hitObject;
-                        reflectionColor = firstHitObject.Shade(ray, firstIntersection, scene, reflectionContribution);
+                        reflectionColor = firstHitObject.Shade(reflectionRay, firstIntersection, scene, reflectionContribution);
                     } else
-                        reflectionColor = scene.backgroundColor;
+                        reflectionColor = scene.GetBackgroundColor(reflectionRay);
 
                     // Add reflection color to resultColor
                     resultColor += (reflectionColor * material.reflectionPart);
                 }
             }
 
-            //// Refraction color
-            //// TODO: Don't forget ContainsOther
-            //float reflectionContribution = material.reflectionPart * contribution;
-            //if (material.reflectionPart > reflectionThreshold
-            //        && reflectionContribution > contributionThreshold) {
-            //    // Calculate reflection ray
-            //    // R = 2N(N*V)-V   (V = -ray.direction)
-            //    float NV = Vec3.Dot(intersection.normal, -ray.direction);
-            //    if (NV > 0) {
-            //        Vec3 reflectionDir = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
-            //        Vec3 reflectionPos = intersection.position + Ray.positionEpsilon * reflectionDir;
-            //        Ray reflectionRay = new Ray(reflectionPos, reflectionDir);
+            // Refraction color
+            float refractionContribution = material.refractionPart * contribution;
+            if (material.refractionPart > refractionThreshold
+                    && refractionContribution > contributionThreshold
+                    && ray.recursionDepth + 1 <= Renderer.MaxRecursionDepth)
+            {
+                // Calculate refraction ray
+                // 
+                float NV = Vec3.Dot(intersection.normal, -ray.direction);
+                if (NV > 0)
+                {
+                    Vec3 refractionDir = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
+                    Vec3 refractionPos = intersection.position + Ray.positionEpsilon * refractionDir;
+                    Ray refractionRay = new Ray(refractionPos, refractionDir, ray.recursionDepth + 1);
 
-            //        // Find nearest object intersection and shade reflection  
-            //        RayIntersectionPoint firstIntersection;
-            //        Color reflectionColor;
-            //        if (scene.Intersect(reflectionRay, out firstIntersection)) {
-            //            IObject firstHitObject = (IObject)firstIntersection.hitObject;
-            //            reflectionColor = firstHitObject.Shade(ray, firstIntersection, scene, reflectionContribution);
-            //        } else
-            //            reflectionColor = scene.backgroundColor;
+                    // Find nearest object intersection and shade refraction  
+                    RayIntersectionPoint firstIntersection;
+                    Color refractionColor;
 
-            //        // Add reflection color to resultColor
-            //        resultColor += (reflectionColor * material.reflectionPart);
-            //    }
-            //}
+                    bool intersect;
+                    //if (intersection.hitObject.ContainsOther) 
+                    //    intersect = scene.Intersect(refractionRay, out firstIntersection);
+                    //else
+                        intersect = intersection.hitObject.Intersect(refractionRay, out firstIntersection);
+
+                    if (intersect) {
+                        IObject firstHitObject = (IObject)firstIntersection.hitObject;
+                        refractionColor = firstHitObject.Shade(refractionRay, firstIntersection, scene, refractionContribution);
+                    } else
+                        refractionColor = scene.GetBackgroundColor(refractionRay);
+
+                    // Add refraction color to resultColor
+                    resultColor += (refractionColor * material.refractionPart);
+                }
+            }
+
+
             return resultColor;
         }
     }

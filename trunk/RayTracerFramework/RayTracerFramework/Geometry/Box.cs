@@ -116,10 +116,10 @@ namespace RayTracerFramework.Geometry {
             
             // Check if ray starts inside box
             bool inside = false;
-            //if (ray.position.x > 0 && ray.position.x < dx
-            //        && ray.position.y > 0 && ray.position.y < dy
-            //        && ray.position.z > 0 && ray.position.z < dz)
-            //    inside = true;
+            if (rayOS.position.x > 0 && rayOS.position.x < dx
+                    && rayOS.position.y > 0 && rayOS.position.y < dy
+                    && rayOS.position.z > 0 && rayOS.position.z < dz)
+                inside = true;
 
             // Z
             if (TestOne(ray, rayOS, rayOS.direction.z, rayOS.direction.x, rayOS.direction.y,
@@ -163,7 +163,7 @@ namespace RayTracerFramework.Geometry {
             float t = 0.0f;
             bool intersect = false, negateNormal = false;
             if (inside) {
-                if (rayOSDir1 < 0 && rayOSPos1 > 0)
+                if (rayOSDir1 < 0)
                 { // Test against front plane
                     tOS = rayOSPos1 / -rayOSDir1;
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
@@ -174,7 +174,7 @@ namespace RayTracerFramework.Geometry {
                         negateNormal = true;
                     }                
                 }
-                else if (rayOSDir1 > 0 && rayOSPos1 < d1)
+                else if (rayOSDir1 > 0)
                 { // Test against back plane
                     tOS = -(rayOSPos1 - d1) / rayOSDir1;
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
@@ -186,28 +186,22 @@ namespace RayTracerFramework.Geometry {
                 if (rayOSDir1 > 0 && rayOSPos1 < 0)
                 { // Test against front plane
                     tOS = -rayOSPos1 / rayOSDir1;
-                    if (tOS >= 0)
+                    p2 = rayOSPos2 + rayOSDir2 * tOS;
+                    p3 = rayOSPos3 + rayOSDir3 * tOS;
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
                     {
-                        p2 = rayOSPos2 + rayOSDir2 * tOS;
-                        p3 = rayOSPos3 + rayOSDir3 * tOS;
-                        if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
-                        {
-                            intersect = true;
-                            negateNormal = true;
-                        }
+                        intersect = true;
+                        negateNormal = true;
                     }
                 }
                 else if (rayOSDir1 < 0 && rayOSPos1 > d1)
                 { // Test against back plane
                     tOS = (rayOSPos1 - d1) / -rayOSDir1;
-                    if (tOS >= 0)
-                    {
-                        p2 = rayOSPos2 + rayOSDir2 * tOS;
-                        p3 = rayOSPos3 + rayOSDir3 * tOS;
-                        if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
-                            intersect = true;
+                    p2 = rayOSPos2 + rayOSDir2 * tOS;
+                    p3 = rayOSPos3 + rayOSDir3 * tOS;
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
+                        intersect = true;
                     }
-                }
             }
 
             if (intersect) {
@@ -225,116 +219,111 @@ namespace RayTracerFramework.Geometry {
 
         public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
             // Transform ray to object space
-            Ray rayOS = ray.Transform(invTransform);
-            bool firstFound = false;
-            float t = float.PositiveInfinity;
-            intersections = null;
-
-            float tOS, x, y, z;
-            Vec3 intersectionPos, intersectionNormal;
+            Ray rayOS = ray.Transform(invTransform);                        
+            int numIntersections = 0;
             intersections = new SortedList<float,RayIntersectionPoint>();
-            if (rayOS.direction.z > 0 && rayOS.position.z < 0) { // Test against front plane
-                tOS = -rayOS.position.z / rayOS.direction.z;
-                if (tOS >= 0) {
-                    x = rayOS.position.x + rayOS.direction.x * tOS;
-                    y = rayOS.position.y + rayOS.direction.y * tOS;
-                    if (x >= 0 && x <= dx && y >= 0 && y <= dy) {
+
+            // Check if ray starts inside box
+            bool inside = false;
+            int maxIntersections = 2;
+            if (rayOS.position.x > 0 && rayOS.position.x < dx
+                    && rayOS.position.y > 0 && rayOS.position.y < dy
+                    && rayOS.position.z > 0 && rayOS.position.z < dz) {
+                inside = true;
+                maxIntersections = 1;
+            }
+
+            // Z
+            numIntersections += TestTwo(ray, rayOS, rayOS.direction.z, rayOS.direction.x, rayOS.direction.y,
+                    rayOS.position.z, rayOS.position.x, rayOS.position.y, dz, dx, dy, Vec3.StdZAxis,
+                    inside, ref intersections);
+            if (numIntersections == maxIntersections)
+                return numIntersections;
+
+            // Y
+            numIntersections += TestTwo(ray, rayOS, rayOS.direction.y, rayOS.direction.x, rayOS.direction.z,
+                rayOS.position.y, rayOS.position.x, rayOS.position.z, dy, dx, dz, Vec3.StdYAxis,
+                inside, ref intersections);
+            if (numIntersections == maxIntersections)
+                return numIntersections;
+
+            // X
+            numIntersections += TestTwo(ray, rayOS, rayOS.direction.x, rayOS.direction.y, rayOS.direction.z,
+                    rayOS.position.x, rayOS.position.y, rayOS.position.z, dx, dy, dz, Vec3.StdXAxis,
+                    inside, ref intersections);
+            return numIntersections;
+        }
+
+        private int TestTwo(
+                Ray ray,
+                Ray rayOS,
+                float rayOSDir1, 
+                float rayOSDir2, 
+                float rayOSDir3, 
+                float rayOSPos1, 
+                float rayOSPos2, 
+                float rayOSPos3, 
+                float d1, 
+                float d2, 
+                float d3, 
+                Vec3 normalAxis,
+                bool inside,
+                ref SortedList<float, RayIntersectionPoint> intersections) {
+            float tOS = 0.0f, p2, p3;
+            Vec3 intersectionPos, intersectionNormal;
+            float t = 0.0f;
+            int numIntersections = 0;
+            if (inside) {
+                if (rayOSDir1 < 0) { // Test against front plane
+                    tOS = rayOSPos1 / -rayOSDir1;
+                    p2 = rayOSPos2 + rayOSDir2 * tOS;
+                    p3 = rayOSPos3 + rayOSDir3 * tOS;
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdZAxis, transform);
+                        intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
-                        firstFound = true;
+                        numIntersections ++;
+                    }
+                } else if (rayOSDir1 > 0) { // Test against back plane
+                    tOS = -(rayOSPos1 - d1) / rayOSDir1;
+                    p2 = rayOSPos2 + rayOSDir2 * tOS;
+                    p3 = rayOSPos3 + rayOSDir3 * tOS;
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
+                        numIntersections++;
                     }
                 }
-            }
-            if (rayOS.direction.z < 0 && rayOS.position.z > dz) { // Test against back plane
-                tOS = (rayOS.position.z - dz) / -rayOS.direction.z;
-                if (tOS >= 0) {
-                    x = rayOS.position.x + rayOS.direction.x * tOS;
-                    y = rayOS.position.y + rayOS.direction.y * tOS;
-                    if (x >= 0 && x <= dx && y >= 0 && y <= dy) {
+            } else {
+                if (rayOSDir1 > 0 && rayOSPos1 < 0) { // Test against front plane
+                    tOS = -rayOSPos1 / rayOSDir1;
+                    p2 = rayOSPos2 + rayOSDir2 * tOS;
+                    p3 = rayOSPos3 + rayOSDir3 * tOS;
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(Vec3.StdZAxis, transform);
+                        intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
-                        if (firstFound)
-                            return 2;
-                        else
-                            firstFound = true;
+                        numIntersections++;
+                    }
+                } else if (rayOSDir1 < 0 && rayOSPos1 > d1) { // Test against back plane
+                    tOS = (rayOSPos1 - d1) / -rayOSDir1;
+                    p2 = rayOSPos2 + rayOSDir2 * tOS;
+                    p3 = rayOSPos3 + rayOSDir3 * tOS;
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
+                        intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
+                        t = Vec3.GetLength(intersectionPos - ray.position);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
+                        numIntersections++;
                     }
                 }
             }
 
-            if (rayOS.direction.y > 0 && rayOS.position.y < 0) { // Test against lower plane
-                tOS = -rayOS.position.y / rayOS.direction.y;
-                if (tOS >= 0) {
-                    x = rayOS.position.x + rayOS.direction.x * tOS;
-                    z = rayOS.position.z + rayOS.direction.z * tOS;
-                    if (x >= 0 && x <= dx && z >= 0 && z <= dz) {
-                        intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdYAxis, transform);
-                        t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
-                        if (firstFound)
-                            return 2;
-                        else
-                            firstFound = true;
-                    }                    
-                }
-            }
-            if (rayOS.direction.y < 0 && rayOS.position.y > dy) { // Test against upper plane
-                tOS = (rayOS.position.y - dy) / -rayOS.direction.y;
-                if (tOS >= 0) {
-                    x = rayOS.position.x + rayOS.direction.x * tOS;
-                    z = rayOS.position.z + rayOS.direction.z * tOS;
-                    if (x >= 0 && x <= dx && z >= 0 && z <= dz) {
-                        intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(Vec3.StdYAxis, transform);
-                        t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
-                        if (firstFound)
-                            return 2;
-                        else
-                            firstFound = true;
-                    }
-                }
-            }
-
-            if (rayOS.direction.x > 0 && rayOS.position.x < 0) { // Test against left plane
-                tOS = -rayOS.position.x / rayOS.direction.x;
-                if (tOS >= 0) {
-                    y = rayOS.position.y + rayOS.direction.y * tOS;
-                    z = rayOS.position.z + rayOS.direction.z * tOS;
-                    if (y >= 0 && y <= dy && z >= 0 && z <= dz) {
-                        intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(-Vec3.StdXAxis, transform);
-                        t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
-                        if (firstFound)
-                            return 2;
-                        else
-                            firstFound = true;
-                    }
-                }
-            }
-            if (rayOS.direction.x < 0 && rayOS.position.x > dx) { // Test against right plane
-                tOS = (rayOS.position.x - dx) / -rayOS.direction.x;
-                if (tOS >= 0) {
-                    y = rayOS.position.y + rayOS.direction.y * tOS;
-                    z = rayOS.position.z + rayOS.direction.z * tOS;
-                    if (y >= 0 && y <= dy && z >= 0 && z <= dz) {
-                        intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(Vec3.StdXAxis, transform);
-                        t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
-                        if (firstFound)
-                            return 2;
-                        else
-                            firstFound = true;
-                    }
-                }
-            }
-            return firstFound ? 1 : 0;
+            return numIntersections;
         }
 
         public bool ContainsOther {

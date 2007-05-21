@@ -66,10 +66,7 @@ namespace RayTracerFramework.RayTracer {
                         IObject hitObject = (IObject)firstIntersection.hitObject;
                         color = hitObject.Shade(ray, firstIntersection, scene, 1.0f);
                     } else {
-                        // color = scene.backgroundColor;
-                       
-                        // Noch nicht benutzen!
-                        color = scene.cubeMap.getColor(ray);
+                        color = scene.GetBackgroundColor(ray);
                       
                     }
                     rgbValues[rgbValuesPos] = color.BlueInt;

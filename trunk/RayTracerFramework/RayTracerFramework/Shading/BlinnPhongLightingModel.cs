@@ -24,6 +24,12 @@ namespace RayTracerFramework.Shading {
                         Vec3 L = Vec3.Normalize(posToLight);
                         float distanceToLight = posToLight.Length;
 
+                        // Points normal away from light?
+                        float diffuse = Vec3.Dot(L, N);
+                        if (diffuse < 0) {
+                            iTotal = iTotal + material.ambient * pointLight.ambient;
+                            continue;
+                        }
                         // Is light in shadow?
                         Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * L);
                         Ray toLightRay = new Ray(toLightRayPos, L, 0);
@@ -32,21 +38,15 @@ namespace RayTracerFramework.Shading {
                             iTotal = iTotal + material.ambient * pointLight.ambient;
                             continue;
                         }
-                        
-                        float diffuse = Vec3.Dot(L, N);
-                        if (diffuse < 0) { // Point faces away from the point light
-                            iTotal = iTotal + material.ambient * pointLight.ambient;
-                            
-                        
-                        } else {
-                            Vec3 V = -ray.direction;
-                            Vec3 H = Vec3.Normalize(L + V);
+                        // Light is seen
+                        Vec3 V = -ray.direction;
+                        Vec3 H = Vec3.Normalize(L + V);
 
-                            float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
-                            iTotal = iTotal + (material.ambient * pointLight.ambient) +
-                                              (material.diffuse * pointLight.diffuse * diffuse) +
-                                              (material.specular * pointLight.specular * specular);
-                        }  
+                        float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
+                        iTotal = iTotal + (material.ambient * pointLight.ambient) +
+                                          (material.diffuse * pointLight.diffuse * diffuse) +
+                                          (material.specular * pointLight.specular * specular);
+                          
                         break;
                     case LightType.Directional:
 
