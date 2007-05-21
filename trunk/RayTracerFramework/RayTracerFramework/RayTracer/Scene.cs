@@ -15,6 +15,7 @@ namespace RayTracerFramework.RayTracer {
         public Camera cam;
         public Color backgroundColor;
         public CubeMap cubeMap;
+        public float refractionIndex = 1.0f;
 
         public Scene(Camera cam) {       
             this.cam = cam;
@@ -52,7 +53,7 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public Color GetBackgroundColor(Ray ray) {
-            return backgroundColor;// cubeMap.getColor(ray);
+            return cubeMap.getColor(ray);
         }
 
         public bool Intersect(Ray ray) {

@@ -9,14 +9,14 @@ namespace RayTracerFramework.Geometry {
         protected float radius, radiusSq;
         protected Matrix transform;
         protected Matrix invTransform;
-        protected bool containsOther;
+        //protected bool containsOther;
 
         protected Sphere(Vec3 center, float radius) {
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = Matrix.GetTranslation(center);
             this.invTransform = Matrix.GetTranslation(-center);
-            this.containsOther = false;
+            //this.containsOther = false;
         }
 
         protected Sphere(float radius, Matrix transform, Matrix invTransform)
@@ -25,7 +25,7 @@ namespace RayTracerFramework.Geometry {
             this.radiusSq = radius * radius;
             this.transform = transform;
             this.invTransform =invTransform;
-            this.containsOther = false;
+            //this.containsOther = false;
         }
 
         public bool Intersect(Ray ray) {
@@ -73,7 +73,7 @@ namespace RayTracerFramework.Geometry {
                 Vec3 iPos = rayOS.GetPoint(t);
                 Vec3 c_iVec = iPos - Vec3.Zero; // Center at (0,0,0)
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
-                Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
+                Vec3 normal = Vec3.TransformNormal3n(-c_iVec, transform);
                 firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t, this);
                 return true;
             }
@@ -171,13 +171,13 @@ namespace RayTracerFramework.Geometry {
             this.invTransform = invTransformation * this.invTransform;
         }
 
-        public bool ContainsOther {
-            get {
-                return containsOther;
-            }
-            set {
-                containsOther = value;
-            }
-        }
+        //public bool ContainsOther {
+        //    get {
+        //        return containsOther;
+        //    }
+        //    set {
+        //        containsOther = value;
+        //    }
+        //}
     }
 }

@@ -11,7 +11,7 @@ namespace RayTracerFramework.Geometry {
 
         protected Matrix transform;
         protected Matrix invTransform;
-        protected bool containsOther;
+        //protected bool containsOther;
 
 
         protected Box(Vec3 position, float width, float height, float depth) {            
@@ -20,7 +20,7 @@ namespace RayTracerFramework.Geometry {
             this.dz = depth;
             transform = Matrix.GetTranslation(position);
             invTransform = Matrix.GetTranslation(-position);
-            containsOther = false;
+            //containsOther = false;
         }
 
         protected Box(Matrix transform, Matrix invTransform, float width, float height, float depth) {
@@ -139,6 +139,8 @@ namespace RayTracerFramework.Geometry {
                     inside, out firstIntersection))
                 return true;
 
+            //assert if (inside) throw new Exception("inside box but no intersection");
+
             firstIntersection = null;
             return false;
         }
@@ -169,18 +171,17 @@ namespace RayTracerFramework.Geometry {
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
-                    {
-                        intersect = true;
-                        negateNormal = true;
-                    }                
+                        intersect = true; 
                 }
                 else if (rayOSDir1 > 0)
                 { // Test against back plane
                     tOS = -(rayOSPos1 - d1) / rayOSDir1;
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
-                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        negateNormal = true;
                         intersect = true;
+                    }
                 }
             } else {
                 if (rayOSDir1 > 0 && rayOSPos1 < 0)
@@ -280,7 +281,7 @@ namespace RayTracerFramework.Geometry {
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
+                        intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         numIntersections ++;
@@ -291,7 +292,7 @@ namespace RayTracerFramework.Geometry {
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
-                        intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
+                        intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
                         numIntersections++;
@@ -326,14 +327,14 @@ namespace RayTracerFramework.Geometry {
             return numIntersections;
         }
 
-        public bool ContainsOther {
-            get {
-                return containsOther;
-            }
-            set {
-                containsOther = value;
-            }
-        }
+        //public bool ContainsOther {
+        //    get {
+        //        return containsOther;
+        //    }
+        //    set {
+        //        containsOther = value;
+        //    }
+        //}
 
     }
 }
