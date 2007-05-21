@@ -7,9 +7,9 @@ using RayTracerFramework.RayTracer;
 namespace RayTracerFramework.Shading {
     // Standard recursive raytracing
     class StdShading {
-        private readonly static float localThreshold = 0.05f;
-        private readonly static float reflectionThreshold = 0.05f;
-        private readonly static float refractionThreshold = 0.05f;        
+        private readonly static float localThreshold = 0.02f;
+        private readonly static float reflectionThreshold = 0.02f;
+        private readonly static float refractionThreshold = 0.02f;        
         private readonly static float contributionThreshold = 0.05f;        
 
         public static Color RecursiveShade(

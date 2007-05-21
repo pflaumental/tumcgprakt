@@ -26,7 +26,7 @@ namespace RayTracerFramework {
             Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)b.Width / b.Height;
 
-            Camera cam = new Camera(new Vec3(0.0f, 0.0f, -4.5f),
+            Camera cam = new Camera(new Vec3(0.0f, 0.0f, -4.0f),
                                     new Vec3(1.0f, -1.0f, 0.0f),
                                     Vec3.StdYAxis, Trigonometric.PI_QUARTER, 1);
             cam.aspectRatio = aspectRatio;
