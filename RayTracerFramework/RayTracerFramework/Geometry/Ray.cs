@@ -10,10 +10,10 @@ namespace RayTracerFramework.Geometry {
         public Vec3 direction;  // Must be normalized
         public int recursionDepth;
 
-        public Ray(Vec3 position, Vec3 direction, int recursionCnt) {
+        public Ray(Vec3 position, Vec3 direction, int recursionDepth) {
             this.position = position;
             this.direction = direction;
-            this.recursionDepth = recursionCnt;
+            this.recursionDepth = recursionDepth;
         }
 
         public Vec3 GetPoint(float t) {

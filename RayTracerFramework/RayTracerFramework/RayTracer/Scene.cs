@@ -51,6 +51,10 @@ namespace RayTracerFramework.RayTracer {
             return box;
         }
 
+        public Color GetBackgroundColor(Ray ray) {
+            return backgroundColor;// cubeMap.getColor(ray);
+        }
+
         public bool Intersect(Ray ray) {
             foreach (IObject geoObj in geoMng.TransformedObjects) {
                 if (geoObj.Intersect(ray))
@@ -77,7 +81,7 @@ namespace RayTracerFramework.RayTracer {
         public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
             intersections = new SortedList<float,RayIntersectionPoint>();
             int numIntersections = 0, numCurrentIntersections;
-            float nearestT = float.PositiveInfinity;
+            //float nearestT = float.PositiveInfinity;
             SortedList<float, RayIntersectionPoint> currentIntersections;
             foreach (IObject geoObj in geoMng.TransformedObjects) {
                 numCurrentIntersections = geoObj.Intersect(ray, out currentIntersections);

@@ -47,7 +47,6 @@ namespace RayTracerFramework.Shading {
                 t = (xMax - ray.position.x) / dir.x;
                 Vec3 p = ray.position + dir * t;
                 if (p.y <= yMax && p.y >= yMin && p.z >= zMin && p.z <= zMax) {
-                    Console.WriteLine("Collision at: " + p);
                     float x = -p.z + xMax ;
                     float y = -p.y + yMax;
                     float xFactor = (xMaxImage.Width - 1) / (xMax - xMin);
@@ -55,8 +54,6 @@ namespace RayTracerFramework.Shading {
                     
                     int pixelX = (int)(x * yFactor);
                     int pixelY = (int)(y * yFactor);
-                    //Console.WriteLine(x + "/" + y);
-                    //Console.WriteLine(pixelX + "/" + pixelY);
                     System.Drawing.Color c = new Bitmap(xMaxImage).GetPixel(pixelX, pixelY);
                     return new Color(c.R, c.G, c.B);
                 }
@@ -65,7 +62,6 @@ namespace RayTracerFramework.Shading {
                 t = (xMin - ray.position.x) / dir.x;
                 Vec3 p = ray.position + dir * t;
                 if (p.y <= yMax && p.y >= yMin && p.z >= zMin && p.z <= zMax) {
-                    Console.WriteLine("Collision at: " + p);
                     return Color.White;
                 }
             }
@@ -75,7 +71,6 @@ namespace RayTracerFramework.Shading {
                 t = (yMax - ray.position.y) / dir.y;
                 Vec3 p = ray.position + dir * t;
                 if (p.x <= xMax && p.x >= xMin && p.z >= zMin && p.z <= zMax) {
-                    Console.WriteLine("Collision at: " + p);
                     return Color.White;
                 }
             } 
@@ -83,7 +78,6 @@ namespace RayTracerFramework.Shading {
                 t = (yMin - ray.position.y) / dir.y;
                 Vec3 p = ray.position + dir * t;
                 if (p.x <= xMax && p.x >= xMin && p.z >= zMin && p.z <= zMax) {
-                    Console.WriteLine("Collision at: " + p);
                     return Color.White;
                 }
             }
@@ -92,7 +86,6 @@ namespace RayTracerFramework.Shading {
                 t = (zMax - ray.position.z) / dir.z;
                 Vec3 p = ray.position + dir * t;
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
-                    //Console.WriteLine("Collision at: " + p);
 
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
@@ -108,7 +101,6 @@ namespace RayTracerFramework.Shading {
                 t = (zMin - ray.position.z) / dir.z;
                 Vec3 p = ray.position + dir * t;
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
-                    Console.WriteLine("Collision at: " + p);
                     return Color.White;
                 }
             }
