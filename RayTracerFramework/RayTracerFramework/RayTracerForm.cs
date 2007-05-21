@@ -34,7 +34,7 @@ namespace RayTracerFramework {
             float aspectRatio = (float)b.Width / b.Height;
 
             Camera cam = new Camera(new Vec3(0f, 0f, -5),
-                                    new Vec3(0, pos--, 0f),
+                                    new Vec3(pos2--, pos--, 0f),
                                     Vec3.StdYAxis, Trigonometric.PI_QUARTER, 1);
             cam.aspectRatio = aspectRatio;
 
