@@ -37,7 +37,7 @@ namespace RayTracerFramework {
                                     new Vec3(0.0f, 0.0f, 0.0f),
                                     Vec3.StdYAxis, Trigonometric.PI_QUARTER, 1);
             cam.aspectRatio = aspectRatio;
-            Scene scene = new Scene(cam); // bar
+            Scene scene = new Scene(cam); // foo
 
             //pictureBox.Size = new Size(766, 430);
            
