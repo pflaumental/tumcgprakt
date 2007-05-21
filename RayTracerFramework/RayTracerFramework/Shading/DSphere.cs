@@ -22,6 +22,10 @@ namespace RayTracerFramework.Shading {
             return StdShading.RecursiveShade(ray, intersection, scene, material, contribution);
         }
 
+        public Vec2 GetTextureCoordinates(Vec3 localPoint) {
+            throw new NotImplementedException("GetTextureCoordinates not implemeted.");
+        }
+
         public IObject Clone() {
             return new DSphere(radius, transform, invTransform, material);
         }

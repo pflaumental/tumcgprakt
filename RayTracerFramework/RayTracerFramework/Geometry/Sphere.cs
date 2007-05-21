@@ -24,7 +24,7 @@ namespace RayTracerFramework.Geometry {
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = transform;
-            this.invTransform =invTransform;
+            this.invTransform = invTransform;
             //this.containsOther = false;
         }
 

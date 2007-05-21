@@ -9,104 +9,120 @@ using RayTracerFramework.Utility;
 namespace RayTracerFramework.Shading {
     class CubeMap {
         public float xMin, xMax, yMin, yMax, zMin, zMax;
-        public Image xMinImage, xMaxImage, yMinImage, yMaxImage, zMinImage, zMaxImage;
-        
-        // Noch nicht benutzen!
-        FastBitmap bzMax;
 
-        public CubeMap(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {
-            this.xMin = xMin;
-            this.xMax = xMax;
-            this.yMin = yMin;
-            this.yMax = yMax;
-            this.zMin = zMin;
-            this.zMax = zMax;
-            xMinImage = Image.FromFile("../../Textures/NX_stpeters.png");
-            xMaxImage = Image.FromFile("../../Textures/PX_stpeters.png");
+        private FastBitmap xMinTexture, xMaxTexture;
+        private FastBitmap yMinTexture, yMaxTexture;
+        private FastBitmap zMinTexture, zMaxTexture;
 
-            yMinImage = Image.FromFile("../../Textures/NY_stpeters.png");
-            yMaxImage = Image.FromFile("../../Textures/PY_stpeters.png");
+        public Matrix viewMatrixInverse;
 
-            zMinImage = Image.FromFile("../../Textures/NZ_stpeters.png");
-            zMaxImage = Image.FromFile("../../Textures/PZ_stpeters.png");
+        public CubeMap(float width, float height, float depth, string texturesBaseName) {
+            this.xMin = -(width * 0.5f);
+            this.xMax = width * 0.5f;
+            this.yMin = -(height * 0.5f);
+            this.yMax = height * 0.5f;
+            this.zMin = -(depth * 0.5f);
+            this.zMax = depth * 0.5f;
 
-            Bitmap b = new Bitmap(zMaxImage);
-            bzMax = new FastBitmap(b);
+            xMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NX.png")));
+            xMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PX.png")));
 
+            yMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NY.png")));
+            yMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PY.png")));
+
+            zMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NZ.png")));
+            zMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PZ.png")));
         }
 
-        
-
-        // Todo: Hack entfrickeln, getPixel umgehen
+  
         public Color getColor(Ray ray) {
             float t;
-            Vec3 dir = ray.direction;
-            
+ 
+            Vec3 posOS = Vec3.TransformPosition3(ray.position, viewMatrixInverse);
+            Vec3 dirOS = Vec3.TransformNormal3n(ray.direction, viewMatrixInverse);
 
-            if (dir.x > 0) {
-                t = (xMax - ray.position.x) / dir.x;
-                Vec3 p = ray.position + dir * t;
+            // Test if ray intersects right plane
+            if (dirOS.x > 0) {
+                t = (xMax - posOS.x) / dirOS.x;
+                Vec3 p = posOS + dirOS * t;
                 if (p.y <= yMax && p.y >= yMin && p.z >= zMin && p.z <= zMax) {
-                    float x = -p.z + xMax ;
-                    float y = -p.y + yMax;
-                    float xFactor = (xMaxImage.Width - 1) / (xMax - xMin);
-                    float yFactor = (xMaxImage.Height - 1) / (yMax - yMin);
-                    
-                    int pixelX = (int)(x * yFactor);
-                    int pixelY = (int)(y * yFactor);
-                    System.Drawing.Color c = new Bitmap(xMaxImage).GetPixel(pixelX, pixelY);
-                    return new Color(c.R, c.G, c.B);
+                    float xTex = (-p.z + zMax) / (zMax - zMin);
+                    float yTex = (-p.y + yMax) / (yMax - yMin);
+
+                    int pixelX = (int)(xTex * (xMaxTexture.Width-1));
+                    int pixelY = (int)(yTex * (xMaxTexture.Height-1));
+                    return xMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
-            else if (dir.x < 0) {
-                t = (xMin - ray.position.x) / dir.x;
-                Vec3 p = ray.position + dir * t;
+            // Left Plane DONE
+            else if (dirOS.x < 0) {
+                t = (xMin - posOS.x) / dirOS.x;
+                Vec3 p = posOS + dirOS * t;
                 if (p.y <= yMax && p.y >= yMin && p.z >= zMin && p.z <= zMax) {
-                    return Color.White;
+                    float xTex = (p.z + zMax) / (zMax - zMin);
+                    float yTex = (-p.y + yMax) / (yMax - yMin);
+
+                    int pixelX = (int)(xTex * (xMinTexture.Width-1));
+                    int pixelY = (int)(yTex * (xMinTexture.Height-1));
+                    return xMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
 
-
-            if (dir.y > 0) {
-                t = (yMax - ray.position.y) / dir.y;
-                Vec3 p = ray.position + dir * t;
+            // Upper plane todo
+            if (dirOS.y > 0) {
+                t = (yMax - posOS.y) / dirOS.y;
+                Vec3 p = posOS + dirOS * t;
                 if (p.x <= xMax && p.x >= xMin && p.z >= zMin && p.z <= zMax) {
-                    return Color.White;
+                    float xTex = (p.x + xMax) / (xMax - xMin);
+                    float yTex = (p.z + zMax) / (zMax - zMin);
+
+                    int pixelX = (int)(xTex * (yMaxTexture.Width-1));
+                    int pixelY = (int)(yTex * (yMaxTexture.Height - 1));
+                    return yMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
-            else if (dir.y < 0) {
-                t = (yMin - ray.position.y) / dir.y;
-                Vec3 p = ray.position + dir * t;
+            // lower plane todo
+            else if (dirOS.y < 0) {
+                t = (yMin - posOS.y) / dirOS.y;
+                Vec3 p = posOS + dirOS * t;
                 if (p.x <= xMax && p.x >= xMin && p.z >= zMin && p.z <= zMax) {
-                    return Color.White;
+                    float xTex = (p.x + xMax) / (xMax - xMin);
+                    float yTex = (-p.z + zMax) / (zMax - zMin);
+
+                    int pixelX = (int)(xTex * (yMinTexture.Width - 1));
+                    int pixelY = (int)(yTex * (yMinTexture.Height - 1));
+                    return yMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
 
-            if (dir.z > 0) {
-                t = (zMax - ray.position.z) / dir.z;
-                Vec3 p = ray.position + dir * t;
+            // Back plane DONE
+            if (dirOS.z > 0) {
+                t = (zMax - posOS.z) / dirOS.z;
+                Vec3 p = posOS + dirOS * t;
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
-
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
                  
-                    int pixelX = (int)(xTex * zMaxImage.Width);
-                    int pixelY = (int)(yTex * zMinImage.Height);
-            
-                    return bzMax.GetPixel(pixelX, pixelY);
-                  
- 
+                    int pixelX = (int)(xTex * (zMaxTexture.Width-1));
+                    int pixelY = (int)(yTex * (zMaxTexture.Height-1));
+                    return zMaxTexture.GetPixel(pixelX, pixelY);
                 }
-            } else if (dir.z < 0) {
-                t = (zMin - ray.position.z) / dir.z;
-                Vec3 p = ray.position + dir * t;
+            } 
+            // Front Plane DONE
+            else if (dirOS.z < 0) {
+                t = (zMin - posOS.z) / dirOS.z;
+                Vec3 p = posOS + dirOS * t;
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
-                    return Color.White;
+                    float xTex = (-p.x + xMax) / (xMax - xMin);
+                    float yTex = (-p.y + yMax) / (yMax - yMin);
+
+                    int pixelX = (int)(xTex * (zMinTexture.Width-1));
+                    int pixelY = (int)(yTex * (zMinTexture.Height-1));
+                    return zMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
 
             throw new Exception("No valid direction for the ray specified.");
-
            
         }
 

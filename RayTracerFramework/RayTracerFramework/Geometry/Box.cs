@@ -161,7 +161,7 @@ namespace RayTracerFramework.Geometry {
                 bool inside,
                 out RayIntersectionPoint firstIntersection) {
             float tOS = 0.0f, p2, p3;
-            Vec3 intersectionPos, intersectionNormal;
+            Vec3 intersectionPos, intersectionNormal, localPos;
             float t = 0.0f;
             bool intersect = false, negateNormal = false;
             if (inside) {
@@ -206,10 +206,12 @@ namespace RayTracerFramework.Geometry {
             }
 
             if (intersect) {
+                localPos = rayOS.GetPoint(tOS);
                 intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                 intersectionNormal = Vec3.TransformNormal3n(negateNormal ? -normalAxis : normalAxis, transform);
                 t = Vec3.GetLength(intersectionPos - ray.position);
                 firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
+                // .. p2/d2, p3/d3)
                 return true;
             }
             else {
@@ -222,7 +224,7 @@ namespace RayTracerFramework.Geometry {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);                        
             int numIntersections = 0;
-            intersections = new SortedList<float,RayIntersectionPoint>();
+            intersections = new SortedList<float, RayIntersectionPoint>();
 
             // Check if ray starts inside box
             bool inside = false;
@@ -271,7 +273,7 @@ namespace RayTracerFramework.Geometry {
                 bool inside,
                 ref SortedList<float, RayIntersectionPoint> intersections) {
             float tOS = 0.0f, p2, p3;
-            Vec3 intersectionPos, intersectionNormal;
+            Vec3 intersectionPos, intersectionNormal, localPos;
             float t = 0.0f;
             int numIntersections = 0;
             if (inside) {
@@ -280,6 +282,7 @@ namespace RayTracerFramework.Geometry {
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        localPos = rayOS.GetPoint(tOS);
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
@@ -291,6 +294,7 @@ namespace RayTracerFramework.Geometry {
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        localPos = rayOS.GetPoint(tOS);
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
@@ -304,6 +308,7 @@ namespace RayTracerFramework.Geometry {
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        localPos = rayOS.GetPoint(tOS);
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
@@ -315,6 +320,7 @@ namespace RayTracerFramework.Geometry {
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        localPos = rayOS.GetPoint(tOS);
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);

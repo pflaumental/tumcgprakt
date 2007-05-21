@@ -52,9 +52,11 @@ namespace RayTracerFramework.Shading {
                 if (scene.Intersect(reflectionRay, out firstIntersection)) {
                     IObject firstHitObject = (IObject)firstIntersection.hitObject;
                     reflectionColor = firstHitObject.Shade(reflectionRay, firstIntersection, scene, reflectionContribution);
-                } else
-                    reflectionColor = scene.backgroundColor;//GetBackgroundColor(reflectionRay);
-
+                }
+                else {
+                    //reflectionColor = scene.backgroundColor;//GetBackgroundColor(reflectionRay);
+                    reflectionColor = scene.GetBackgroundColor(reflectionRay);
+                }
                 // Add reflection color to resultColor
                 resultColor += (reflectionColor * material.reflectionPart);
             }
