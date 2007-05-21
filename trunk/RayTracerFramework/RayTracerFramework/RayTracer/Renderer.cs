@@ -11,8 +11,7 @@ namespace RayTracerFramework.RayTracer {
     class Renderer {
         public static readonly int MaxRecursionDepth = 10;
 
-        public Renderer() {
-        }
+        public Renderer() { }
 
         public void Render(Scene scene, Bitmap target) {
             int targetWidth = target.Width;
@@ -58,6 +57,9 @@ namespace RayTracerFramework.RayTracer {
             int rgbValuesPos = 0;
 
             RayIntersectionPoint firstIntersection;
+
+            scene.Setup();
+
             for (int y = 0; y < targetHeight; y++) { // pixel lines
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection and Shade pixel      

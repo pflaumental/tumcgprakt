@@ -13,8 +13,11 @@ namespace RayTracerFramework.RayTracer {
         public ILightingModel lightingModel;
         public LightManager lightManager;
         public Camera cam;
-        public Color backgroundColor;
+
         public CubeMap cubeMap;
+        public Color backgroundColor;
+        public bool useCubeMap;
+        
         public float refractionIndex = 1.0f;
 
         public Scene(Camera cam) {       
@@ -26,10 +29,17 @@ namespace RayTracerFramework.RayTracer {
             lightManager = new LightManager(cam.GetViewMatrix());
 
             backgroundColor = Color.LightSlateGray;
-            cubeMap = new CubeMap(-100, 100, -100, 100, -100, 100);
-            
+            cubeMap = new CubeMap(100, 100, 100, "stpeters");
+            cubeMap.viewMatrixInverse = Matrix.Invert(cam.GetViewMatrix());
+            useCubeMap = true;
 
+            //refractionIndex = 1.0f;         
+        }
 
+        public void Setup() {
+            // Transform all objects and the cubemap into view space
+            geoMng.TransformAll();
+            //cubeMap.Transform(cam.GetViewMatrix());
         }
 
         public void AddInstance(IObject geoObj, Matrix worldMatrix) {
@@ -53,7 +63,10 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public Color GetBackgroundColor(Ray ray) {
-            return cubeMap.getColor(ray);
+            if (useCubeMap)
+                return cubeMap.getColor(ray);
+            return backgroundColor;
+                
         }
 
         public bool Intersect(Ray ray) {
@@ -80,7 +93,7 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
-            intersections = new SortedList<float,RayIntersectionPoint>();
+            intersections = new SortedList<float, RayIntersectionPoint>();
             int numIntersections = 0, numCurrentIntersections;
             //float nearestT = float.PositiveInfinity;
             SortedList<float, RayIntersectionPoint> currentIntersections;
