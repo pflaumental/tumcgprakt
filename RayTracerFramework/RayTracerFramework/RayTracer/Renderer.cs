@@ -9,7 +9,7 @@ using Color = RayTracerFramework.Shading.Color;
 
 namespace RayTracerFramework.RayTracer {
     class Renderer {
-
+        public static readonly int MaxRecursionDepth = 10;
 
         public Renderer() {
         }
@@ -44,7 +44,7 @@ namespace RayTracerFramework.RayTracer {
             Vec3 pixelCenterPos = new Vec3(rowStartPos);
 
             Vec3 rayDir = Vec3.Normalize(pixelCenterPos);
-            Ray ray = new Ray(Vec3.Zero, rayDir);            
+            Ray ray = new Ray(Vec3.Zero, rayDir, 0);            
 
             // Setup bitmap
             BitmapData bitmapData = target.LockBits(new Rectangle(0, 0, targetWidth, targetHeight),

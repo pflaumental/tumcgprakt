@@ -26,7 +26,7 @@ namespace RayTracerFramework.Shading {
 
                         // Is light in shadow?
                         Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * L);
-                        Ray toLightRay = new Ray(toLightRayPos, L);
+                        Ray toLightRay = new Ray(toLightRayPos, L, 0);
                         RayIntersectionPoint firstIntersection;
                         if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
                             iTotal = iTotal + material.ambient * pointLight.ambient;

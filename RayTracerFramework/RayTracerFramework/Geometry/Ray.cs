@@ -8,10 +8,12 @@ namespace RayTracerFramework.Geometry {
 
         public Vec3 position;
         public Vec3 direction;  // Must be normalized
+        public int recursionDepth;
 
-        public Ray(Vec3 position, Vec3 direction) {
+        public Ray(Vec3 position, Vec3 direction, int recursionCnt) {
             this.position = position;
             this.direction = direction;
+            this.recursionDepth = recursionCnt;
         }
 
         public Vec3 GetPoint(float t) {
@@ -19,7 +21,7 @@ namespace RayTracerFramework.Geometry {
         }
 
         public Ray Transform(Matrix transformation) {
-            return new Ray(Vec3.TransformPosition3(position, transformation), Vec3.TransformNormal3n(direction, transformation));
+            return new Ray(Vec3.TransformPosition3(position, transformation), Vec3.TransformNormal3n(direction, transformation), recursionDepth);
         }
     }
 }
