@@ -9,12 +9,14 @@ namespace RayTracerFramework.Geometry {
         protected float radius, radiusSq;
         protected Matrix transform;
         protected Matrix invTransform;
+        protected bool containsOther;
 
         protected Sphere(Vec3 center, float radius) {
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = Matrix.GetTranslation(center);
             this.invTransform = Matrix.GetTranslation(-center);
+            this.containsOther = false;
         }
 
         protected Sphere(float radius, Matrix transform, Matrix invTransform)
@@ -23,6 +25,7 @@ namespace RayTracerFramework.Geometry {
             this.radiusSq = radius * radius;
             this.transform = transform;
             this.invTransform =invTransform;
+            this.containsOther = false;
         }
 
         public bool Intersect(Ray ray) {
@@ -166,6 +169,15 @@ namespace RayTracerFramework.Geometry {
         {
             this.transform *= transformation;
             this.invTransform = invTransformation * this.invTransform;
+        }
+
+        public bool ContainsOther {
+            get {
+                return containsOther;
+            }
+            set {
+                containsOther = value;
+            }
         }
     }
 }

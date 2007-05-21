@@ -11,6 +11,7 @@ namespace RayTracerFramework.Geometry {
 
         protected Matrix transform;
         protected Matrix invTransform;
+        protected bool containsOther;
 
 
         protected Box(Vec3 position, float width, float height, float depth) {            
@@ -19,6 +20,7 @@ namespace RayTracerFramework.Geometry {
             this.dz = depth;
             transform = Matrix.GetTranslation(position);
             invTransform = Matrix.GetTranslation(-position);
+            containsOther = false;
         }
 
         protected Box(Matrix transform, Matrix invTransform, float width, float height, float depth) {
@@ -333,6 +335,15 @@ namespace RayTracerFramework.Geometry {
                 }
             }
             return firstFound ? 1 : 0;
+        }
+
+        public bool ContainsOther {
+            get {
+                return containsOther;
+            }
+            set {
+                containsOther = value;
+            }
         }
 
     }
