@@ -30,10 +30,11 @@ namespace RayTracerFramework.Shading {
         }
 
         // Clamps the float color channels to [0, 1]
-        public void Saturate() {
+        public Color Saturate() {
             red = red < 0f ? 0 : (red > 1f ? 1 : red);
             green = green < 0f ? 0 : (green > 1f ? 1 : green);
-            blue = blue < 0f ? 0 : (blue > 1f ? 1 : blue); 
+            blue = blue < 0f ? 0 : (blue > 1f ? 1 : blue);
+            return this;
         }
 
         public static Color operator *(Color c1, Color c2) {
