@@ -49,8 +49,11 @@ namespace RayTracerFramework.Shading {
                     float xTex = (-p.z + zMax) / (zMax - zMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
 
-                    int pixelX = (int)(xTex * (xMaxTexture.Width-1));
-                    int pixelY = (int)(yTex * (xMaxTexture.Height-1));
+                    float pixelX = (xTex * (xMaxTexture.Width - 1));
+                    float pixelY = (yTex * (xMaxTexture.Height - 1));
+
+                    //int pixelX = (int)(xTex * (xMaxTexture.Width-1));
+                    //int pixelY = (int)(yTex * (xMaxTexture.Height-1));
                     return xMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
@@ -62,8 +65,11 @@ namespace RayTracerFramework.Shading {
                     float xTex = (p.z + zMax) / (zMax - zMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
 
-                    int pixelX = (int)(xTex * (xMinTexture.Width-1));
-                    int pixelY = (int)(yTex * (xMinTexture.Height-1));
+                    float pixelX = (xTex * (xMinTexture.Width - 1));
+                    float pixelY = (yTex * (xMinTexture.Height - 1));
+
+                    //int pixelX = (int)(xTex * (xMinTexture.Width-1));
+                    //int pixelY = (int)(yTex * (xMinTexture.Height-1));
                     return xMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
@@ -76,8 +82,12 @@ namespace RayTracerFramework.Shading {
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (p.z + zMax) / (zMax - zMin);
 
-                    int pixelX = (int)(xTex * (yMaxTexture.Width-1));
-                    int pixelY = (int)(yTex * (yMaxTexture.Height - 1));
+                    float pixelX = (xTex * (yMaxTexture.Width - 1));
+                    float pixelY = (yTex * (yMaxTexture.Height - 1));
+
+                    //int pixelX = (int)(xTex * (yMaxTexture.Width-1));
+                    //int pixelY = (int)(yTex * (yMaxTexture.Height - 1));
+
                     return yMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
@@ -89,8 +99,12 @@ namespace RayTracerFramework.Shading {
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.z + zMax) / (zMax - zMin);
 
-                    int pixelX = (int)(xTex * (yMinTexture.Width - 1));
-                    int pixelY = (int)(yTex * (yMinTexture.Height - 1));
+                    float pixelX = (xTex * (yMinTexture.Width - 1));
+                    float pixelY = (yTex * (yMinTexture.Height - 1));
+
+                    //int pixelX = (int)(xTex * (yMinTexture.Width - 1));
+                    //int pixelY = (int)(yTex * (yMinTexture.Height - 1));
+
                     return yMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
@@ -102,9 +116,13 @@ namespace RayTracerFramework.Shading {
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
-                 
-                    int pixelX = (int)(xTex * (zMaxTexture.Width-1));
-                    int pixelY = (int)(yTex * (zMaxTexture.Height-1));
+
+                    float pixelX = xTex * (zMaxTexture.Width - 1);
+                    float pixelY = yTex * (zMaxTexture.Height - 1);                    
+
+                    //int pixelX = (int) xTex * (zMaxTexture.Width - 1);
+                    //int pixelY = (int) yTex * (zMaxTexture.Height - 1);
+
                     return zMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
@@ -116,8 +134,12 @@ namespace RayTracerFramework.Shading {
                     float xTex = (-p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
 
-                    int pixelX = (int)(xTex * (zMinTexture.Width-1));
-                    int pixelY = (int)(yTex * (zMinTexture.Height-1));
+                    float pixelX = (xTex * (zMinTexture.Width - 1));
+                    float pixelY = (yTex * (zMinTexture.Height - 1));                    
+
+                    //int pixelX = (int)(xTex * (zMinTexture.Width-1));
+                    //int pixelY = (int)(yTex * (zMinTexture.Height-1));
+
                     return zMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
