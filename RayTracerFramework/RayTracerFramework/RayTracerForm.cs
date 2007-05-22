@@ -70,7 +70,7 @@ namespace RayTracerFramework {
             //scene.lightManager.AddWorldSpaceLight(l4);
 
 
-            scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.15f, 0.60f, 1.3f));
+            scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.2f));
             //scene.AddDSphere(new Vec3(3.0f, 0.0f, 2.0f), 2, Material.WhiteMaterial);
             //scene.AddDSphere(new Vec3(3.0f, 0.0f, 2.0f), 2, new Material(Color.Blue, Color.Blue, Color.Blue, Color.White, 30, 0, 0, 0));
 
@@ -83,7 +83,7 @@ namespace RayTracerFramework {
             scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 15, 0.5f, 0, 1));
 
             DBox box1 = scene.AddDBox(new Vec3(-6f, -2.2f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
-            scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0f, 0.8f, 1.01f));
+            scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0f, 0.9f, 1.01f));
             //scene.AddDBox(new Vec3(-10.0f, -4f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
             //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
