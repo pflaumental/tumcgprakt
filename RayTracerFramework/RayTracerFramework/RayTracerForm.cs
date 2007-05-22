@@ -82,7 +82,7 @@ namespace RayTracerFramework {
             //sphere1.Transform(Matrix.GetScale(1.0f, 0.5f, 1.0f), Matrix.GetScale(1.0f, 2.0f, 1.0f));
             scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 15, 0.5f, 0, 1));
 
-            DBox box1 = scene.AddDBox(new Vec3(-6f, -2.1f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
+            DBox box1 = scene.AddDBox(new Vec3(-6f, -2.2f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
             scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0f, 0.8f, 1.01f));
             //scene.AddDBox(new Vec3(-10.0f, -4f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
             //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
