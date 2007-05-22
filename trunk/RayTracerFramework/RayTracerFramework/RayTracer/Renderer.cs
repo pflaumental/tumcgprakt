@@ -11,7 +11,11 @@ namespace RayTracerFramework.RayTracer {
     class Renderer {
         public static readonly int MaxRecursionDepth = 10;
 
-        public Renderer() { }
+        private System.Windows.Forms.ProgressBar progressBar;
+
+        public Renderer(System.Windows.Forms.ProgressBar progressBar) {
+            this.progressBar = progressBar;
+        }
 
         public void Render(Scene scene, Bitmap target) {
             int targetWidth = target.Width;
@@ -59,6 +63,8 @@ namespace RayTracerFramework.RayTracer {
             RayIntersectionPoint firstIntersection;
 
             scene.Setup();
+            progressBar.Minimum = 0;
+            progressBar.Maximum = targetHeight;
 
             for (int y = 0; y < targetHeight; y++) { // pixel lines
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
@@ -89,15 +95,12 @@ namespace RayTracerFramework.RayTracer {
                 pixelCenterPos.z = rowStartPos.z;
 
                 rgbValuesPos += waste;
+
+                progressBar.Value = y;
             }
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
-            target.UnlockBits(bitmapData);
+            target.UnlockBits(bitmapData);            
         }
         
-
-
     }
-
-
-
 }

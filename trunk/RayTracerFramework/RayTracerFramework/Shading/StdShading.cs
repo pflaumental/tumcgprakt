@@ -54,7 +54,7 @@ namespace RayTracerFramework.Shading {
                     goto endRefraction;
                 }
                 float beforeNTerm = (float)(refractionRatio * NV - cosThetaR);
-                Vec3 refractionDir = Vec3.Normalize(beforeNTerm * intersection.normal + refractionRatio * ray.direction);
+                Vec3 refractionDir = beforeNTerm * intersection.normal + refractionRatio * ray.direction;
 
                 // assert  if(Vec3.Dot(refractionDir, intersection.normal) > 0) throw new Exception("Vec3.Dot(refractionDir, intersection.normal) > 0");
                 // assert  if (Vec3.Dot(refractionDir, ray.direction) < 0) throw new Exception("Vec3.Dot(refractionDir, ray.direction) < 0");
@@ -81,9 +81,8 @@ namespace RayTracerFramework.Shading {
                     cosThetaR = 1f;
                 }
                 beforeNTerm = (float)(refractionRatio * NV - cosThetaR);
-                refractionDir = Vec3.Normalize(beforeNTerm * refractionIntersection.normal + refractionRatio * refractionDir);
-                if (float.IsNaN(refractionDir.x))
-                    throw new Exception("refraction dir is NaN");
+                refractionDir = beforeNTerm * refractionIntersection.normal + refractionRatio * refractionDir;
+                // assert if (float.IsNaN(refractionDir.x)) throw new Exception("refraction dir is NaN");
                 refractionPos = refractionIntersection.position - Ray.positionEpsilon * refractionIntersection.normal;
                 refractionRay = new Ray(refractionPos, refractionDir, ray.recursionDepth + 2);
 

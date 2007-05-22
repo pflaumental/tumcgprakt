@@ -26,6 +26,7 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.btnRender = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -62,11 +63,21 @@
             this.panel1.Size = new System.Drawing.Size(766, 430);
             this.panel1.TabIndex = 2;
             // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(12, 452);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(685, 16);
+            this.progressBar.TabIndex = 3;
+            // 
             // RayTracerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(790, 483);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnRender);
             this.Name = "RayTracerForm";
@@ -82,6 +93,7 @@
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Button btnRender;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 
