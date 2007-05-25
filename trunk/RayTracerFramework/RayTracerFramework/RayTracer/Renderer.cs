@@ -21,33 +21,28 @@ namespace RayTracerFramework.RayTracer {
             int targetWidth = target.Width;
             int targetHeight = target.Height;
 
-            //// Prepare Bitmap
-            //BitmapData bitmapData;
-            //target.UnlockBits(bitmapData);
-            //bitmapData.
-
             // View frustrum starts at 1.0f
-            //float viewPlaneWidth = (float)Math.Tan(scene.cam.hFov) * 2;
-            //float viewPlaneHeight = (float)Math.Tan(scene.cam.vFov) * 2;
             float viewPlaneWidth = scene.cam.GetViewPlaneWidth();
             float viewPlaneHeight = scene.cam.GetViewPlaneHeight();
             
             float pixelWidth = viewPlaneWidth / targetWidth;
             float pixelHeight = viewPlaneHeight / targetHeight;
 
-            //// Calculate orthonormal basis for the camera
-            //Vec3 camZ = scene.cam.ViewDir;
-            //Vec3 camX = Vec3.Cross(scene.cam.upDir, camZ);
-            //Vec3 camY = Vec3.Cross(camZ, camX);
+            // Calculate orthonormal basis for the camera
+            Vec3 camZ = scene.cam.ViewDir;
+            Vec3 camX = Vec3.Cross(scene.cam.upDir, camZ);
+            Vec3 camY = Vec3.Cross(camZ, camX);
+            
+            // Calculate pixel center offset vectors
+            Vec3 xOffset = pixelWidth * camX;
+            Vec3 yOffset = -pixelHeight * camY;
 
             // Go to center of first line
-            //Vec3 eyePos = scene.cam.eyePos;
-            Vec3 rowStartPos = Vec3.StdZAxis + Vec3.StdYAxis * ((viewPlaneHeight - pixelHeight) * 0.5f);
-            rowStartPos -= Vec3.StdXAxis * ((viewPlaneWidth - pixelWidth) * 0.5f);
+            Vec3 eyePos = scene.cam.eyePos;
+            Vec3 rowStartPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
+            rowStartPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
             Vec3 pixelCenterPos = new Vec3(rowStartPos);
 
-            //Vec3 rayVSDir = Vec3.Normalize(pixelCenterPos);
-            //Ray rayVS = new Ray(Vec3.Zero, rayVSDir, 0);
             Matrix inverseView = scene.cam.GetInverseViewMatrix();
             Ray rayWS = new Ray(
                     Vec3.TransformPosition3(Vec3.Zero, inverseView),
@@ -89,13 +84,12 @@ namespace RayTracerFramework.RayTracer {
                     rgbValuesPos += 3;
 
                     // Set next ray direction and pixelCenterPos
-                    pixelCenterPos.x += pixelWidth;
-                    //rayVS.direction = Vec3.Normalize(pixelCenterPos);
-                    rayWS.direction = Vec3.TransformNormal3n(pixelCenterPos, inverseView);
+                    pixelCenterPos += xOffset;
+                    rayWS.direction = Vec3.Normalize(pixelCenterPos - eyePos);
                 }
                 // Reset next ray direction, pixelCenterPos and rowStartPos
-                rowStartPos.y -= pixelHeight;
-                rayWS.direction = Vec3.TransformNormal3n(rowStartPos, inverseView);
+                rowStartPos += yOffset;
+                rayWS.direction = Vec3.Normalize(rowStartPos -eyePos);
                 pixelCenterPos.x = rowStartPos.x;
                 pixelCenterPos.y = rowStartPos.y;
                 pixelCenterPos.z = rowStartPos.z;
