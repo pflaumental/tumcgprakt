@@ -22,8 +22,10 @@ namespace RayTracerFramework {
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
-            Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
-            float aspectRatio = (float)b.Width / b.Height;
+            float startMillis = Environment.TickCount;
+
+            Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
+            float aspectRatio = (float)bitmap.Width / bitmap.Height;
 
             Camera cam = new Camera(new Vec3(-10f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -10 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
                                     new Vec3(0, 0, 0f),
@@ -85,11 +87,18 @@ namespace RayTracerFramework {
             //scene.geoMng.TransformAll();
 
             Renderer renderer = new Renderer(progressBar);
-            renderer.Render(scene, b);
+            renderer.Render(scene, bitmap);
 
-            
+            float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;
 
-            pictureBox.Image = b;
+            string elapsedTimeString = "Picture (" + bitmap.Width + "x" + bitmap.Height + ") computed in " + 
+                                       elapsedTime.ToString("F") + "s. Time per pixel: " + 
+                                       (1000000.0 * elapsedTime / (bitmap.Width * bitmap.Height)).ToString("F")
+                                       + "\u00B5s.";
+            statusBar.Items.Clear();
+            statusBar.Items.Add(elapsedTimeString);
+
+            pictureBox.Image = bitmap;
 
             //float aspectRatio = (float)width / height;
             //scene.cam.AdjustVerticalFov(aspectRatio);
