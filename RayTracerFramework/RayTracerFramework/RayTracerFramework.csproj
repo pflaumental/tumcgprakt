@@ -37,6 +37,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Geometry\Mesh.cs" />
+    <Compile Include="Geometry\Triangle.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
     </Compile>
