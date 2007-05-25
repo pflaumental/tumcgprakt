@@ -26,7 +26,7 @@ namespace RayTracerFramework.RayTracer {
             //geoMng.viewMatrix = cam.GetViewMatrix();
             
             lightingModel = new BlinnPhongLightingModel();
-            lightManager = new LightManager(cam.GetViewMatrix());
+            lightManager = new LightManager();
 
             backgroundColor = Color.LightSlateGray;
             cubeMap = new CubeMap(100, 100, 100, "stpeters");
@@ -36,9 +36,8 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public void Setup() {
-            // Transform all objects and the cubemap into view space
+            // Transform all objects and the cubemap into world space
             geoMng.TransformAll();
-            //cubeMap.Transform(cam.GetViewMatrix());
         }
 
         public void AddInstance(IObject geoObj, Matrix worldMatrix) {

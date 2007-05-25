@@ -36,13 +36,13 @@ namespace RayTracerFramework.Shading {
         public Color getColor(Ray ray) {
             float t;
  
-            Vec3 posOS = ray.position;
-            Vec3 dirOS = ray.direction;
+            Vec3 posWS = ray.position;  // Position where the ray starts in world space
+            Vec3 dirWS = ray.direction; // Direction of the ray in world space
 
             // Test if ray intersects right plane
-            if (dirOS.x > 0) {
-                t = (xMax - posOS.x) / dirOS.x;
-                Vec3 p = posOS + dirOS * t;
+            if (dirWS.x > 0) {
+                t = (xMax - posWS.x) / dirWS.x;
+                Vec3 p = posWS + dirWS * t;
                 if (p.y <= yMax && p.y >= yMin && p.z >= zMin && p.z <= zMax) {
                     float xTex = (-p.z + zMax) / (zMax - zMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
@@ -56,9 +56,9 @@ namespace RayTracerFramework.Shading {
                 }
             } 
             // Left Plane DONE
-            else if (dirOS.x < 0) {
-                t = (xMin - posOS.x) / dirOS.x;
-                Vec3 p = posOS + dirOS * t;
+            else if (dirWS.x < 0) {
+                t = (xMin - posWS.x) / dirWS.x;
+                Vec3 p = posWS + dirWS * t;
                 if (p.y <= yMax && p.y >= yMin && p.z >= zMin && p.z <= zMax) {
                     float xTex = (p.z + zMax) / (zMax - zMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
@@ -73,9 +73,9 @@ namespace RayTracerFramework.Shading {
             }
 
             // Upper plane todo
-            if (dirOS.y > 0) {
-                t = (yMax - posOS.y) / dirOS.y;
-                Vec3 p = posOS + dirOS * t;
+            if (dirWS.y > 0) {
+                t = (yMax - posWS.y) / dirWS.y;
+                Vec3 p = posWS + dirWS * t;
                 if (p.x <= xMax && p.x >= xMin && p.z >= zMin && p.z <= zMax) {
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (p.z + zMax) / (zMax - zMin);
@@ -90,9 +90,9 @@ namespace RayTracerFramework.Shading {
                 }
             } 
             // lower plane todo
-            else if (dirOS.y < 0) {
-                t = (yMin - posOS.y) / dirOS.y;
-                Vec3 p = posOS + dirOS * t;
+            else if (dirWS.y < 0) {
+                t = (yMin - posWS.y) / dirWS.y;
+                Vec3 p = posWS + dirWS * t;
                 if (p.x <= xMax && p.x >= xMin && p.z >= zMin && p.z <= zMax) {
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.z + zMax) / (zMax - zMin);
@@ -108,9 +108,9 @@ namespace RayTracerFramework.Shading {
             }
 
             // Back plane DONE
-            if (dirOS.z > 0) {
-                t = (zMax - posOS.z) / dirOS.z;
-                Vec3 p = posOS + dirOS * t;
+            if (dirWS.z > 0) {
+                t = (zMax - posWS.z) / dirWS.z;
+                Vec3 p = posWS + dirWS * t;
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
                     float xTex = (p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);
@@ -125,9 +125,9 @@ namespace RayTracerFramework.Shading {
                 }
             } 
             // Front Plane DONE
-            else if (dirOS.z < 0) {
-                t = (zMin - posOS.z) / dirOS.z;
-                Vec3 p = posOS + dirOS * t;
+            else if (dirWS.z < 0) {
+                t = (zMin - posWS.z) / dirWS.z;
+                Vec3 p = posWS + dirWS * t;
                 if (p.x <= xMax && p.x >= xMin && p.y >= yMin && p.y <= yMax) {
                     float xTex = (-p.x + xMax) / (xMax - xMin);
                     float yTex = (-p.y + yMax) / (yMax - yMin);

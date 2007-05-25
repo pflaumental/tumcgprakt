@@ -14,7 +14,7 @@ namespace RayTracerFramework.Shading {
             Color iTotal = new Color();
             //bool lighting = true;
             
-            foreach (Light light in scene.lightManager.LightsViewSpace) {
+            foreach (Light light in scene.lightManager.LightsWorldSpace) {
                
                 switch (light.lightType) {
                     case LightType.Point:
@@ -38,8 +38,10 @@ namespace RayTracerFramework.Shading {
                             iTotal = iTotal + material.ambient * pointLight.ambient;
                             continue;
                         }
+ 
                         // Light is seen
-                        Vec3 V = -ray.direction;
+                        //Vec3 V = -ray.direction;
+                        Vec3 V = Vec3.Normalize(scene.cam.eyePos - intersection.position);
                         Vec3 H = Vec3.Normalize(L + V);
 
                         float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
