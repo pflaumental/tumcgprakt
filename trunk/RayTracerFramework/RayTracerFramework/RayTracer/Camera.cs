@@ -50,5 +50,9 @@ namespace RayTracerFramework.RayTracer {
         public Matrix GetViewMatrix() {
             return Matrix.GetView(eyePos, lookAtPos, upDir);
         }
+
+        public Matrix GetInverseViewMatrix() {
+            return Matrix.GetInverseView(eyePos, lookAtPos, upDir);
+        }
     }
 }

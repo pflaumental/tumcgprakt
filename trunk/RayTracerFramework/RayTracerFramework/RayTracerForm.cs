@@ -22,14 +22,6 @@ namespace RayTracerFramework {
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
-
-           
-       
-        
-            //Ray r = new Ray(Vec3.Zero, new Vec3(0, 1, 2));
-            //cubeMap.getColor(r);
-
-
             Bitmap b = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)b.Width / b.Height;
 

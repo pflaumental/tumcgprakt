@@ -7,7 +7,7 @@ namespace RayTracerFramework.Geometry {
     class GeometryManager {
         private List<Instance> instances; // (untransformedObject, worldMatrix)
         public List<IObject> TransformedObjects; // Transformed objects in view space
-        public Matrix viewMatrix;
+        //public Matrix viewMatrix;
 
         // An instance is a tupel of an untransformed object and the related world matrix
         private class Instance {
@@ -33,7 +33,7 @@ namespace RayTracerFramework.Geometry {
             TransformedObjects.Clear();
             foreach (Instance instance in instances) {
                 IObject instObj = instance.untransformedObject.Clone();
-                instObj.Transform(instance.worldMatrix * viewMatrix);
+                instObj.Transform(instance.worldMatrix /** viewMatrix*/); // Calculate everything in worldspace now
                 TransformedObjects.Add(instObj);                    
             }
         }
