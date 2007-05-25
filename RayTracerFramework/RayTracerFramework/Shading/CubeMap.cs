@@ -14,8 +14,6 @@ namespace RayTracerFramework.Shading {
         private FastBitmap yMinTexture, yMaxTexture;
         private FastBitmap zMinTexture, zMaxTexture;
 
-        public Matrix viewMatrixInverse;
-
         public CubeMap(float width, float height, float depth, string texturesBaseName) {
             this.xMin = -(width * 0.5f);
             this.xMax = width * 0.5f;
@@ -38,8 +36,8 @@ namespace RayTracerFramework.Shading {
         public Color getColor(Ray ray) {
             float t;
  
-            Vec3 posOS = Vec3.TransformPosition3(ray.position, viewMatrixInverse);
-            Vec3 dirOS = Vec3.TransformNormal3n(ray.direction, viewMatrixInverse);
+            Vec3 posOS = ray.position;
+            Vec3 dirOS = ray.direction;
 
             // Test if ray intersects right plane
             if (dirOS.x > 0) {

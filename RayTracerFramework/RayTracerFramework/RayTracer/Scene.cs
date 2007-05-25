@@ -23,14 +23,13 @@ namespace RayTracerFramework.RayTracer {
         public Scene(Camera cam) {       
             this.cam = cam;
             geoMng = new GeometryManager();
-            geoMng.viewMatrix = cam.GetViewMatrix();
+            //geoMng.viewMatrix = cam.GetViewMatrix();
             
             lightingModel = new BlinnPhongLightingModel();
             lightManager = new LightManager(cam.GetViewMatrix());
 
             backgroundColor = Color.LightSlateGray;
             cubeMap = new CubeMap(100, 100, 100, "stpeters");
-            cubeMap.viewMatrixInverse = Matrix.Invert(cam.GetViewMatrix());
             useCubeMap = true;
 
             //refractionIndex = 1.0f;         

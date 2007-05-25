@@ -46,8 +46,13 @@ namespace RayTracerFramework.RayTracer {
             rowStartPos -= Vec3.StdXAxis * ((viewPlaneWidth - pixelWidth) * 0.5f);
             Vec3 pixelCenterPos = new Vec3(rowStartPos);
 
-            Vec3 rayDir = Vec3.Normalize(pixelCenterPos);
-            Ray ray = new Ray(Vec3.Zero, rayDir, 0);            
+            //Vec3 rayVSDir = Vec3.Normalize(pixelCenterPos);
+            //Ray rayVS = new Ray(Vec3.Zero, rayVSDir, 0);
+            Matrix inverseView = scene.cam.GetInverseViewMatrix();
+            Ray rayWS = new Ray(
+                    Vec3.TransformPosition3(Vec3.Zero, inverseView),
+                    Vec3.TransformNormal3n(pixelCenterPos, inverseView),
+                    0);
 
             // Setup bitmap
             BitmapData bitmapData = target.LockBits(new Rectangle(0, 0, targetWidth, targetHeight),
@@ -70,11 +75,11 @@ namespace RayTracerFramework.RayTracer {
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection and Shade pixel      
                     Color color;
-                    if (scene.Intersect(ray, out firstIntersection)) {
+                    if (scene.Intersect(rayWS, out firstIntersection)) {
                         IObject hitObject = (IObject)firstIntersection.hitObject;
-                        color = hitObject.Shade(ray, firstIntersection, scene, 1.0f);
+                        color = hitObject.Shade(rayWS, firstIntersection, scene, 1.0f);
                     } else {
-                        color = scene.GetBackgroundColor(ray);
+                        color = scene.GetBackgroundColor(rayWS);
                       
                     }
                     rgbValues[rgbValuesPos] = color.BlueInt;
@@ -85,11 +90,12 @@ namespace RayTracerFramework.RayTracer {
 
                     // Set next ray direction and pixelCenterPos
                     pixelCenterPos.x += pixelWidth;
-                    ray.direction = Vec3.Normalize(pixelCenterPos);
+                    //rayVS.direction = Vec3.Normalize(pixelCenterPos);
+                    rayWS.direction = Vec3.TransformNormal3n(pixelCenterPos, inverseView);
                 }
                 // Reset next ray direction, pixelCenterPos and rowStartPos
                 rowStartPos.y -= pixelHeight;
-                ray.direction = Vec3.Normalize(rowStartPos);
+                rayWS.direction = Vec3.TransformNormal3n(rowStartPos, inverseView);
                 pixelCenterPos.x = rowStartPos.x;
                 pixelCenterPos.y = rowStartPos.y;
                 pixelCenterPos.z = rowStartPos.z;

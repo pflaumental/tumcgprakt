@@ -178,6 +178,16 @@ namespace RayTracerFramework.Geometry {
                               -Vec3.Dot(camXAxis, eye), -Vec3.Dot(camYAxis, eye), -Vec3.Dot(camZAxis, eye), 1);
         }
 
+        public static Matrix GetInverseView(Vec3 eye, Vec3 target, Vec3 up) {
+            Vec3 camZAxis = Vec3.Normalize(target - eye);
+            Vec3 camXAxis = Vec3.Normalize(Vec3.Cross(up, camZAxis));
+            Vec3 camYAxis = Vec3.Cross(camZAxis, camXAxis);
+            return new Matrix(camXAxis.x, camXAxis.y, camXAxis.z, 0,
+                              camYAxis.x, camYAxis.y, camYAxis.z, 0,
+                              camZAxis.x, camZAxis.y, camZAxis.z, 0,
+                              eye.x, eye.y, eye.z, 1);
+        }
+
         public static Matrix Invert(Matrix m) {
             float[] tmp = new float[12];
             Matrix result = new Matrix();
