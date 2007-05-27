@@ -13,8 +13,8 @@ namespace RayTracerFramework.RayTracer {
         static void Main() {
 
             Scene scene = new Scene();
-            Bitmap b = new Bitmap(100, 100);
-            float aspectRatio = (float)b.Width / b.Height;
+            Bitmap bitmap = new Bitmap(100, 100);
+            float aspectRatio = (float)bitmap.Width / bitmap.Height;
             scene.cam.AdjustVerticalFov(aspectRatio);
 
             
@@ -22,7 +22,7 @@ namespace RayTracerFramework.RayTracer {
 
 
             Renderer renderer = new Renderer();
-            renderer.Render(scene, b);
+            renderer.Render(scene, bitmap);
 
 
 

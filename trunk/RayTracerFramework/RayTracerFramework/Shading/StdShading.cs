@@ -86,7 +86,7 @@ namespace RayTracerFramework.Shading {
                 refractionPos = refractionIntersection.position - Ray.positionEpsilon * refractionIntersection.normal;
                 refractionRay = new Ray(refractionPos, refractionDir, ray.recursionDepth + 2);
 
-                // Test refracted ray against szene and calculate color
+                // Test refracted ray against scene and calculate color
                 RayIntersectionPoint firstIntersection;
                 Color refractionColor;
                 if (scene.Intersect(refractionRay, out firstIntersection)) {

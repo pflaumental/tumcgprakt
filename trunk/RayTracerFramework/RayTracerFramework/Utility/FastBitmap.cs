@@ -9,7 +9,7 @@ namespace RayTracerFramework.Utility {
 
     class FastBitmap {
         private Color[,] color;
-        private int width , height;
+        private int width, height;
         private Bitmap sourceBitmap;
 
         public FastBitmap(Bitmap sourceBitmap) {

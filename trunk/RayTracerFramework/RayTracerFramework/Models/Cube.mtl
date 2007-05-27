@@ -1,0 +1,11 @@
+# mtllib Cube.mtl
+
+newmtl CubeMtl
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.8 0.8 0.8
+Ns 32
+illum   qzdqzf
+#d 1 dfdf 1f 1f
+#
+map_Kd Images/Test.jpg
