@@ -38,14 +38,14 @@
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(718, 421);
+            this.pictureBox.Size = new System.Drawing.Size(274, 257);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             // 
             // btnRender
             // 
             this.btnRender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRender.Location = new System.Drawing.Point(655, 439);
+            this.btnRender.Location = new System.Drawing.Point(211, 275);
             this.btnRender.Name = "btnRender";
             this.btnRender.Size = new System.Drawing.Size(75, 23);
             this.btnRender.TabIndex = 1;
@@ -62,30 +62,30 @@
             this.panel1.Controls.Add(this.pictureBox);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(718, 421);
+            this.panel1.Size = new System.Drawing.Size(274, 257);
             this.panel1.TabIndex = 2;
             // 
             // progressBar
             // 
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(12, 443);
+            this.progressBar.Location = new System.Drawing.Point(12, 279);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(637, 16);
+            this.progressBar.Size = new System.Drawing.Size(193, 16);
             this.progressBar.TabIndex = 3;
             // 
             // statusBar
             // 
-            this.statusBar.Location = new System.Drawing.Point(0, 469);
+            this.statusBar.Location = new System.Drawing.Point(0, 305);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(742, 22);
+            this.statusBar.Size = new System.Drawing.Size(298, 22);
             this.statusBar.TabIndex = 4;
             // 
             // RayTracerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(742, 491);
+            this.ClientSize = new System.Drawing.Size(298, 327);
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.panel1);
