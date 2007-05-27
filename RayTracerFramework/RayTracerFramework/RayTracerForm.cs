@@ -16,12 +16,15 @@ namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
 
         float pos = 0;
-        float pos2 = 1;
+
         public RayTracerForm() {
             InitializeComponent();
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
+
+            
+
             float startMillis = Environment.TickCount;
 
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
@@ -40,7 +43,7 @@ namespace RayTracerFramework {
             l.diffuse = new Color(0.3f, 0.3f, 0.4f);
             l.specular = new Color(0.4f, 0.4f, 0.6f);
 
-            Light l2 = new PointLight(new Vec3(2, 2, -2));
+            Light l2 = new PointLight(new Vec3(2, 2, 20));
             l2.ambient = new Color(0.05f, 0.05f, 0.05f);
             l2.diffuse = new Color(0.7f, 0.3f, 0.3f);
             l2.specular = new Color(0.7f, 0.5f, 0.5f);
@@ -62,6 +65,11 @@ namespace RayTracerFramework {
 
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
+
+            OBJLoader loader = new OBJLoader();
+            DMesh mesh = loader.LoadFromFile("../../Models/bunny_t346.obj");
+
+            scene.AddInstance(mesh, Matrix.Identity);
 
 
             scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.1f));
@@ -85,6 +93,7 @@ namespace RayTracerFramework {
             //box1.Transform(Matrix.GetTranslation(0f, -0.2f, 0f));
 
             //scene.geoMng.TransformAll();
+
 
             Renderer renderer = new Renderer(progressBar);
             renderer.Render(scene, bitmap);

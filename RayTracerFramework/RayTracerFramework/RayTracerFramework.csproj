@@ -37,7 +37,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Geometry\IMeshLoader.cs" />
     <Compile Include="Geometry\Mesh.cs" />
+    <Compile Include="Geometry\OBJLoader.cs" />
     <Compile Include="Geometry\Triangle.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
@@ -53,11 +55,13 @@
     <Compile Include="Shading\DBox.cs" />
     <Compile Include="Geometry\IGeometricObject.cs" />
     <Compile Include="Geometry\Vec2.cs" />
+    <Compile Include="Shading\DMesh.cs" />
     <Compile Include="Shading\DSphere.cs" />
     <Compile Include="Geometry\GeometryManager.cs" />
     <Compile Include="Geometry\IBounding.cs" />
     <Compile Include="Geometry\IIntersectable.cs" />
     <Compile Include="Geometry\IntersectionPoint.cs" />
+    <Compile Include="Shading\DTriangle.cs" />
     <Compile Include="Shading\ILightingModel.cs" />
     <Compile Include="Shading\IObject.cs" />
     <Compile Include="Shading\IShadable.cs" />
@@ -98,6 +102,7 @@
     <Compile Include="Shading\Light.cs" />
     <Compile Include="Shading\LightManager.cs" />
     <Compile Include="Shading\Material.cs" />
+    <Compile Include="Shading\MaterialGroup.cs" />
     <Compile Include="Shading\PointLight.cs" />
     <Compile Include="Shading\StdShading.cs" />
     <Compile Include="Utility\FastBitmap.cs" />
