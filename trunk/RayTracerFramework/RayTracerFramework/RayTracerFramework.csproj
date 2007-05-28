@@ -40,6 +40,7 @@
     <Compile Include="Geometry\IMeshLoader.cs" />
     <Compile Include="Geometry\Mesh.cs" />
     <Compile Include="Geometry\OBJLoader.cs" />
+    <Compile Include="Geometry\RayIntersectionPointTriangle.cs" />
     <Compile Include="Geometry\Triangle.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
