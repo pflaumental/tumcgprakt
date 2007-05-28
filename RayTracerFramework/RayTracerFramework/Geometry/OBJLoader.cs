@@ -39,7 +39,7 @@ namespace RayTracerFramework.Geometry {
                         try {
                             currentMaterialGroup = materialGroups[tokens[1]];
                         } 
-                        catch (KeyNotFoundException e) {
+                        catch (KeyNotFoundException) {
                             throw new Exception("The material \"" + tokens[1] + "\" could not be found " +
                                                 "in the material library.");
                         }
@@ -87,8 +87,8 @@ namespace RayTracerFramework.Geometry {
                             n2 = normals[Int32.Parse(v2Tokens[2]) - 1];
                             n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
                         }
-
-                        currentMaterialGroup.triangles.Add(new DTriangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
+                        
+                        currentMaterialGroup.triangles.Add(new Triangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
                         break;
                 }               
             }

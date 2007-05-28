@@ -15,20 +15,17 @@ namespace RayTracerFramework.Shading {
 
         public IObject Clone() {
             return new DMesh(transform, transformInv, materialGroups);
-        }
-
-
-        public void AddMaterialGroup(MaterialGroup materialGroup) {
-            materialGroups.Add(materialGroup);
-        }
+        }    
 
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution) {
-            DTriangle hitTriangle = (DTriangle)intersection.hitObject;
+            // DTriangle hitTriangle = (DTriangle)intersection.hitObject;
+            RayIntersectionPointTriangle intersectionTriangle = (RayIntersectionPointTriangle)intersection;
             foreach (MaterialGroup mg in materialGroups) {
-                if (mg.triangles.Contains(hitTriangle)) {
-                    // Currently this will never be killed since only the triangle of the mesh are shaded
-                    return StdShading.RecursiveShade(ray, intersection, scene, mg.material, contribution);
+                if (mg.triangles.Contains(intersectionTriangle.hitTriangle)) {
+                   
+                    return scene.lightingModel.calculateColor(ray, intersection, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f), scene);
+                    //return StdShading.RecursiveShade(ray, intersection, scene, Material.RedMaterial, contribution);
                 }
             }
             throw new Exception("The hit triangle does not belong to this mesh.");

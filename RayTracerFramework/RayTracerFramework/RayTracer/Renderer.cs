@@ -63,6 +63,7 @@ namespace RayTracerFramework.RayTracer {
             RayIntersectionPoint firstIntersection;
 
             scene.Setup();
+
             progressBar.Minimum = 0;
             progressBar.Maximum = targetHeight;
 
@@ -75,9 +76,8 @@ namespace RayTracerFramework.RayTracer {
                         color = hitObject.Shade(rayWS, firstIntersection, scene, 1.0f);
                     } else {
                         color = scene.GetBackgroundColor(rayWS);
-                      
                     }
-                    rgbValues[rgbValuesPos] = color.BlueInt;
+                    rgbValues[rgbValuesPos]     = color.BlueInt;
                     rgbValues[rgbValuesPos + 1] = color.GreenInt;
                     rgbValues[rgbValuesPos + 2] = color.RedInt;                    
 

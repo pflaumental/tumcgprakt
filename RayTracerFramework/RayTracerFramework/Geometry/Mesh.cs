@@ -23,6 +23,11 @@ namespace RayTracerFramework.Geometry {
         }
 
 
+        public void AddMaterialGroup(MaterialGroup materialGroup) {
+            materialGroups.Add(materialGroup);
+        }
+
+
         public void Transform(Matrix transformation) {
             this.transform = transformation;
             this.transformInv = Matrix.Invert(transformation);
@@ -39,7 +44,7 @@ namespace RayTracerFramework.Geometry {
             Ray rayOS = ray.Transform(transformInv);
 
             foreach (MaterialGroup mg in materialGroups) {
-                foreach (DTriangle triangle in mg.triangles) {
+                foreach (Triangle triangle in mg.triangles) {
                     if (triangle.Intersect(rayOS))
                         return true;
                 }
@@ -50,10 +55,15 @@ namespace RayTracerFramework.Geometry {
         // Returns the firstintersection with the mesh. FirstIntersection references a triangle
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
             Ray rayOS = ray.Transform(transformInv);
-
+            RayIntersectionPoint intersection;
+            
             foreach (MaterialGroup mg in materialGroups) {
-                foreach (DTriangle triangle in mg.triangles) {
-                    if (triangle.Intersect(rayOS, out firstIntersection)) {
+                foreach (Triangle triangle in mg.triangles) {
+                    if (triangle.Intersect(rayOS, out intersection)) {
+                        firstIntersection = new RayIntersectionPointTriangle(
+                            Vec3.TransformPosition3(intersection.position, transform),
+                            Vec3.TransformNormal3n(intersection.normal, transform), 
+                            intersection.t, this, (Triangle)intersection.hitObject, 0.5f, 0.5f);
                         return true;
                     }
                 }
@@ -65,15 +75,18 @@ namespace RayTracerFramework.Geometry {
 
         public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
             Ray rayOS = ray.Transform(transformInv);
-            RayIntersectionPoint intersectionTriangle;
+            RayIntersectionPoint intersection;
             intersections = null;
 
             foreach (MaterialGroup mg in materialGroups) {
-                foreach (DTriangle triangle in mg.triangles) {
-                    if (triangle.Intersect(rayOS, out intersectionTriangle)) {
+                foreach (Triangle triangle in mg.triangles) {
+                    if (triangle.Intersect(rayOS, out intersection)) {
                         if (intersections == null)
                             intersections = new SortedList<float, RayIntersectionPoint>();
-                        intersections.Add(intersectionTriangle.t, intersectionTriangle);
+                        intersections.Add(intersection.t, new RayIntersectionPointTriangle(
+                             Vec3.TransformPosition3(intersection.position, transform),
+                             Vec3.TransformNormal3n(intersection.normal, transform),
+                             intersection.t, this, (Triangle)intersection.hitObject, 0.5f, 0.5f));
                     }
                 }
             }

@@ -9,11 +9,11 @@ namespace RayTracerFramework.Shading {
         public Material material;
         public FastBitmap colorTexture;
 
-        public List<DTriangle> triangles;
+        public List<Triangle> triangles;
 
         public MaterialGroup() {
             this.material = new Material();
-            this.triangles = new List<DTriangle>();
+            this.triangles = new List<Triangle>();
             this.colorTexture = null;
         }
     }

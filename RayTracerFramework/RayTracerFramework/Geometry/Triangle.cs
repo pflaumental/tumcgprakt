@@ -9,12 +9,8 @@ namespace RayTracerFramework.Geometry {
         public Vec3 p1, p2, p3;
         public Vec3 n1, n2, n3;
         public Vec3 t1, t2, t3;
-        protected int id;
-        private static int idCounter = 1;
 
-        public Triangle() {
-            this.id = idCounter++;
-        }
+        public Triangle() { }
 
         public Triangle(Vec3 p1, Vec3 p2, Vec3 p3,
                         Vec3 n1, Vec3 n2, Vec3 n3,
@@ -28,7 +24,6 @@ namespace RayTracerFramework.Geometry {
             this.t1 = t1;
             this.t2 = t2;
             this.t3 = t3;
-            this.id = idCounter++;
         }
 
         // Implementation: the supplied transformation matrix will transform the triangle in place
@@ -83,10 +78,10 @@ namespace RayTracerFramework.Geometry {
 
 
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
-            Vec3 edge1 = p2 - p1;
-            Vec3 edge2 = p3 - p1;
+            Vec3 edge1 = p3 - p1;
+            Vec3 edge2 = p2 - p1;
 
-            Vec3 pVec = Vec3.Cross(ray.direction, edge2);
+            Vec3 pVec = Vec3.Cross(edge2, ray.direction);
             float det = Vec3.Dot(edge1, pVec);
 
             if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON) {
@@ -102,7 +97,7 @@ namespace RayTracerFramework.Geometry {
                 return false;
             }
 
-            Vec3 qVec = Vec3.Cross(tVec, edge1);
+            Vec3 qVec = Vec3.Cross(edge1, tVec);
             float v = Vec3.Dot(ray.direction, qVec) * invDet;
             if (v < 0.0f || u + v > 1.0f) {
                 firstIntersection = null;
@@ -111,7 +106,7 @@ namespace RayTracerFramework.Geometry {
 
             float t = Vec3.Dot(edge2, qVec) * invDet;
             Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
-
+  
             firstIntersection = new RayIntersectionPoint(ray.position + t * ray.direction,
                                                          normal, t, this);
             return true;
@@ -152,10 +147,6 @@ namespace RayTracerFramework.Geometry {
             intersections.Add(t, new RayIntersectionPoint(ray.position + t * ray.direction,
                                                           normal, t, this));
             return 1;    
-        }
-
-        public int ID {
-            get { return id; }
         }
 
     }

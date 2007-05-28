@@ -22,7 +22,7 @@ namespace RayTracerFramework.Shading {
         public static readonly Material BlueMaterial = new Material(Color.Blue, Color.Blue, Color.Blue, Color.Blue, 10, 0, 0, 5f);
 
 
-        public Material() : this(Color.White, Color.White, Color.White, Color.White, 10, 0.0f, 0.0f, 2f) { }
+        public Material() : this(Color.White, Color.White, Color.White, Color.White, 10, 0.3f, 0.5f, 2f) { }
 
         public Material(Color emissive, Color ambient, Color diffuse,
                         Color specular, float specularPower,

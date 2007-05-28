@@ -23,25 +23,33 @@ namespace RayTracerFramework {
 
         private void btnRender_Click(object sender, EventArgs e) {
 
-            
+            Triangle tri = new Triangle(new Vec3(-1, -1, 0), new Vec3(1, -1, 0), new Vec3(0, 1, 0),
+                new Vec3(0, 0, -1), new Vec3(0, 0, -1), new Vec3(0, 0, -1), null, null, null);
+
+            RayIntersectionPoint inter;
+            Ray r = new Ray(new Vec3(1, -1, -1), new Vec3(-1, 0.5f, 1), 1);
+            tri.Intersect(r, out inter);
+
+
 
             float startMillis = Environment.TickCount;
 
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)bitmap.Width / bitmap.Height;
 
-            Camera cam = new Camera(new Vec3(-10f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -10 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
-                                    new Vec3(0, 0, 0f),
-                                    Vec3.StdYAxis, Trigonometric.PI_QUARTER, 1);
-            cam.aspectRatio = aspectRatio;
-
+            //Camera cam = new Camera(new Vec3(-10f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -10 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
+            //                        new Vec3(0, 0, 0f),
+            //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            
+            Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            //cam.aspectRatio = aspectRatio;
 
             Scene scene = new Scene(cam); 
 
-            Light l = new PointLight(new Vec3(0, 10000, -10000));
+            Light l = new PointLight(new Vec3(0, 3, -5));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l.diffuse = new Color(0.3f, 0.3f, 0.4f);
-            l.specular = new Color(0.4f, 0.4f, 0.6f);
+            l.diffuse = new Color(0.3f, 0.5f, 0.3f);
+            l.specular = new Color(0.4f, 0.8f, 0.4f);
 
             Light l2 = new PointLight(new Vec3(2, 2, 20));
             l2.ambient = new Color(0.05f, 0.05f, 0.05f);
@@ -61,7 +69,7 @@ namespace RayTracerFramework {
             scene.useCubeMap = true;
 
             scene.lightManager.AddWorldSpaceLight(l);
-            scene.lightManager.AddWorldSpaceLight(l2);
+            //scene.lightManager.AddWorldSpaceLight(l2);
 
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
@@ -72,27 +80,24 @@ namespace RayTracerFramework {
             scene.AddInstance(mesh, Matrix.Identity);
 
 
-            scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.1f));
-            //scene.AddDSphere(new Vec3(3.0f, 0.0f, 2.0f), 2, Material.WhiteMaterial);
-            //scene.AddDSphere(new Vec3(3.0f, 0.0f, 2.0f), 2, new Material(Color.Blue, Color.Blue, Color.Blue, Color.White, 30, 0, 0, 0));
-
-            //DSphere sphere1 = scene.AddDSphere(new Vec3(0.0f, 0.0f, -1.0f), 1.5f, new Material(Color.White, Color.Red, Color.Red, Color.Red, 10, 1, 0, 1));
-            //sphere1.Transform(Matrix.GetScale(1.0f, 0.5f, 1.0f));
-            //sphere1.Transform(Matrix.GetRotationX((float)-Math.PI * 0.25f));
-            //sphere1.Transform(Matrix.GetRotationZ((float)Math.PI * 0.25f));
-           // DSphere sphere1 = scene.AddDSphere(Vec3.Zero, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0, 1, 0));
-            //sphere1.Transform(Matrix.GetScale(1.0f, 0.5f, 1.0f), Matrix.GetScale(1.0f, 2.0f, 1.0f));
-            scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.Blue, Color.White, Color.White, Color.White, 15, 0.3f, 0, 1));
+            //scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.4f));
+                  
+            scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f));
 
             DBox box1 = scene.AddDBox(new Vec3(-6f, -2.2f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
             scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
+            
+            
+       
+     
+
+
             //scene.AddDBox(new Vec3(-10.0f, -4f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
             //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
             //box1.Transform(Matrix.GetTranslation(0f, -0.2f, 0f));
 
-            //scene.geoMng.TransformAll();
 
 
             Renderer renderer = new Renderer(progressBar);
