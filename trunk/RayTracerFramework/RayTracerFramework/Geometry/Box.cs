@@ -36,13 +36,7 @@ namespace RayTracerFramework.Geometry {
             this.transform *= transformation;
             this.invTransform = Matrix.Invert(this.transform);
         }
-
-        public void Transform(Matrix transformation, Matrix invTransformation)
-        {
-            this.transform *= transformation;
-            this.invTransform = invTransformation * this.invTransform;
-        }
-       
+      
         public bool Intersect(Ray ray) {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);
@@ -220,7 +214,7 @@ namespace RayTracerFramework.Geometry {
             }
         }
 
-        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
+        public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);                        
             int numIntersections = 0;
@@ -332,15 +326,6 @@ namespace RayTracerFramework.Geometry {
 
             return numIntersections;
         }
-
-        //public bool ContainsOther {
-        //    get {
-        //        return containsOther;
-        //    }
-        //    set {
-        //        containsOther = value;
-        //    }
-        //}
 
     }
 }
