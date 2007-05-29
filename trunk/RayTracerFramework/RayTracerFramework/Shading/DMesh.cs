@@ -10,11 +10,11 @@ namespace RayTracerFramework.Shading {
         public DMesh() { }
 
         private DMesh(Matrix transform, Matrix transformInv, 
-                      List<MeshSubset> subsets) : base(transform, transformInv, subsets) { }
+                      List<MeshSubset> subsets, BSphere boungingSphere) : base(transform, transformInv, subsets, boungingSphere) { }
 
 
         public IObject Clone() {
-            return new DMesh(transform, invTransform, subsets);
+            return new DMesh(transform, invTransform, subsets, boundingSphere);
         }    
 
 

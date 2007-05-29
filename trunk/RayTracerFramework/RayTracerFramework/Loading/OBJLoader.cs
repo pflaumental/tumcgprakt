@@ -32,6 +32,9 @@ namespace RayTracerFramework.Loading {
             DMeshSubset defaultSubset = new DMeshSubset();
             DMeshSubset currentSubset = defaultSubset;
 
+            Vec3 far1 = null, far2 = null, tmpVertex = null;
+            float farDistSq = 0f, tmpDistSq = 0f, tmpDistSq2 = 0f;
+
             while (!reader.EndOfStream) {        
                 string[] tokens = regex.Split(reader.ReadLine());
 
@@ -49,9 +52,29 @@ namespace RayTracerFramework.Loading {
                         }
                             break;
                     case "v":
-                        vertices.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
+                        tmpVertex = new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
                                               float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us")),
-                                              float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"))));
+                                              float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us")));
+                        if (far1 == null)
+                            far1 = tmpVertex;
+                        else if (far2 == null)
+                            far2 = tmpVertex;
+                        else {
+                            if (farDistSq < (tmpDistSq = Vec3.GetLengthSq(far1 - tmpVertex))) {
+                                if (tmpDistSq < (tmpDistSq2 = Vec3.GetLengthSq(far2 - tmpVertex))) {
+                                    far1 = tmpVertex;
+                                    farDistSq = tmpDistSq2;
+                                } else {
+                                    far2 = tmpVertex;
+                                    farDistSq = tmpDistSq;
+                                }
+                            } else if (farDistSq < (tmpDistSq = Vec3.GetLengthSq(far2 - tmpVertex))) {
+                                far1 = tmpVertex;
+                                farDistSq = tmpDistSq;
+                            }
+                        }
+
+                        vertices.Add(tmpVertex);
                         break;
                     case "vt":
                         texCoords.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
@@ -105,6 +128,7 @@ namespace RayTracerFramework.Loading {
                     mesh.AddSubset(materialGroup);
                 }
             }
+            mesh.SetBoundingSphere(0.5f * (far1 + far2), (float)Math.Sqrt(farDistSq));
             return mesh;
         }
 
