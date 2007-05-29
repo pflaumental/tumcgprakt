@@ -105,7 +105,16 @@ namespace RayTracerFramework.Geometry {
             }
 
             float t = Vec3.Dot(edge2, qVec) * invDet;
+            if (t < 0f) {
+                firstIntersection = null;
+                return false;
+            }
             Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
+
+            if (Vec3.Dot(normal, ray.direction) > 0f) {
+                firstIntersection = null;
+                return false;
+            }
   
             firstIntersection = new RayIntersectionPoint(ray.position + t * ray.direction,
                                                          normal, t, this);
