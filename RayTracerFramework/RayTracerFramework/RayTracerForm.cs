@@ -76,7 +76,7 @@ namespace RayTracerFramework {
             //scene.lightManager.AddWorldSpaceLight(l4);
 
             OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("bunny_t346.obj");
+            DMesh mesh = loader.LoadFromFile("hexahedron.obj");
 
             scene.AddInstance(mesh, Matrix.Identity);
 
