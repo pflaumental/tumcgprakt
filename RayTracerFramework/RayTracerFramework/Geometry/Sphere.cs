@@ -165,5 +165,10 @@ namespace RayTracerFramework.Geometry {
             this.invTransform = Matrix.Invert(this.transform);
         }
 
+        public void Transform(Matrix transformation, Matrix invTransformation) {
+            this.transform *= transformation;
+            this.invTransform = invTransform * this.invTransform;
+        }
+
     }
 }

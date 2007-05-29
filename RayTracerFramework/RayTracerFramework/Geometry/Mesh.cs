@@ -10,16 +10,18 @@ namespace RayTracerFramework.Geometry {
         protected List<MaterialGroup> materialGroups;
 
         protected Matrix transform;
-        protected Matrix transformInv;
+        protected Matrix invTransform;
 
         protected Mesh() {
             materialGroups = new List<MaterialGroup>();
+            transform = Matrix.Identity;
+            invTransform = Matrix.Identity;
         }
 
-        protected Mesh(Matrix transform, Matrix transformInv, List<MaterialGroup> materialGroups) {
+        protected Mesh(Matrix transform, Matrix invTransform, List<MaterialGroup> materialGroups) {
             this.materialGroups = materialGroups;
             this.transform = transform;
-            this.transformInv = transformInv;
+            this.invTransform = invTransform;
         }
 
 
@@ -29,19 +31,17 @@ namespace RayTracerFramework.Geometry {
 
 
         public void Transform(Matrix transformation) {
-            this.transform = transformation;
-            this.transformInv = Matrix.Invert(transformation);
+            this.transform *= transformation;
+            this.invTransform = Matrix.Invert(this.transform);
         }
-
 
         public void Transform(Matrix transformation, Matrix invTransformation) {
-            this.transform = transformation;
-            this.transformInv = invTransformation;
+            this.transform *= transformation;
+            this.invTransform = invTransform * this.invTransform;
         }
 
-
         public bool Intersect(Ray ray) {
-            Ray rayOS = ray.Transform(transformInv);
+            Ray rayOS = ray.Transform(invTransform);
 
             foreach (MaterialGroup mg in materialGroups) {
                 foreach (Triangle triangle in mg.triangles) {
@@ -54,7 +54,7 @@ namespace RayTracerFramework.Geometry {
 
         // Returns the firstintersection with the mesh. FirstIntersection references a triangle
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
-            Ray rayOS = ray.Transform(transformInv);
+            Ray rayOS = ray.Transform(invTransform);
             RayIntersectionPoint intersection;
             
             foreach (MaterialGroup mg in materialGroups) {
@@ -74,7 +74,7 @@ namespace RayTracerFramework.Geometry {
 
 
         public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
-            Ray rayOS = ray.Transform(transformInv);
+            Ray rayOS = ray.Transform(invTransform);
             RayIntersectionPoint intersection;
             int numIntersections = 0;
 

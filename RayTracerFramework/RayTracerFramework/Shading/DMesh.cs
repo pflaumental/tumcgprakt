@@ -14,7 +14,7 @@ namespace RayTracerFramework.Shading {
 
 
         public IObject Clone() {
-            return new DMesh(transform, transformInv, materialGroups);
+            return new DMesh(transform, invTransform, materialGroups);
         }    
 
 
