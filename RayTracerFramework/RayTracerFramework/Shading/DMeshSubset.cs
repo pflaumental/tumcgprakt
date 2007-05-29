@@ -5,15 +5,12 @@ using RayTracerFramework.Utility;
 using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Shading {
-    class MaterialGroup {
+    class DMeshSubset : MeshSubset {
         public Material material;
         public FastBitmap colorTexture;
 
-        public List<Triangle> triangles;
-
-        public MaterialGroup() {
-            this.material = new Material();
-            this.triangles = new List<Triangle>();
+        public DMeshSubset() : base() {
+            this.material = new Material();            
             this.colorTexture = null;
         }
     }

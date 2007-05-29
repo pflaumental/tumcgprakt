@@ -11,6 +11,7 @@ using System.Drawing.Imaging;
 using RayTracerFramework.Shading;
 using Color = RayTracerFramework.Shading.Color;
 using RayTracerFramework.Utility;
+using RayTracerFramework.Loading;
 
 namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
