@@ -113,7 +113,7 @@ namespace RayTracerFramework.Geometry {
         }
 
 
-        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
+        public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
             Vec3 edge1 = p2 - p1;
             Vec3 edge2 = p3 - p1;
 
@@ -121,7 +121,6 @@ namespace RayTracerFramework.Geometry {
             float det = Vec3.Dot(edge1, pVec);
 
             if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON) {
-                intersections = null;
                 return 0;
             }
             float invDet = 1.0f / det;
@@ -129,21 +128,18 @@ namespace RayTracerFramework.Geometry {
             Vec3 tVec = ray.position - p1;
             float u = Vec3.Dot(tVec, pVec) * invDet;
             if (u < 0.0f || u > 1.0f) {
-                intersections = null;
                 return 0;
             }
 
             Vec3 qVec = Vec3.Cross(tVec, edge1);
             float v = Vec3.Dot(ray.direction, qVec) * invDet;
             if (v < 0.0f || u + v > 1.0f) {
-                intersections = null;
                 return 0;
             }
 
             float t = Vec3.Dot(edge2, qVec) * invDet;
             Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
 
-            intersections = new SortedList<float, RayIntersectionPoint>();
             intersections.Add(t, new RayIntersectionPoint(ray.position + t * ray.direction,
                                                           normal, t, this));
             return 1;    

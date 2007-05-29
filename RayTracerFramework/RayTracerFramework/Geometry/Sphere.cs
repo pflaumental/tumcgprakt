@@ -104,7 +104,7 @@ namespace RayTracerFramework.Geometry {
 
         // Returns the number of intersections
         // Ray direction must be normalized
-        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
+        public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
             // o: (ray-)origin
             // c: center
             // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
@@ -165,19 +165,5 @@ namespace RayTracerFramework.Geometry {
             this.invTransform = Matrix.Invert(this.transform);
         }
 
-        public void Transform(Matrix transformation, Matrix invTransformation)
-        {
-            this.transform *= transformation;
-            this.invTransform = invTransformation * this.invTransform;
-        }
-
-        //public bool ContainsOther {
-        //    get {
-        //        return containsOther;
-        //    }
-        //    set {
-        //        containsOther = value;
-        //    }
-        //}
     }
 }

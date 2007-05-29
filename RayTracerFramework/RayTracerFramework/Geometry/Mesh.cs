@@ -73,24 +73,24 @@ namespace RayTracerFramework.Geometry {
         }
 
 
-        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
-            Ray rayOS = ray.Transform(transformInv);
-            RayIntersectionPoint intersection;
-            intersections = null;
+        public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
+            return 0;
+            //Ray rayOS = ray.Transform(transformInv);
+            //RayIntersectionPoint intersection;
+            //int numIntersections = 0;
 
-            foreach (MaterialGroup mg in materialGroups) {
-                foreach (Triangle triangle in mg.triangles) {
-                    if (triangle.Intersect(rayOS, out intersection)) {
-                        if (intersections == null)
-                            intersections = new SortedList<float, RayIntersectionPoint>();
-                        intersections.Add(intersection.t, new RayIntersectionPointTriangle(
-                             Vec3.TransformPosition3(intersection.position, transform),
-                             Vec3.TransformNormal3n(intersection.normal, transform),
-                             intersection.t, this, (Triangle)intersection.hitObject, 0.5f, 0.5f));
-                    }
-                }
-            }
-            return intersections == null ? 0 : intersections.Count;     
+            //foreach (MaterialGroup mg in materialGroups) {
+            //    foreach (Triangle triangle in mg.triangles) {
+            //        if (triangle.Intersect(rayOS, out intersection)) {
+            //            numIntersections++;
+            //            intersections.Add(intersection.t, new RayIntersectionPointTriangle(
+            //                 Vec3.TransformPosition3(intersection.position, transform),
+            //                 Vec3.TransformNormal3n(intersection.normal, transform),
+            //                 intersection.t, this, (Triangle)intersection.hitObject, 0.5f, 0.5f));
+            //        }
+            //    }
+            //}
+            //return numIntersections;     
         }
     }
 }

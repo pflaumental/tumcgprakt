@@ -90,20 +90,10 @@ namespace RayTracerFramework.RayTracer {
             return firstIntersection != null;
         }
 
-        public int Intersect(Ray ray, out SortedList<float, RayIntersectionPoint> intersections) {
-            intersections = new SortedList<float, RayIntersectionPoint>();
-            int numIntersections = 0, numCurrentIntersections;
-            //float nearestT = float.PositiveInfinity;
-            SortedList<float, RayIntersectionPoint> currentIntersections;
+        public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {            
+            int numIntersections = 0;
             foreach (IObject geoObj in geoMng.TransformedObjects) {
-                numCurrentIntersections = geoObj.Intersect(ray, out currentIntersections);
-                if(numCurrentIntersections > 0) {
-                    numIntersections += numCurrentIntersections;
-                    foreach (KeyValuePair<float, RayIntersectionPoint> intersectionPair in currentIntersections) {
-                        intersections.Add(intersectionPair.Key, intersectionPair.Value);
-                        numIntersections++;
-                    }
-                }
+                numIntersections += geoObj.Intersect(ray, ref intersections);
             }
             return numIntersections;
         }
