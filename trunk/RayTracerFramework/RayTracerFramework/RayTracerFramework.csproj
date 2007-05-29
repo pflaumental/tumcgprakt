@@ -37,6 +37,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Geometry\AABBox.cs" />
+    <Compile Include="Geometry\BSphere.cs" />
     <Compile Include="Geometry\Mesh.cs" />
     <Compile Include="Geometry\MeshSubset.cs" />
     <Compile Include="Geometry\RayMeshIntersectionPoint.cs" />
@@ -61,7 +63,6 @@
     <Compile Include="Shading\DMeshSubset.cs" />
     <Compile Include="Shading\DSphere.cs" />
     <Compile Include="Geometry\GeometryManager.cs" />
-    <Compile Include="Geometry\IBounding.cs" />
     <Compile Include="Geometry\IIntersectable.cs" />
     <Compile Include="Geometry\IntersectionPoint.cs" />
     <Compile Include="Shading\ILightingModel.cs" />

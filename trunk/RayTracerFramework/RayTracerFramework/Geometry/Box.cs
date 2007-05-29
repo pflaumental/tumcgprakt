@@ -221,7 +221,6 @@ namespace RayTracerFramework.Geometry {
             // Transform ray to object space
             Ray rayOS = ray.Transform(invTransform);                        
             int numIntersections = 0;
-            intersections = new SortedList<float, RayIntersectionPoint>();
 
             // Check if ray starts inside box
             bool inside = false;

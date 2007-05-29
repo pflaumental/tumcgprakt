@@ -54,21 +54,30 @@ namespace RayTracerFramework.Geometry {
         // Returns the firstintersection with the mesh. FirstIntersection references a triangle
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
             Ray rayOS = ray.Transform(invTransform);
-            RayIntersectionPoint intersection;
+            RayIntersectionPoint currentIntersection = null;
+            firstIntersection = null;
+            float currentT = float.PositiveInfinity;
+            MeshSubset firstSubset = null;
 
             foreach (MeshSubset subset in subsets) {
                 foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(rayOS, out intersection)) {
-                        firstIntersection = new RayMeshIntersectionPoint(
-                            Vec3.TransformPosition3(intersection.position, transform),
-                            Vec3.TransformNormal3n(intersection.normal, transform), 
-                            intersection.t, this, subset, 0.5f, 0.5f);
-                        return true;
+                    if (triangle.Intersect(rayOS, out currentIntersection)) {
+                        if (currentIntersection.t < currentT) {
+                            currentT = currentIntersection.t;
+                            firstIntersection = currentIntersection;
+                            firstSubset = subset;
+                        }
                     }
                 }
             }
-            firstIntersection = null;
-            return false;    
+            if (firstIntersection == null)
+                return false;
+
+            firstIntersection = new RayMeshIntersectionPoint(
+                    Vec3.TransformPosition3(firstIntersection.position, transform),
+                    Vec3.TransformNormal3n(firstIntersection.normal, transform),
+                    firstIntersection.t, this, firstSubset, 0.5f, 0.5f);
+            return true;    
         }
 
 
