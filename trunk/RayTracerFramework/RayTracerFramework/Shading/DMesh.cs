@@ -10,25 +10,27 @@ namespace RayTracerFramework.Shading {
         public DMesh() { }
 
         private DMesh(Matrix transform, Matrix transformInv, 
-                      List<MaterialGroup> materialGroups) : base(transform, transformInv, materialGroups) { }
+                      List<MeshSubset> subsets) : base(transform, transformInv, subsets) { }
 
 
         public IObject Clone() {
-            return new DMesh(transform, invTransform, materialGroups);
+            return new DMesh(transform, invTransform, subsets);
         }    
 
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution) {
             // DTriangle hitTriangle = (DTriangle)intersection.hitObject;
-            RayIntersectionPointTriangle intersectionTriangle = (RayIntersectionPointTriangle)intersection;
-            foreach (MaterialGroup mg in materialGroups) {
-                if (mg.triangles.Contains(intersectionTriangle.hitTriangle)) {
+            RayMeshIntersectionPoint subsetIntersection = (RayMeshIntersectionPoint)intersection;
+            DMeshSubset hitSubset = (DMeshSubset)subsetIntersection.hitSubset;
+            return scene.lightingModel.calculateColor(ray, intersection, /*hitSubset.material*/Material.WhiteMaterial, scene);
+            //foreach (DMeshSubset subset in subsets) {
+            //    if (subset.triangles.Contains(subsetIntersection.hitSubset)) {
                    
-                    return scene.lightingModel.calculateColor(ray, intersection, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f), scene);
-                    //return StdShading.RecursiveShade(ray, intersection, scene, Material.RedMaterial, contribution);
-                }
-            }
-            throw new Exception("The hit triangle does not belong to this mesh.");
+            //        return scene.lightingModel.calculateColor(ray, intersection, Material.WhiteMaterial, scene);
+            //        //return StdShading.RecursiveShade(ray, intersection, scene, Material.RedMaterial, contribution);
+            //    }
+            //}
+            //throw new Exception("The hit triangle does not belong to this mesh.");
         }
 
         public Material Material {

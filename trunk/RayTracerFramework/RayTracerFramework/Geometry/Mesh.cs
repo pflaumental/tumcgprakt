@@ -1,32 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.Geometry {
     
     
     class Mesh : IGeometricObject {
-        protected List<MaterialGroup> materialGroups;
+        protected List<MeshSubset> subsets;
 
         protected Matrix transform;
         protected Matrix invTransform;
 
         protected Mesh() {
-            materialGroups = new List<MaterialGroup>();
+            subsets = new List<MeshSubset>();
             transform = Matrix.Identity;
             invTransform = Matrix.Identity;
         }
 
-        protected Mesh(Matrix transform, Matrix invTransform, List<MaterialGroup> materialGroups) {
-            this.materialGroups = materialGroups;
+        protected Mesh(Matrix transform, Matrix invTransform, List<MeshSubset> subsets) {
+            this.subsets = subsets;
             this.transform = transform;
             this.invTransform = invTransform;
         }
 
 
-        public void AddMaterialGroup(MaterialGroup materialGroup) {
-            materialGroups.Add(materialGroup);
+        public void AddSubset(MeshSubset subset) {
+            subsets.Add(subset);
         }
 
 
@@ -43,8 +42,8 @@ namespace RayTracerFramework.Geometry {
         public bool Intersect(Ray ray) {
             Ray rayOS = ray.Transform(invTransform);
 
-            foreach (MaterialGroup mg in materialGroups) {
-                foreach (Triangle triangle in mg.triangles) {
+            foreach (MeshSubset subset in subsets) {
+                foreach (Triangle triangle in subset.triangles) {
                     if (triangle.Intersect(rayOS))
                         return true;
                 }
@@ -56,14 +55,14 @@ namespace RayTracerFramework.Geometry {
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
             Ray rayOS = ray.Transform(invTransform);
             RayIntersectionPoint intersection;
-            
-            foreach (MaterialGroup mg in materialGroups) {
-                foreach (Triangle triangle in mg.triangles) {
+
+            foreach (MeshSubset subset in subsets) {
+                foreach (Triangle triangle in subset.triangles) {
                     if (triangle.Intersect(rayOS, out intersection)) {
-                        firstIntersection = new RayIntersectionPointTriangle(
+                        firstIntersection = new RayMeshIntersectionPoint(
                             Vec3.TransformPosition3(intersection.position, transform),
                             Vec3.TransformNormal3n(intersection.normal, transform), 
-                            intersection.t, this, (Triangle)intersection.hitObject, 0.5f, 0.5f);
+                            intersection.t, this, subset, 0.5f, 0.5f);
                         return true;
                     }
                 }
@@ -78,14 +77,14 @@ namespace RayTracerFramework.Geometry {
             RayIntersectionPoint intersection;
             int numIntersections = 0;
 
-            foreach (MaterialGroup mg in materialGroups) {
-                foreach (Triangle triangle in mg.triangles) {
+            foreach (MeshSubset subset in subsets) {
+                foreach (Triangle triangle in subset.triangles) {
                     if (triangle.Intersect(rayOS, out intersection)) {
                         numIntersections++;
-                        intersections.Add(intersection.t, new RayIntersectionPointTriangle(
+                        intersections.Add(intersection.t, new RayMeshIntersectionPoint(
                              Vec3.TransformPosition3(intersection.position, transform),
                              Vec3.TransformNormal3n(intersection.normal, transform),
-                             intersection.t, this, (Triangle)intersection.hitObject, 0.5f, 0.5f));
+                             intersection.t, this, subset, 0.5f, 0.5f));
                     }
                 }
             }

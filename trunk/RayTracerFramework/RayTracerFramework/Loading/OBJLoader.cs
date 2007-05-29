@@ -7,8 +7,9 @@ using RayTracerFramework.Shading;
 using System.Globalization;
 using RayTracerFramework.Utility;
 using System.Drawing;
+using RayTracerFramework.Geometry;
 
-namespace RayTracerFramework.Geometry {
+namespace RayTracerFramework.Loading {
 
     // This class loads meshes stored in obj files. Only twodimensional texture coordinates and
     // triangles are allowed.
@@ -27,20 +28,20 @@ namespace RayTracerFramework.Geometry {
             List<Vec3> normals = new List<Vec3>();
             List<Vec3> texCoords = new List<Vec3>();
 
-            Dictionary<string, MaterialGroup> materialGroups = new Dictionary<string,MaterialGroup>();
-            MaterialGroup defaultMaterialGroup = new MaterialGroup();
-            MaterialGroup currentMaterialGroup = defaultMaterialGroup;
+            Dictionary<string, DMeshSubset> meshSubsets = new Dictionary<string,DMeshSubset>();
+            DMeshSubset defaultSubset = new DMeshSubset();
+            DMeshSubset currentSubset = defaultSubset;
 
             while (!reader.EndOfStream) {        
                 string[] tokens = regex.Split(reader.ReadLine());
 
                 switch (tokens[0]) {
                     case "mtllib":
-                        LoadMaterial(tokens[1], materialGroups);
+                        LoadMaterial(tokens[1], meshSubsets);
                         break;
                     case "usemtl":
                         try {
-                            currentMaterialGroup = materialGroups[tokens[1]];
+                            currentSubset = meshSubsets[tokens[1]];
                         } 
                         catch (KeyNotFoundException) {
                             throw new Exception("The material \"" + tokens[1] + "\" could not be found " +
@@ -91,62 +92,62 @@ namespace RayTracerFramework.Geometry {
                             n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
                         }
                         
-                        currentMaterialGroup.triangles.Add(new Triangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
+                        currentSubset.triangles.Add(new Triangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
                         break;
                 }               
             }
             reader.Close();
 
-            if (defaultMaterialGroup.triangles.Count > 0)
-                mesh.AddMaterialGroup(defaultMaterialGroup);
-            foreach (MaterialGroup materialGroup in materialGroups.Values) {
+            if (defaultSubset.triangles.Count > 0)
+                mesh.AddSubset(defaultSubset);
+            foreach (DMeshSubset materialGroup in meshSubsets.Values) {
                 if (materialGroup.triangles.Count > 0) {
-                    mesh.AddMaterialGroup(materialGroup);
+                    mesh.AddSubset(materialGroup);
                 }
             }
             return mesh;
         }
 
 
-        private void LoadMaterial(string filename, Dictionary<string, MaterialGroup> materialGroups) {
+        private void LoadMaterial(string filename, Dictionary<string, DMeshSubset> meshSubsets) {
             StreamReader reader = new StreamReader(standardMeshDirectory + filename);
             Regex regex = new Regex(@"\s+");
-            MaterialGroup currentMG = null;
+            DMeshSubset currentSubset = null;
 
             while (!reader.EndOfStream) {
                 string[] tokens = regex.Split(reader.ReadLine());
 
                 switch (tokens[0]) {
                     case "newmtl":
-                        if (currentMG != null)
-                            materialGroups.Add(currentMG.material.name, currentMG);
-                        currentMG = new MaterialGroup();
-                        currentMG.material.name = tokens[1];
+                        if (currentSubset != null)
+                            meshSubsets.Add(currentSubset.material.name, currentSubset);
+                        currentSubset = new DMeshSubset();
+                        currentSubset.material.name = tokens[1];
                         break;
                     case "Ka":
-                        currentMG.material.ambient.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
-                        currentMG.material.ambient.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
-                        currentMG.material.ambient.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.ambient.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.ambient.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.ambient.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
                         break;
                     case "Kd":
-                        currentMG.material.diffuse.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
-                        currentMG.material.diffuse.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
-                        currentMG.material.diffuse.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.diffuse.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.diffuse.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.diffuse.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
                         break;
                     case "Ks":
-                        currentMG.material.specular.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
-                        currentMG.material.specular.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
-                        currentMG.material.specular.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.specular.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.specular.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentSubset.material.specular.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
                         break;
                     case "map_Kd":
-                        currentMG.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
+                        currentSubset.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
                         break;
                 }
             }
             reader.Close();
 
-            if(currentMG != null) 
-                materialGroups.Add(currentMG.material.name, currentMG);          
+            if(currentSubset != null) 
+                meshSubsets.Add(currentSubset.material.name, currentSubset);          
               
         }
 
