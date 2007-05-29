@@ -6,15 +6,18 @@ using RayTracerFramework.Geometry;
 using System.Drawing.Imaging;
 using RayTracerFramework.Shading;
 using Color = RayTracerFramework.Shading.Color;
+using System.Windows.Forms;
 
 namespace RayTracerFramework.RayTracer {
     class Renderer {
         public static readonly int MaxRecursionDepth = 10;
 
-        private System.Windows.Forms.ProgressBar progressBar;
+        ProgressBar progressBar;
+        StatusStrip statusBar;
 
-        public Renderer(System.Windows.Forms.ProgressBar progressBar) {
+        public Renderer(ProgressBar progressBar, StatusStrip statusBar) {
             this.progressBar = progressBar;
+            this.statusBar = statusBar;
         }
 
         public void Render(Scene scene, Bitmap target) {
@@ -64,8 +67,15 @@ namespace RayTracerFramework.RayTracer {
 
             scene.Setup();
 
+            #region Initizalize members for progress information
             progressBar.Minimum = 0;
             progressBar.Maximum = targetHeight;
+            int resolution = targetWidth * targetHeight;
+            float lastMillis = Environment.TickCount;
+            float currentMillis;
+            float elapsedTime = 0;
+            int computedPixels = 0;
+            #endregion
 
             for (int y = 0; y < targetHeight; y++) { // pixel lines
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
@@ -87,6 +97,19 @@ namespace RayTracerFramework.RayTracer {
                     pixelCenterPos += xOffset;
                     rayWS.direction = Vec3.Normalize(pixelCenterPos - eyePos);
                 }
+
+                #region Calculate remaining time
+                computedPixels += targetWidth;
+                currentMillis = Environment.TickCount;
+                elapsedTime += (currentMillis - lastMillis);
+                int remainingSeconds = (int)(((resolution - computedPixels) * elapsedTime) / (computedPixels * 1000f));
+                statusBar.Items.Clear();
+                statusBar.Items.Add("Estimated remaining time: " + remainingSeconds + "s.");
+                statusBar.Refresh();
+                
+                lastMillis = currentMillis;
+                #endregion
+
                 // Reset next ray direction, pixelCenterPos and rowStartPos
                 rowStartPos += yOffset;
                 rayWS.direction = Vec3.Normalize(rowStartPos -eyePos);
