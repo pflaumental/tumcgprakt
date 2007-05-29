@@ -5,6 +5,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using RayTracerFramework.Shading;
 using System.Globalization;
+using RayTracerFramework.Utility;
+using System.Drawing;
 
 namespace RayTracerFramework.Geometry {
 
@@ -13,10 +15,12 @@ namespace RayTracerFramework.Geometry {
     // Currently only positive indices are supported
     class OBJLoader : IMeshLoader {
 
+        public string standardMeshDirectory = "../../Models/";
+
         public DMesh LoadFromFile(string filename) {
             DMesh mesh = new DMesh();
 
-            StreamReader reader = new StreamReader(filename);
+            StreamReader reader = new StreamReader(standardMeshDirectory + filename);
             Regex regex = new Regex(@"\s+");
 
             List<Vec3> vertices = new List<Vec3>();
@@ -27,8 +31,7 @@ namespace RayTracerFramework.Geometry {
             MaterialGroup defaultMaterialGroup = new MaterialGroup();
             MaterialGroup currentMaterialGroup = defaultMaterialGroup;
 
-            while (!reader.EndOfStream) {
-                
+            while (!reader.EndOfStream) {        
                 string[] tokens = regex.Split(reader.ReadLine());
 
                 switch (tokens[0]) {
@@ -104,9 +107,50 @@ namespace RayTracerFramework.Geometry {
             return mesh;
         }
 
+
         private void LoadMaterial(string filename, Dictionary<string, MaterialGroup> materialGroups) {
-            
+            StreamReader reader = new StreamReader(standardMeshDirectory + filename);
+            Regex regex = new Regex(@"\s+");
+            MaterialGroup currentMG = null;
+
+            while (!reader.EndOfStream) {
+                string[] tokens = regex.Split(reader.ReadLine());
+
+                switch (tokens[0]) {
+                    case "newmtl":
+                        if (currentMG != null)
+                            materialGroups.Add(currentMG.material.name, currentMG);
+                        currentMG = new MaterialGroup();
+                        currentMG.material.name = tokens[1];
+                        break;
+                    case "Ka":
+                        currentMG.material.ambient.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentMG.material.ambient.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentMG.material.ambient.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
+                        break;
+                    case "Kd":
+                        currentMG.material.diffuse.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentMG.material.diffuse.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentMG.material.diffuse.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
+                        break;
+                    case "Ks":
+                        currentMG.material.specular.RedFloat = float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentMG.material.specular.GreenFloat = float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"));
+                        currentMG.material.specular.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
+                        break;
+                    case "map_Kd":
+                        currentMG.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
+                        break;
+                }
+            }
+            reader.Close();
+
+            if(currentMG != null) 
+                materialGroups.Add(currentMG.material.name, currentMG);          
+              
         }
 
     }
+
+
 }
