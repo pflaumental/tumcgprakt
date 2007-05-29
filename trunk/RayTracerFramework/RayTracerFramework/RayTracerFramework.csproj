@@ -37,7 +37,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Geometry\AABBox.cs" />
     <Compile Include="Geometry\BSphere.cs" />
     <Compile Include="Geometry\Mesh.cs" />
     <Compile Include="Geometry\MeshSubset.cs" />

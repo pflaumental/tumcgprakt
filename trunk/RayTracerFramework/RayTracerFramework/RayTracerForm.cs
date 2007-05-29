@@ -16,23 +16,14 @@ using RayTracerFramework.Loading;
 namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
 
-        float pos = 0;
+        float pos = 5;
+        
 
         public RayTracerForm() {
             InitializeComponent();
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
-
-            Triangle tri = new Triangle(new Vec3(-1, -1, 0), new Vec3(1, -1, 0), new Vec3(0, 1, 0),
-                new Vec3(0, 0, -1), new Vec3(0, 0, -1), new Vec3(0, 0, -1), null, null, null);
-
-            RayIntersectionPoint inter;
-            Ray r = new Ray(new Vec3(1, -1, -1), new Vec3(-1, 0.5f, 1), 1);
-            tri.Intersect(r, out inter);
-
-
-
             float startMillis = Environment.TickCount;
 
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
@@ -47,7 +38,7 @@ namespace RayTracerFramework {
 
             Scene scene = new Scene(cam); 
 
-            Light l = new PointLight(new Vec3(0, 3, -5));
+            Light l = new PointLight(new Vec3(0, pos, -4));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
             l.diffuse = new Color(0.3f, 0.5f, 0.3f);
             l.specular = new Color(0.4f, 0.8f, 0.4f);
@@ -83,10 +74,10 @@ namespace RayTracerFramework {
 
             //scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.4f));
                   
-            scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f));
+            //scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f));
 
-            DBox box1 = scene.AddDBox(new Vec3(-6f, -2.2f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
-            scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
+            //DBox box1 = scene.AddDBox(new Vec3(-6f, -2.2f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
+            //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
             
             
        
@@ -98,10 +89,11 @@ namespace RayTracerFramework {
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
             //box1.Transform(Matrix.GetTranslation(0f, -0.2f, 0f));
-
-
-
-            Renderer renderer = new Renderer(progressBar);
+            
+   
+           
+         
+            Renderer renderer = new Renderer(progressBar, statusBar);
             renderer.Render(scene, bitmap);
 
             float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;

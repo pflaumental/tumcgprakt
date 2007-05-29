@@ -15,7 +15,7 @@ namespace RayTracerFramework.Shading {
             //bool lighting = true;
             
             foreach (Light light in scene.lightManager.LightsWorldSpace) {
-               
+          
                 switch (light.lightType) {
                     case LightType.Point:
                         PointLight pointLight = (PointLight)light;

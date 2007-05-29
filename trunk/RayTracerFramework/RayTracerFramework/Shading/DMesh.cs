@@ -22,7 +22,9 @@ namespace RayTracerFramework.Shading {
             // DTriangle hitTriangle = (DTriangle)intersection.hitObject;
             RayMeshIntersectionPoint subsetIntersection = (RayMeshIntersectionPoint)intersection;
             DMeshSubset hitSubset = (DMeshSubset)subsetIntersection.hitSubset;
-            return scene.lightingModel.calculateColor(ray, intersection, /*hitSubset.material*/Material.WhiteMaterial, scene);
+            return StdShading.RecursiveShade(ray, intersection, scene, hitSubset.material, contribution);
+
+            //return scene.lightingModel.calculateColor(ray, intersection, /*hitSubset.material*/Material.WhiteMaterial, scene);
             //foreach (DMeshSubset subset in subsets) {
             //    if (subset.triangles.Contains(subsetIntersection.hitSubset)) {
                    
