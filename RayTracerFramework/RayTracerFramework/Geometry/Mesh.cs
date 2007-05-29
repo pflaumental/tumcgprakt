@@ -7,6 +7,7 @@ namespace RayTracerFramework.Geometry {
     
     class Mesh : IGeometricObject {
         protected List<MeshSubset> subsets;
+        protected BSphere boundingSphere;
 
         protected Matrix transform;
         protected Matrix invTransform;
@@ -15,19 +16,28 @@ namespace RayTracerFramework.Geometry {
             subsets = new List<MeshSubset>();
             transform = Matrix.Identity;
             invTransform = Matrix.Identity;
+            boundingSphere = new BSphere(Vec3.Zero, 0f);
         }
 
-        protected Mesh(Matrix transform, Matrix invTransform, List<MeshSubset> subsets) {
+        protected Mesh(
+                Matrix transform, 
+                Matrix invTransform, 
+                List<MeshSubset> subsets, 
+                BSphere boundingSphere) {
             this.subsets = subsets;
             this.transform = transform;
             this.invTransform = invTransform;
+            this.boundingSphere = boundingSphere;
         }
-
 
         public void AddSubset(MeshSubset subset) {
             subsets.Add(subset);
+            boundingSphere = new BSphere(Vec3.Zero, 0f); // TODO: unhack this
         }
 
+        public void SetBoundingSphere(Vec3 center, float radius) {
+            boundingSphere = new BSphere(center, radius);
+        }
 
         public void Transform(Matrix transformation) {
             this.transform *= transformation;
@@ -40,6 +50,11 @@ namespace RayTracerFramework.Geometry {
         }
 
         public bool Intersect(Ray ray) {
+            // First test against bounding sphere
+            if (!boundingSphere.Intersect(ray)) {
+                return false;
+            }
+
             Ray rayOS = ray.Transform(invTransform);
 
             foreach (MeshSubset subset in subsets) {
@@ -53,6 +68,12 @@ namespace RayTracerFramework.Geometry {
 
         // Returns the firstintersection with the mesh. FirstIntersection references a triangle
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
+            // First test against bounding sphere
+            if (!boundingSphere.Intersect(ray)) {
+                firstIntersection = null;
+                return false;
+            }
+
             Ray rayOS = ray.Transform(invTransform);
             RayIntersectionPoint currentIntersection = null;
             firstIntersection = null;
@@ -82,6 +103,11 @@ namespace RayTracerFramework.Geometry {
 
 
         public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
+            // First test against bounding sphere
+            if (!boundingSphere.Intersect(ray)) {
+                return 0;
+            }
+
             Ray rayOS = ray.Transform(invTransform);
             RayIntersectionPoint intersection;
             int numIntersections = 0;

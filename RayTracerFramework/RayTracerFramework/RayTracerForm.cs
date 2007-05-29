@@ -38,11 +38,11 @@ namespace RayTracerFramework {
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)bitmap.Width / bitmap.Height;
 
-            //Camera cam = new Camera(new Vec3(-10f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -10 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
-            //                        new Vec3(0, 0, 0f),
-            //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
+                                    new Vec3(0, 0, 0f),
+                                    Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             
-            Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            //Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             //cam.aspectRatio = aspectRatio;
 
             Scene scene = new Scene(cam); 
@@ -76,7 +76,7 @@ namespace RayTracerFramework {
             //scene.lightManager.AddWorldSpaceLight(l4);
 
             OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("hexahedron.obj");
+            DMesh mesh = loader.LoadFromFile("bunny_t346.obj");
 
             scene.AddInstance(mesh, Matrix.Identity);
 
