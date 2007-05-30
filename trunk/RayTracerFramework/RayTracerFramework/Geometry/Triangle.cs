@@ -112,7 +112,7 @@ namespace RayTracerFramework.Geometry {
                 firstIntersection = null;
                 return false;
             }
-            Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
+            Vec3 normal = (1 - u - v) * n1 + v * n2 + u * n3;
 
             if (Vec3.Dot(normal, ray.direction) > 0f) {
                 firstIntersection = null;
