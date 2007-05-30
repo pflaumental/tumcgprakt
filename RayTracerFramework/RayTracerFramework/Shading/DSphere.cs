@@ -26,7 +26,7 @@ namespace RayTracerFramework.Shading {
             throw new NotImplementedException("GetTextureCoordinates not implemeted.");
         }
 
-        public IObject Clone() {
+        public IObject Clone() { 
             return new DSphere(radius, transform, invTransform, material);
         }
 
