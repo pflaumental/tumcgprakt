@@ -9,7 +9,7 @@ using Color = RayTracerFramework.Shading.Color;
 
 namespace RayTracerFramework.RayTracer {
     class Scene : IIntersectable {
-        public GeometryManager geoMng;
+        public List<IObject> transformedObjects;
         public ILightingModel lightingModel;
         public LightManager lightManager;
         public Camera cam;
@@ -22,8 +22,7 @@ namespace RayTracerFramework.RayTracer {
 
         public Scene(Camera cam) {       
             this.cam = cam;
-            geoMng = new GeometryManager();
-            //geoMng.viewMatrix = cam.GetViewMatrix();
+            transformedObjects = new List<IObject>();
             
             lightingModel = new BlinnPhongLightingModel();
             lightManager = new LightManager();
@@ -35,28 +34,23 @@ namespace RayTracerFramework.RayTracer {
             //refractionIndex = 1.0f;         
         }
 
-        public void Setup() {
-            // Transform all objects and the cubemap into world space
-            geoMng.TransformAll();
-        }
-
-        public void AddInstance(IObject geoObj, Matrix worldMatrix) {
-            geoMng.AddInstance(geoObj, worldMatrix);
-        }
-
-        public void AddInstance(IObject geoObj, Vec3 worldPos) {
-            geoMng.AddInstance(geoObj, Matrix.GetTranslation(worldPos));
-        }
-
         public DSphere AddDSphere(Vec3 worldPos, float radius, Material material) {
             DSphere sphere = new DSphere(Vec3.Zero, radius, material);
-            geoMng.AddInstance(sphere, Matrix.GetTranslation(worldPos));
+            sphere.Transform(Matrix.GetTranslation(worldPos));
+            transformedObjects.Add(sphere);
             return sphere;
         }
 
-        public DBox AddDBox(Vec3 worldPos, float width, float height, float depth, Material material) {
+        public DMesh AddDMesh(DMesh mesh, Matrix transformation) {
+            mesh.Transform(transformation);
+            transformedObjects.Add(mesh);
+            return mesh;
+        }
+
+        public DBox AddDBox(Matrix transformation, float width, float height, float depth, Material material) {
             DBox box = new DBox(Vec3.Zero, width, height, depth, material);
-            geoMng.AddInstance(box, Matrix.GetTranslation(worldPos));
+            box.Transform(transformation);
+            transformedObjects.Add(box);
             return box;
         }
 
@@ -68,7 +62,7 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public bool Intersect(Ray ray) {
-            foreach (IObject geoObj in geoMng.TransformedObjects) {
+            foreach (IObject geoObj in transformedObjects) {
                 if (geoObj.Intersect(ray))
                     return true;                
             }
@@ -79,7 +73,7 @@ namespace RayTracerFramework.RayTracer {
             firstIntersection = null;
             float nearestT = float.PositiveInfinity;
             RayIntersectionPoint currentIntersection;
-            foreach (IObject geoObj in geoMng.TransformedObjects) {                
+            foreach (IObject geoObj in transformedObjects) {                
                 if (geoObj.Intersect(ray, out currentIntersection)) {
                     if (currentIntersection.t < nearestT) {
                         nearestT = currentIntersection.t;
@@ -92,7 +86,7 @@ namespace RayTracerFramework.RayTracer {
 
         public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {            
             int numIntersections = 0;
-            foreach (IObject geoObj in geoMng.TransformedObjects) {
+            foreach (IObject geoObj in transformedObjects) {
                 numIntersections += geoObj.Intersect(ray, ref intersections);
             }
             return numIntersections;

@@ -77,10 +77,7 @@ namespace RayTracerFramework.Geometry {
         }
 
 
-        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
-           
-
-      
+        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {                 
             Vec3 edge1 = p3 - p1;
             Vec3 edge2 = p2 - p1;
 

@@ -9,51 +9,79 @@ namespace RayTracerFramework.Geometry {
         protected List<MeshSubset> subsets;
         protected BSphere boundingSphere;
 
-        protected Matrix transform;
-        protected Matrix invTransform;
+        public List<Vec3> vertices;
+        public List<Vec3> normals;
 
         protected Mesh() {
             subsets = new List<MeshSubset>();
-            transform = Matrix.Identity;
-            invTransform = Matrix.Identity;
             boundingSphere = new BSphere(Vec3.Zero, 0f);
+            vertices = new List<Vec3>();
+            normals = new List<Vec3>();
         }
 
-        protected Mesh(
-                Matrix transform, 
-                Matrix invTransform, 
-                List<MeshSubset> subsets, 
-                BSphere boundingSphere) {
+        protected Mesh(List<MeshSubset> subsets, BSphere boundingSphere,
+                       List<Vec3> vertices, List<Vec3> normals) {
             this.subsets = subsets;
-            this.transform = transform;
-            this.invTransform = invTransform;
             this.boundingSphere = boundingSphere;
+            this.vertices = vertices;
+            this.normals = normals;
+            UpdateBoundingSphere();
         }
 
         public void AddSubset(MeshSubset subset) {
             subsets.Add(subset);
-            boundingSphere = new BSphere(Vec3.Zero, 0f); // TODO: unhack this
+            boundingSphere = new BSphere(Vec3.Zero, 0f);            
+        }
+
+        public void UpdateBoundingSphere() {
+            Vec3 center = vertices[0];
+            for (int i = 1; i < vertices.Count; i++) {
+                float f = 1f / i;
+                center = (1f - f) * center + f * vertices[i];
+            }
+            float radiusSq = 0f, distSq = 0f;
+            foreach (Vec3 vertex in vertices) {
+                distSq = Vec3.GetLengthSq(center - vertex);
+                if (distSq > radiusSq)
+                    radiusSq = distSq;
+            }
+            this.boundingSphere = new BSphere(center, (float)Math.Sqrt(radiusSq), radiusSq);
         }
 
         public BSphere BoundingSphere {
             get {
                 return boundingSphere;
             }
-            set {
-                boundingSphere = value;
-            }
         }
 
         public void Transform(Matrix transformation) {
-            this.transform *= transformation;
-            this.invTransform = Matrix.Invert(this.transform);
-            // UpdateBoundingShpere(); // TODO
+            Matrix transformationNormal = Matrix.Transpose(Matrix.Invert(transformation));
+            for (int i = 0; i < vertices.Count; i++) {
+                Vec3 v = Vec3.TransformPosition3(vertices[i], transformation);
+                vertices[i].x = v.x;
+                vertices[i].y = v.y;
+                vertices[i].z = v.z;
+                Vec3 n = Vec3.TransformNormal3n(normals[i], transformationNormal);
+                normals[i].x = n.x;
+                normals[i].y = n.y;
+                normals[i].z = n.z;
+            }
+            UpdateBoundingSphere();
         }
 
         public void Transform(Matrix transformation, Matrix invTransformation) {
-            this.transform *= transformation;
-            this.invTransform = invTransform * this.invTransform;
-            // UpdateBoundingShpere(); // TODO
+            Matrix transformationNormal = Matrix.Transpose(invTransformation);
+            for (int i = 0; i < vertices.Count; i++) {
+                Vec3 v = Vec3.TransformPosition3(vertices[i], transformation);
+                vertices[i].x = v.x;
+                vertices[i].y = v.y;
+                vertices[i].z = v.z;
+                Vec3 n = Vec3.TransformNormal3n(normals[i], transformationNormal);
+                normals[i].x = n.x;
+                normals[i].y = n.y;
+                normals[i].z = n.z;
+            }
+            UpdateBoundingSphere();
         }
 
         public bool Intersect(Ray ray) {
@@ -62,11 +90,9 @@ namespace RayTracerFramework.Geometry {
                 return false;
             }
 
-            Ray rayOS = ray.Transform(invTransform);
-
             foreach (MeshSubset subset in subsets) {
                 foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(rayOS))
+                    if (triangle.Intersect(ray))
                         return true;
                 }
             }
@@ -75,19 +101,16 @@ namespace RayTracerFramework.Geometry {
 
         // Returns the firstintersection with the mesh. FirstIntersection references a triangle
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
-            Ray rayOS = ray.Transform(invTransform);
-            
-            // TODO: Boundingsphere-test in world-space
             // First test against bounding sphere
-            if (!boundingSphere.Intersect(rayOS/*, out firstIntersection*/)) {
+            if (!boundingSphere.Intersect(ray/*, out firstIntersection*/)) {
                 firstIntersection = null; //                      ^
                 return false; //                                  |
             } //                                                  |
-            //    // Uncomment to see bounding sphere: -------------------------------------          
+            //// Uncomment to see bounding sphere: -------------------------------------          
             //else {
             //    firstIntersection = new RayMeshIntersectionPoint(
-            //            Vec3.TransformPosition3(firstIntersection.position, transform),
-            //            Vec3.TransformNormal3n(firstIntersection.normal, transform),
+            //            firstIntersection.position,
+            //            firstIntersection.normal,
             //            firstIntersection.t, this, this.subsets[0], 0.5f, 0.5f);
             //    return true;
             //}
@@ -100,7 +123,7 @@ namespace RayTracerFramework.Geometry {
 
             foreach (MeshSubset subset in subsets) {
                 foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(rayOS, out currentIntersection)) {
+                    if (triangle.Intersect(ray, out currentIntersection)) {
                         if (currentIntersection.t < currentT) {
                             currentT = currentIntersection.t;
                             firstIntersection = currentIntersection;
@@ -112,10 +135,8 @@ namespace RayTracerFramework.Geometry {
             if (firstIntersection == null)
                 return false;
 
-            firstIntersection = new RayMeshIntersectionPoint(
-                    Vec3.TransformPosition3(firstIntersection.position, transform),
-                    Vec3.TransformNormal3n(firstIntersection.normal, transform),
-                    firstIntersection.t, this, firstSubset, 0.5f, 0.5f);
+            firstIntersection = new RayMeshIntersectionPoint(firstIntersection.position,
+                firstIntersection.normal, firstIntersection.t, this, firstSubset, 0.5f, 0.5f);
             return true;    
         }
 
@@ -126,18 +147,16 @@ namespace RayTracerFramework.Geometry {
                 return 0;
             }
 
-            Ray rayOS = ray.Transform(invTransform);
             RayIntersectionPoint intersection;
             int numIntersections = 0;
 
             foreach (MeshSubset subset in subsets) {
                 foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(rayOS, out intersection)) {
+                    if (triangle.Intersect(ray, out intersection)) {
                         numIntersections++;
                         intersections.Add(intersection.t, new RayMeshIntersectionPoint(
-                             Vec3.TransformPosition3(intersection.position, transform),
-                             Vec3.TransformNormal3n(intersection.normal, transform),
-                             intersection.t, this, subset, 0.5f, 0.5f));
+                            intersection.position, intersection.normal,
+                            intersection.t, this, subset, 0.5f, 0.5f));
                     }
                 }
             }

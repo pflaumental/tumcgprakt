@@ -31,10 +31,7 @@ namespace RayTracerFramework.Loading {
             Dictionary<string, DMeshSubset> meshSubsets = new Dictionary<string,DMeshSubset>();
             DMeshSubset defaultSubset = new DMeshSubset();
             DMeshSubset currentSubset = defaultSubset;
-
-            Vec3 center = null, tmpVertex = null;
-            int numVertices = 0;
-
+           
             while (!reader.EndOfStream) {        
                 string[] tokens = regex.Split(reader.ReadLine());
 
@@ -51,20 +48,10 @@ namespace RayTracerFramework.Loading {
                                                 "in the material library.");
                         }
                             break;
-                    case "v":
-                        tmpVertex = new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
+                    case "v":                        
+                        vertices.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
                                               float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us")),
-                                              float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us")));
-                        if (center == null) {
-                            numVertices++;
-                            center = tmpVertex;                            
-                        }
-                        else {
-                            numVertices++;
-                            center = ((numVertices - 1f) / numVertices) * center + (1f / numVertices) * tmpVertex;                            
-                        }
-
-                        vertices.Add(tmpVertex);
+                                              float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"))));
                         break;
                     case "vt":
                         texCoords.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
@@ -118,13 +105,9 @@ namespace RayTracerFramework.Loading {
                     mesh.AddSubset(materialGroup);
                 }
             }
-            float radiusSq = 0f, tmpDistSq;
-            foreach (Vec3 position in vertices) {
-                tmpDistSq = Vec3.GetLengthSq(position - center);
-                if (tmpDistSq > radiusSq)
-                    radiusSq = tmpDistSq;
-            }
-            mesh.BoundingSphere = new BSphere(center, (float)Math.Sqrt(radiusSq), radiusSq);
+            mesh.vertices = vertices;
+            mesh.normals = normals;
+            mesh.UpdateBoundingSphere();
             return mesh;
         }
 
