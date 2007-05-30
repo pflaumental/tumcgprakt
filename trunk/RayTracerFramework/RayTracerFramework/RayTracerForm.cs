@@ -16,7 +16,7 @@ using RayTracerFramework.Loading;
 namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
 
-        float pos = -3;
+        float pos = 0;
         
 
         public RayTracerForm() {
@@ -29,24 +29,24 @@ namespace RayTracerFramework {
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)bitmap.Width / bitmap.Height;
 
-            Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
-                                    new Vec3(0, 0, 0f),
-                                    Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
+            //                        new Vec3(0, 0, 0f),
+            //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             
-            //Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             //cam.aspectRatio = aspectRatio;
 
             Scene scene = new Scene(cam); 
 
-            Light l = new PointLight(new Vec3(0, 4, -4));
+            Light l = new PointLight(new Vec3(1, 4, -2));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l.diffuse = new Color(0.3f, 0.5f, 0.3f);
-            l.specular = new Color(0.4f, 0.8f, 0.4f);
+            l.diffuse = new Color(0.6f, 0.4f, 0.4f);
+            l.specular = new Color(0.8f, 0.5f, 0.5f);
 
-            Light l2 = new PointLight(new Vec3(2, 2, 20));
+            Light l2 = new PointLight(new Vec3(2, 3, -3));
             l2.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l2.diffuse = new Color(0.7f, 0.3f, 0.3f);
-            l2.specular = new Color(0.7f, 0.5f, 0.5f);
+            l2.diffuse = new Color(0.3f, 0.4f, 0.5f);
+            l2.specular = new Color(0.5f, 0.5f, 0.6f);
 
             Light l3 = new PointLight(new Vec3(2, -2, -2));
             l3.ambient = new Color(0.05f, 0.05f, 0.05f);
@@ -68,24 +68,18 @@ namespace RayTracerFramework {
 
             OBJLoader loader = new OBJLoader();
             DMesh mesh = loader.LoadFromFile("bunny_t346.obj");
-            //Matrix m = Matrix.GetRotationY(pos++ * Trigonometric.PI_QUARTER);
-            //Matrix m = Matrix.GetTranslation(0, 0f, 0f);
-            scene.AddDMesh(mesh, Matrix.Identity);
+           
+            Matrix m = Matrix.GetRotationY(pos++ * Trigonometric.PI_QUARTER);
+            scene.AddDMesh(mesh, m);
 
+            scene.AddDSphere(new Vec3(-4.0f, 2.0f, 5.0f), 3.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 15, 0.1f, 0.1f, 1.4f));
+            scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.6f, 0.1f, 1.4f));
 
-            //scene.AddDSphere(new Vec3(pos++, 0f, 0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.4f));
-                  
-            //scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f));
-
-            //DBox box1 = scene.AddDBox(Matrix.GetTranslation(new Vec3(pos++, 0f, 0f)), 2f, 2f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
+            //DBox box1 = scene.AddDBox(Matrix.GetRotationY(-Trigonometric.PI_QUARTER) * Matrix.GetTranslation(new Vec3(-4f, -2f, 2f)), 4f, 4f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 10, 0.7f, 0, 1));
             //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
             
-            
-       
-     
-
-
-            //scene.AddDBox(new Vec3(-10.0f, -4f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
+           
+            scene.AddDBox(Matrix.GetTranslation(-10.0f, -2f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
             //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
