@@ -77,48 +77,96 @@ namespace RayTracerFramework.Geometry {
         }
 
 
-        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {                 
-            Vec3 edge1 = p3 - p1;
-            Vec3 edge2 = p2 - p1;
+        public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
 
-            Vec3 pVec = Vec3.Cross(edge2, ray.direction);
+            Vec3 edge1 = p2 - p1;
+            Vec3 edge2 = p3 - p1;
+
+            Vec3 pVec = Vec3.Cross(ray.direction, edge2);
             float det = Vec3.Dot(edge1, pVec);
 
-            if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON) {
+            if (det < Trigonometric.EPSILON) {
                 firstIntersection = null;
                 return false;
-            }
-            float invDet = 1.0f / det;
+            }            
 
             Vec3 tVec = ray.position - p1;
-            float u = Vec3.Dot(tVec, pVec) * invDet;
-            if (u < 0.0f || u > 1.0f) {
+            float u = Vec3.Dot(tVec, pVec);
+            if (u < 0.0f || u > det) {
                 firstIntersection = null;
                 return false;
             }
 
-            Vec3 qVec = Vec3.Cross(edge1, tVec);
-            float v = Vec3.Dot(ray.direction, qVec) * invDet;
-            if (v < 0.0f || u + v > 1.0f) {
+            Vec3 qVec = Vec3.Cross(tVec, edge1);
+            float v = Vec3.Dot(ray.direction, qVec);
+            if (v < 0.0f || u + v > det) {
                 firstIntersection = null;
                 return false;
             }
 
-            float t = Vec3.Dot(edge2, qVec) * invDet;
+            float t = Vec3.Dot(edge2, qVec);
+            float invDet = 1.0f / det;
+            t *= invDet;
             if (t < 0f) {
                 firstIntersection = null;
                 return false;
             }
-            Vec3 normal = (1 - u - v) * n1 + v * n2 + u * n3;
+            u *= invDet;
+            v *= invDet;
 
-            if (Vec3.Dot(normal, ray.direction) > 0f) {
-                firstIntersection = null;
-                return false;
-            }
-  
+            Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
+
+            //if (Vec3.Dot(normal, ray.direction) > 0f) {
+            //    firstIntersection = null;
+            //    return false;
+            //}
+
             firstIntersection = new RayIntersectionPoint(ray.position + t * ray.direction,
                                                          normal, t, this);
             return true;
+
+
+            //Vec3 edge1 = p3 - p1;
+            //Vec3 edge2 = p2 - p1;
+           
+            //Vec3 pVec = Vec3.Cross(ray.direction, edge2);
+            //float det = Vec3.Dot(edge1, pVec);
+
+            //if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON) {
+            //    firstIntersection = null;
+            //    return false;
+            //}
+            //float invDet = 1.0f / det;
+
+            //Vec3 tVec = ray.position - p1;
+            //float u = Vec3.Dot(tVec, pVec) * invDet;
+            //if (u < 0.0f || u > 1.0f) {
+            //    firstIntersection = null;
+            //    return false;
+            //}
+
+            //Vec3 qVec = Vec3.Cross(edge1, tVec);
+            //float v = Vec3.Dot(ray.direction, qVec) * invDet;
+            //if (v < 0.0f || u + v > 1.0f) {
+            //    firstIntersection = null;
+            //    return false;
+            //}
+
+            //float t = Vec3.Dot(edge2, qVec) * invDet;
+            //if (t < 0f) {
+            //    firstIntersection = null;
+            //    return false;
+            //}
+            //Vec3 normal = (1 - u - v) * n1 + v * n2 + u * n3;
+
+            //if (Vec3.Dot(normal, ray.direction) > 0f) {
+            //    firstIntersection = null;
+            //    return false;
+            //}
+  
+            //firstIntersection = new RayIntersectionPoint(ray.position + t * ray.direction,
+            //                                             normal, t, this);
+            //return true;
         
         }
 

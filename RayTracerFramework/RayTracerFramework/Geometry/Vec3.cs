@@ -126,12 +126,13 @@ namespace RayTracerFramework.Geometry {
         }
 
         // Normalize after transformation
-        public static Vec3 TransformNormal3n(Vec3 v, Matrix m)
-        {
-            float x = v.x * m.m11 + v.y * m.m21 + v.z * m.m31;
-            float y = v.x * m.m12 + v.y * m.m22 + v.z * m.m32;
-            float z = v.x * m.m13 + v.y * m.m23 + v.z * m.m33;
-            float w = v.x * m.m14 + v.y * m.m24 + v.z * m.m34;
+        // Does only work for orthogonal matrices
+        public static Vec3 TransformNormal3n(Vec3 v, Matrix orthogonalTransform)
+        {            
+            float x = v.x * orthogonalTransform.m11 + v.y * orthogonalTransform.m21 + v.z * orthogonalTransform.m31;
+            float y = v.x * orthogonalTransform.m12 + v.y * orthogonalTransform.m22 + v.z * orthogonalTransform.m32;
+            float z = v.x * orthogonalTransform.m13 + v.y * orthogonalTransform.m23 + v.z * orthogonalTransform.m33;
+            float w = v.x * orthogonalTransform.m14 + v.y * orthogonalTransform.m24 + v.z * orthogonalTransform.m34;
             if (w != 0 && w != 1) {
                 x /= w;
                 y /= w;

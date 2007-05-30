@@ -54,14 +54,13 @@ namespace RayTracerFramework.Geometry {
             }
         }
 
-        public void Transform(Matrix transformation) {
-            Matrix transformationNormal = Matrix.Transpose(Matrix.Invert(transformation));
+        public void Transform(Matrix transformation) {            
             for (int i = 0; i < vertices.Count; i++) {
                 Vec3 v = Vec3.TransformPosition3(vertices[i], transformation);
                 vertices[i].x = v.x;
                 vertices[i].y = v.y;
                 vertices[i].z = v.z;
-                Vec3 n = Vec3.TransformNormal3n(normals[i], transformationNormal);
+                Vec3 n = Vec3.TransformNormal3n(normals[i], transformation);
                 normals[i].x = n.x;
                 normals[i].y = n.y;
                 normals[i].z = n.z;
@@ -76,7 +75,7 @@ namespace RayTracerFramework.Geometry {
                 vertices[i].x = v.x;
                 vertices[i].y = v.y;
                 vertices[i].z = v.z;
-                Vec3 n = Vec3.TransformNormal3n(normals[i], transformationNormal);
+                Vec3 n = Vec3.Normalize(Vec3.TransformPosition3(normals[i], transformationNormal));
                 normals[i].x = n.x;
                 normals[i].y = n.y;
                 normals[i].z = n.z;
