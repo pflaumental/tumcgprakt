@@ -35,9 +35,14 @@ namespace RayTracerFramework.Geometry {
 
         public Vec2 GetTextureCoordinates(Vec3 localPoint) { throw new NotImplementedException("DBox::GetTextureCoordinates not implemented."); }
 
-
         public IObject Clone() {
-            return new DBox(dx, dy, dz, transform, invTransform, material);
+            return new DBox(
+                    dx, 
+                    dy, 
+                    dz, 
+                    new Matrix(transform), 
+                    new Matrix(invTransform), 
+                    new Material(material));
         }
 
         public Color Emissive {

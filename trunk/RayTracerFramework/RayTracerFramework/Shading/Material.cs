@@ -24,6 +24,17 @@ namespace RayTracerFramework.Shading {
 
         public Material() : this(Color.White, Color.White, Color.White, Color.White, 10, 0f, 0.0f, 2f) { }
 
+        public Material(Material other) {
+            this.emissive = other.emissive;
+            this.ambient = other.ambient;
+            this.diffuse = other.diffuse;
+            this.specular = other.specular;
+            this.specularPower = other.specularPower;
+            this.reflectionPart = other.reflectionPart;
+            this.refractionPart = other.refractionPart;
+            this.refractionIndex = other.refractionIndex;
+        }
+
         public Material(Color emissive, Color ambient, Color diffuse,
                         Color specular, float specularPower,
                         float reflectionPart, float refractionPart, float refractionIndex) {

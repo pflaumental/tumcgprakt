@@ -45,6 +45,25 @@ namespace RayTracerFramework.Geometry {
             this.m44 = m44;   
         }
 
+        public Matrix(Matrix other) {
+            this.m11 = other.m11;
+            this.m12 = other.m12;
+            this.m13 = other.m13;
+            this.m14 = other.m14;
+            this.m21 = other.m21;
+            this.m22 = other.m22;
+            this.m23 = other.m23;
+            this.m24 = other.m24;
+            this.m31 = other.m31;
+            this.m32 = other.m32;
+            this.m33 = other.m33;
+            this.m34 = other.m34;
+            this.m41 = other.m41;
+            this.m42 = other.m42;
+            this.m43 = other.m43;
+            this.m44 = other.m44;
+        }
+
         public static Matrix operator *(Matrix m, float skalar) {
             return new Matrix(skalar * m.m11, skalar * m.m12, skalar * m.m13, skalar * m.m14,
                       skalar * m.m21, skalar * m.m22, skalar * m.m23, skalar * m.m24,

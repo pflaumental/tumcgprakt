@@ -27,7 +27,11 @@ namespace RayTracerFramework.Shading {
         }
 
         public IObject Clone() { 
-            return new DSphere(radius, transform, invTransform, material);
+            return new DSphere(
+                    radius, 
+                    new Matrix(transform),
+                    new Matrix(invTransform), 
+                    new Material(material));
         }
 
         public Color Emissive {
