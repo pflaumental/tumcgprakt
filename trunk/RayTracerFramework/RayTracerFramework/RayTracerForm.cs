@@ -16,7 +16,7 @@ using RayTracerFramework.Loading;
 namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
 
-        float pos = 0;
+        float pos = -3;
         
 
         public RayTracerForm() {
@@ -29,16 +29,16 @@ namespace RayTracerFramework {
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)bitmap.Width / bitmap.Height;
 
-            //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
-            //                        new Vec3(0, 0, 0f),
-            //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
+                                    new Vec3(0, 0, 0f),
+                                    Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             
-            Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            //Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             //cam.aspectRatio = aspectRatio;
 
             Scene scene = new Scene(cam); 
 
-            Light l = new PointLight(new Vec3(0, 5, -4));
+            Light l = new PointLight(new Vec3(0, 4, -4));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
             l.diffuse = new Color(0.3f, 0.5f, 0.3f);
             l.specular = new Color(0.4f, 0.8f, 0.4f);
@@ -61,16 +61,16 @@ namespace RayTracerFramework {
             scene.useCubeMap = true;
 
             scene.lightManager.AddWorldSpaceLight(l);
-            //scene.lightManager.AddWorldSpaceLight(l2);
+            scene.lightManager.AddWorldSpaceLight(l2);
 
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
 
             OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
+            DMesh mesh = loader.LoadFromFile("bunny_t346.obj");
             //Matrix m = Matrix.GetRotationY(pos++ * Trigonometric.PI_QUARTER);
-            Matrix m = Matrix.GetTranslation(pos++, 0f, 0f);
-            scene.AddDMesh(mesh, m);
+            //Matrix m = Matrix.GetTranslation(0, 0f, 0f);
+            scene.AddDMesh(mesh, Matrix.Identity);
 
 
             //scene.AddDSphere(new Vec3(pos++, 0f, 0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.4f));
