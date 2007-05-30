@@ -67,7 +67,7 @@ namespace RayTracerFramework {
             //scene.lightManager.AddWorldSpaceLight(l4);
 
             OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("mushroom_t1056.obj");
+            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
 
             scene.AddInstance(mesh, Matrix.Identity);
 
