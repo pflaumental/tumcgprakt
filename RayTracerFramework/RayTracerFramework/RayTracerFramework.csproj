@@ -61,7 +61,6 @@
     <Compile Include="Shading\DMesh.cs" />
     <Compile Include="Shading\DMeshSubset.cs" />
     <Compile Include="Shading\DSphere.cs" />
-    <Compile Include="Geometry\GeometryManager.cs" />
     <Compile Include="Geometry\IIntersectable.cs" />
     <Compile Include="Geometry\IntersectionPoint.cs" />
     <Compile Include="Shading\ILightingModel.cs" />

@@ -4,7 +4,5 @@ using System.Text;
 using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Shading {
-    interface IObject : IGeometricObject, IShadable {
-        IObject Clone();
-    }
+    interface IObject : IGeometricObject, IShadable { }
 }

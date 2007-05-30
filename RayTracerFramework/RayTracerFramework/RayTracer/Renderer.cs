@@ -65,8 +65,6 @@ namespace RayTracerFramework.RayTracer {
 
             RayIntersectionPoint firstIntersection;
 
-            scene.Setup();
-
             #region Initizalize members for progress information
             progressBar.Minimum = 0;
             progressBar.Maximum = targetHeight;

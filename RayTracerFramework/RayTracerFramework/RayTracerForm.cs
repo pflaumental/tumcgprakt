@@ -16,7 +16,7 @@ using RayTracerFramework.Loading;
 namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
 
-        float pos = 5;
+        float pos = 0;
         
 
         public RayTracerForm() {
@@ -29,16 +29,16 @@ namespace RayTracerFramework {
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             float aspectRatio = (float)bitmap.Width / bitmap.Height;
 
-            Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
-                                    new Vec3(0, 0, 0f),
-                                    Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
+            //                        new Vec3(0, 0, 0f),
+            //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             
-            //Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
+            Camera cam = new Camera(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
             //cam.aspectRatio = aspectRatio;
 
             Scene scene = new Scene(cam); 
 
-            Light l = new PointLight(new Vec3(0, pos, -4));
+            Light l = new PointLight(new Vec3(0, 5, -4));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
             l.diffuse = new Color(0.3f, 0.5f, 0.3f);
             l.specular = new Color(0.4f, 0.8f, 0.4f);
@@ -68,15 +68,16 @@ namespace RayTracerFramework {
 
             OBJLoader loader = new OBJLoader();
             DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
+            //Matrix m = Matrix.GetRotationY(pos++ * Trigonometric.PI_QUARTER);
+            Matrix m = Matrix.GetTranslation(pos++, 0f, 0f);
+            scene.AddDMesh(mesh, m);
 
-            scene.AddInstance(mesh, Matrix.Identity);
 
-
-            //scene.AddDSphere(new Vec3(-3.0f, 1.0f, 2.0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.4f));
+            //scene.AddDSphere(new Vec3(pos++, 0f, 0f), 2.5f, new Material(Color.White, new Color(200, 100, 200), Color.Blue, new Color(0, 255, 0), 20, 0.12f, 0.73f, 1.4f));
                   
             //scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0.1f, 0f, 1.4f));
 
-            //DBox box1 = scene.AddDBox(new Vec3(-6f, -2.2f, -3f), 12f, 0.1f, 12f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
+            //DBox box1 = scene.AddDBox(Matrix.GetTranslation(new Vec3(pos++, 0f, 0f)), 2f, 2f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.7f, 0, 1));
             //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
             
             

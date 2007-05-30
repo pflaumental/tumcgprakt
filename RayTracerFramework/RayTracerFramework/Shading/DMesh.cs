@@ -9,14 +9,8 @@ namespace RayTracerFramework.Shading {
 
         public DMesh() { }
 
-        private DMesh(Matrix transform, Matrix transformInv, 
-                      List<MeshSubset> subsets, BSphere boungingSphere) : base(transform, transformInv, subsets, boungingSphere) { }
-
-
-        public IObject Clone() {
-            return new DMesh(transform, invTransform, subsets, boundingSphere);
-        }    
-
+        private DMesh(List<MeshSubset> subsets, BSphere boungingSphere,
+                      List<Vec3> vertices, List<Vec3> normals) : base(subsets, boungingSphere, vertices, normals) { }      
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution) {
             // DTriangle hitTriangle = (DTriangle)intersection.hitObject;
