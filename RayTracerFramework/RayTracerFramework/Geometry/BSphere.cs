@@ -13,6 +13,12 @@ namespace RayTracerFramework.Geometry {
             this.radiusSq = radius * radius;
         }
 
+        public BSphere(Vec3 center, float radius, float radiusSq) {
+            this.center = center;
+            this.radius = radius;
+            this.radiusSq = radiusSq;
+        }
+
         public bool Intersect(Ray ray) {
             // o: (ray-)origin
             // c: center

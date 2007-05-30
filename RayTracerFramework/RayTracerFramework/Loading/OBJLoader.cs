@@ -32,8 +32,8 @@ namespace RayTracerFramework.Loading {
             DMeshSubset defaultSubset = new DMeshSubset();
             DMeshSubset currentSubset = defaultSubset;
 
-            Vec3 far1 = null, far2 = null, tmpVertex = null;
-            float farDistSq = 0f, tmpDistSq = 0f, tmpDistSq2 = 0f;
+            Vec3 center = null, tmpVertex = null;
+            int numVertices = 0;
 
             while (!reader.EndOfStream) {        
                 string[] tokens = regex.Split(reader.ReadLine());
@@ -55,23 +55,13 @@ namespace RayTracerFramework.Loading {
                         tmpVertex = new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
                                               float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us")),
                                               float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us")));
-                        if (far1 == null)
-                            far1 = tmpVertex;
-                        else if (far2 == null)
-                            far2 = tmpVertex;
+                        if (center == null) {
+                            numVertices++;
+                            center = tmpVertex;                            
+                        }
                         else {
-                            if (farDistSq < (tmpDistSq = Vec3.GetLengthSq(far1 - tmpVertex))) {
-                                if (tmpDistSq < (tmpDistSq2 = Vec3.GetLengthSq(far2 - tmpVertex))) {
-                                    far1 = tmpVertex;
-                                    farDistSq = tmpDistSq2;
-                                } else {
-                                    far2 = tmpVertex;
-                                    farDistSq = tmpDistSq;
-                                }
-                            } else if (farDistSq < (tmpDistSq = Vec3.GetLengthSq(far2 - tmpVertex))) {
-                                far1 = tmpVertex;
-                                farDistSq = tmpDistSq;
-                            }
+                            numVertices++;
+                            center = ((numVertices - 1f) / numVertices) * center + (1f / numVertices) * tmpVertex;                            
                         }
 
                         vertices.Add(tmpVertex);
@@ -128,7 +118,13 @@ namespace RayTracerFramework.Loading {
                     mesh.AddSubset(materialGroup);
                 }
             }
-            mesh.SetBoundingSphere(0.5f * (far1 + far2), (float)Math.Sqrt(farDistSq));
+            float radiusSq = 0f, tmpDistSq;
+            foreach (Vec3 position in vertices) {
+                tmpDistSq = Vec3.GetLengthSq(position - center);
+                if (tmpDistSq > radiusSq)
+                    radiusSq = tmpDistSq;
+            }
+            mesh.BoundingSphere = new BSphere(center, (float)Math.Sqrt(radiusSq), radiusSq);
             return mesh;
         }
 
