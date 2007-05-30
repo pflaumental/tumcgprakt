@@ -35,18 +35,25 @@ namespace RayTracerFramework.Geometry {
             boundingSphere = new BSphere(Vec3.Zero, 0f); // TODO: unhack this
         }
 
-        public void SetBoundingSphere(Vec3 center, float radius) {
-            boundingSphere = new BSphere(center, radius);
+        public BSphere BoundingSphere {
+            get {
+                return boundingSphere;
+            }
+            set {
+                boundingSphere = value;
+            }
         }
 
         public void Transform(Matrix transformation) {
             this.transform *= transformation;
             this.invTransform = Matrix.Invert(this.transform);
+            // UpdateBoundingShpere(); // TODO
         }
 
         public void Transform(Matrix transformation, Matrix invTransformation) {
             this.transform *= transformation;
             this.invTransform = invTransform * this.invTransform;
+            // UpdateBoundingShpere(); // TODO
         }
 
         public bool Intersect(Ray ray) {
@@ -68,13 +75,24 @@ namespace RayTracerFramework.Geometry {
 
         // Returns the firstintersection with the mesh. FirstIntersection references a triangle
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
-            // First test against bounding sphere
-            if (!boundingSphere.Intersect(ray)) {
-                firstIntersection = null;
-                return false;
-            }
-
             Ray rayOS = ray.Transform(invTransform);
+            
+            // TODO: Boundingsphere-test in world-space
+            // First test against bounding sphere
+            if (!boundingSphere.Intersect(rayOS/*, out firstIntersection*/)) {
+                firstIntersection = null; //                      ^
+                return false; //                                  |
+            } //                                                  |
+            //    // Uncomment to see bounding sphere: -------------------------------------          
+            //else {
+            //    firstIntersection = new RayMeshIntersectionPoint(
+            //            Vec3.TransformPosition3(firstIntersection.position, transform),
+            //            Vec3.TransformNormal3n(firstIntersection.normal, transform),
+            //            firstIntersection.t, this, this.subsets[0], 0.5f, 0.5f);
+            //    return true;
+            //}
+            //// ---------------------------------------------------------------------------
+            
             RayIntersectionPoint currentIntersection = null;
             firstIntersection = null;
             float currentT = float.PositiveInfinity;
