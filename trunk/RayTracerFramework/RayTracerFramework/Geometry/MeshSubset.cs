@@ -4,10 +4,12 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
     class MeshSubset {
-        public List<Triangle> triangles;
+        public KDTree kdTree;
+        //public List<Triangle> triangles;
 
         public MeshSubset() {
-            this.triangles = new List<Triangle>();
+            //this.triangles = new List<Triangle>();
+            this.kdTree = new KDTree();
         }
     }
 }

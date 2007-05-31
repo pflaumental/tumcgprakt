@@ -174,5 +174,6 @@ namespace RayTracerFramework.Geometry {
             this.invTransform = invTransform * this.invTransform;
         }
 
+        public void Setup() { }
     }
 }

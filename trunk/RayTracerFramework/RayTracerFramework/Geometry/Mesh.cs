@@ -25,7 +25,7 @@ namespace RayTracerFramework.Geometry {
             this.boundingSphere = boundingSphere;
             this.vertices = vertices;
             this.normals = normals;
-            UpdateBoundingSphere();
+            Setup();
         }
 
         public void AddSubset(MeshSubset subset) {
@@ -33,7 +33,8 @@ namespace RayTracerFramework.Geometry {
             boundingSphere = new BSphere(Vec3.Zero, 0f);            
         }
 
-        public void UpdateBoundingSphere() {
+        public void Setup() {
+            // Update bounding sphere
             Vec3 center = vertices[0];
             for (int i = 1; i < vertices.Count; i++) {
                 float f = 1f / i;
@@ -46,6 +47,11 @@ namespace RayTracerFramework.Geometry {
                     radiusSq = distSq;
             }
             this.boundingSphere = new BSphere(center, (float)Math.Sqrt(radiusSq), radiusSq);
+
+            // Optimize kd-trees
+            foreach (MeshSubset subset in subsets) {
+                subset.kdTree.Optimize();
+            }
         }
 
         public BSphere BoundingSphere {
@@ -65,7 +71,7 @@ namespace RayTracerFramework.Geometry {
                 normals[i].y = n.y;
                 normals[i].z = n.z;
             }
-            UpdateBoundingSphere();
+            Setup();
         }
 
         public void Transform(Matrix transformation, Matrix invTransformation) {
@@ -80,7 +86,7 @@ namespace RayTracerFramework.Geometry {
                 normals[i].y = n.y;
                 normals[i].z = n.z;
             }
-            UpdateBoundingSphere();
+            Setup();
         }
 
         public bool Intersect(Ray ray) {
@@ -90,11 +96,10 @@ namespace RayTracerFramework.Geometry {
             }
 
             foreach (MeshSubset subset in subsets) {
-                foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(ray))
-                        return true;
-                }
+                if (subset.kdTree.Intersect(ray))
+                    return true;
             }
+
             return false;
         }
 
@@ -121,16 +126,15 @@ namespace RayTracerFramework.Geometry {
             MeshSubset firstSubset = null;
 
             foreach (MeshSubset subset in subsets) {
-                foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(ray, out currentIntersection)) {
-                        if (currentIntersection.t < currentT) {
-                            currentT = currentIntersection.t;
-                            firstIntersection = currentIntersection;
-                            firstSubset = subset;
-                        }
+                if(subset.kdTree.Intersect(ray, out currentIntersection)) {
+                    if (currentIntersection.t < currentT) {
+                        currentT = currentIntersection.t;
+                        firstIntersection = currentIntersection;
+                        firstSubset = subset;
                     }
-                }
+                }                            
             }
+
             if (firstIntersection == null)
                 return false;
 
@@ -146,17 +150,15 @@ namespace RayTracerFramework.Geometry {
                 return 0;
             }
 
-            RayIntersectionPoint intersection;
             int numIntersections = 0;
+            SortedList<float, RayIntersectionPoint> subsetIntersections = new SortedList<float, RayIntersectionPoint>();
 
             foreach (MeshSubset subset in subsets) {
-                foreach (Triangle triangle in subset.triangles) {
-                    if (triangle.Intersect(ray, out intersection)) {
-                        numIntersections++;
-                        intersections.Add(intersection.t, new RayMeshIntersectionPoint(
-                            intersection.position, intersection.normal,
-                            intersection.t, this, subset, 0.5f, 0.5f));
-                    }
+                numIntersections += subset.kdTree.Intersect(ray, ref subsetIntersections);
+                foreach (RayIntersectionPoint intersectionPoint in subsetIntersections.Values) {
+                    intersections.Add(intersectionPoint.t, new RayMeshIntersectionPoint(
+                            intersectionPoint.position, intersectionPoint.normal,
+                            intersectionPoint.t, this, subset, 0.5f, 0.5f));
                 }
             }
             return numIntersections;     

@@ -203,5 +203,6 @@ namespace RayTracerFramework.Geometry {
             return 1;    
         }
 
+        public void Setup() { }
     }
 }
