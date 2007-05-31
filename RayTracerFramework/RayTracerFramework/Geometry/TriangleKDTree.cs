@@ -4,23 +4,23 @@ using System.Text;
 using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Geometry {
-    class KDTree : IIntersectable {
-        public KDNode root;
+    class TriangleKDTree : IIntersectable {
+        public TriangleKDNode root;
         public List<Triangle> triangles;
         public int MaxTrianglesPerLeaf; // TODO: ???
         public int LeafesCount;
 
         public enum Axis { X=0, Y, Z }
 
-        public KDTree() {
+        public TriangleKDTree() {
             triangles = new List<Triangle>();
-            root = new KDLeaf(triangles);            
+            root = new TriangleKDLeaf(triangles);            
             MaxTrianglesPerLeaf = 50;
             LeafesCount = 1;
         }
 
-        public KDTree(List<Triangle> triangles) {
-            root = new KDLeaf(triangles);
+        public TriangleKDTree(List<Triangle> triangles) {
+            root = new TriangleKDLeaf(triangles);
             this.triangles = triangles;
             MaxTrianglesPerLeaf = 50;
             LeafesCount = 1;
@@ -28,10 +28,10 @@ namespace RayTracerFramework.Geometry {
 
         public void Optimize() {
             LeafesCount = 1;
-            root = Optimize(new KDLeaf(triangles), Axis.X);
+            root = Optimize(new TriangleKDLeaf(triangles), Axis.X);
         }
 
-        private KDNode Optimize(KDLeaf leaf, KDTree.Axis splitAxis) {
+        private TriangleKDNode Optimize(TriangleKDLeaf leaf, TriangleKDTree.Axis splitAxis) {
             if (leaf.triangles.Count <= MaxTrianglesPerLeaf)
                 return leaf;
 
@@ -45,25 +45,25 @@ namespace RayTracerFramework.Geometry {
                 mid =  (i / (i + 1f)) * mid + (1f / (i + 1f)) * (1f / 3f) * (currentTriangle.p1 + currentTriangle.p2 + currentTriangle.p3);
             }
             
-            KDLeaf leftLeaf = new KDLeaf(SplitOnPlane(leaf.triangles, splitAxis, mid, true));
-            KDLeaf rightLeaf = new KDLeaf(SplitOnPlane(leaf.triangles, splitAxis, mid, false));
-            KDInner newNode = null;
-            KDNode leftNode, rightNode;
+            TriangleKDLeaf leftLeaf = new TriangleKDLeaf(SplitOnPlane(leaf.triangles, splitAxis, mid, true));
+            TriangleKDLeaf rightLeaf = new TriangleKDLeaf(SplitOnPlane(leaf.triangles, splitAxis, mid, false));
+            TriangleKDInner newNode = null;
+            TriangleKDNode leftNode, rightNode;
             switch(splitAxis) {
                 case Axis.X:
                     leftNode = Optimize(leftLeaf, Axis.Y);
                     rightNode = Optimize(rightLeaf, Axis.Y);
-                    newNode = new KDInner(leftNode, rightNode, splitAxis, mid.x);
+                    newNode = new TriangleKDInner(leftNode, rightNode, splitAxis, mid.x);
                     break;
                 case Axis.Y:
                     leftNode = Optimize(leftLeaf, Axis.Z);
                     rightNode = Optimize(rightLeaf, Axis.Z);
-                    newNode = new KDInner(leftNode, rightNode, splitAxis, mid.y);
+                    newNode = new TriangleKDInner(leftNode, rightNode, splitAxis, mid.y);
                     break;
                 case Axis.Z:
                     leftNode = Optimize(leftLeaf, Axis.X);
                     rightNode = Optimize(rightLeaf, Axis.X);
-                    newNode = new KDInner(leftNode, rightNode, splitAxis, mid.z);
+                    newNode = new TriangleKDInner(leftNode, rightNode, splitAxis, mid.z);
                     break;
             }
             return newNode;
@@ -129,9 +129,9 @@ namespace RayTracerFramework.Geometry {
             throw new Exception("The method or operation is not implemented and never will be!.");
         }
 
-        private bool Traverse(Ray ray, KDNode node, float tMin, float tMax, out RayIntersectionPoint firstIntersection) {
+        private bool Traverse(Ray ray, TriangleKDNode node, float tMin, float tMax, out RayIntersectionPoint firstIntersection) {
             if (node.isLeaf) {
-                KDLeaf leaf = (KDLeaf)node;
+                TriangleKDLeaf leaf = (TriangleKDLeaf)node;
 
                 RayIntersectionPoint currentIntersection = null;
                 firstIntersection = null;
@@ -151,9 +151,9 @@ namespace RayTracerFramework.Geometry {
                 return firstIntersection != null;
             }
 
-            KDInner inner = (KDInner)node;
+            TriangleKDInner inner = (TriangleKDInner)node;
 
-            KDNode near = null, far = null;
+            TriangleKDNode near = null, far = null;
             float tSplit = 0f;
             switch (inner.axis) { 
                 case Axis.X:
@@ -213,31 +213,31 @@ namespace RayTracerFramework.Geometry {
         }
     }
 
-    abstract class KDNode {
-        protected KDNode(bool isLeaf) {
+    abstract class TriangleKDNode {
+        protected TriangleKDNode(bool isLeaf) {
             this.isLeaf = isLeaf;
         }
         public readonly bool isLeaf;
     }
 
-    class KDLeaf : KDNode {
+    class TriangleKDLeaf : TriangleKDNode {
         public List<Triangle> triangles;
 
-        public KDLeaf() : base(true) {
+        public TriangleKDLeaf() : base(true) {
             triangles = new List<Triangle>();
         }
 
-        public KDLeaf(List<Triangle> triangles) : base(true) {
+        public TriangleKDLeaf(List<Triangle> triangles) : base(true) {
             this.triangles = triangles;
         }
     }
 
-    class KDInner : KDNode {
-        public KDNode left, right;
-        public KDTree.Axis axis;
+    class TriangleKDInner : TriangleKDNode {
+        public TriangleKDNode left, right;
+        public TriangleKDTree.Axis axis;
         public float planePosition;
 
-        public KDInner(KDNode left, KDNode right, KDTree.Axis axis, float planePosition) : base(false) {
+        public TriangleKDInner(TriangleKDNode left, TriangleKDNode right, TriangleKDTree.Axis axis, float planePosition) : base(false) {
             this.left = left;
             this.right = right;
             this.axis = axis;
