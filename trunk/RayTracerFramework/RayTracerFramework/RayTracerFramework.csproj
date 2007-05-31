@@ -38,11 +38,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Geometry\BSphere.cs" />
-    <Compile Include="Geometry\KDTree.cs" />
     <Compile Include="Geometry\Mesh.cs" />
     <Compile Include="Geometry\MeshSubset.cs" />
     <Compile Include="Geometry\RayMeshIntersectionPoint.cs" />
     <Compile Include="Geometry\Triangle.cs" />
+    <Compile Include="Geometry\TriangleKDTree.cs" />
     <Compile Include="Loading\IMeshLoader.cs" />
     <Compile Include="Loading\OBJLoader.cs" />
     <Compile Include="RayTracerForm.cs">

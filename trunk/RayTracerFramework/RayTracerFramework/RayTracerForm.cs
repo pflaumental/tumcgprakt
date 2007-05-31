@@ -72,14 +72,14 @@ namespace RayTracerFramework {
             Matrix m = Matrix.GetRotationY(pos++ * Trigonometric.PI_QUARTER);
             scene.AddDMesh(mesh, m);
 
-            //scene.AddDSphere(new Vec3(3.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, 0f, 1f, 1.04f));
-            //scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0f, 0f, 1.04f));
+            scene.AddDSphere(new Vec3(3.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, 0f, 1f, 1.04f));
+            scene.AddDSphere(new Vec3(4.0f, 2.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0f, 0f, 1.04f));
 
             //DBox box1 = scene.AddDBox(Matrix.GetRotationY(-Trigonometric.PI_QUARTER) * Matrix.GetTranslation(new Vec3(-4f, -2f, 2f)), 4f, 4f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 10, 0.7f, 0, 1));
             //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
             
            
-            //scene.AddDBox(Matrix.GetTranslation(-10.0f, -2f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
+            scene.AddDBox(Matrix.GetTranslation(-10.0f, -2f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
             //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
