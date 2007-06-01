@@ -7,114 +7,132 @@ namespace RayTracerFramework.Geometry {
     class TriangleKDTree : IIntersectable {
         public TriangleKDNode root;
         public List<Triangle> triangles;
-        public int MaxTrianglesPerLeaf; // TODO: ???
+        public int MaxDesiredTrianglesPerLeafCount;
+        public int MaxHeight;
         public int LeafesCount;
+        public int Height;
+
+        private readonly static int DefaultMaxHeight = 25;
+        private readonly static int DefaultMaxDesiredTrianglesPerLeafCount = 12;
 
         public enum Axis { X=0, Y, Z }
 
         public TriangleKDTree() {
             triangles = new List<Triangle>();
-            root = new TriangleKDLeaf(triangles);            
-            MaxTrianglesPerLeaf = 50;
+            root = new TriangleKDLeaf(triangles);
+            MaxDesiredTrianglesPerLeafCount = DefaultMaxDesiredTrianglesPerLeafCount;
+            MaxHeight = DefaultMaxHeight;
+            Height = 1;
             LeafesCount = 1;
         }
 
         public TriangleKDTree(List<Triangle> triangles) {
             root = new TriangleKDLeaf(triangles);
             this.triangles = triangles;
-            MaxTrianglesPerLeaf = 50;
+            MaxDesiredTrianglesPerLeafCount = DefaultMaxDesiredTrianglesPerLeafCount;
+            MaxHeight = DefaultMaxHeight;
+            Height = 1;
             LeafesCount = 1;
         }
 
         public void Optimize() {
             LeafesCount = 1;
-            root = Optimize(new TriangleKDLeaf(triangles), Axis.X);
+            root = Optimize(new TriangleKDLeaf(triangles), 1);
         }
 
-        private TriangleKDNode Optimize(TriangleKDLeaf leaf, TriangleKDTree.Axis splitAxis) {
-            if (leaf.triangles.Count <= MaxTrianglesPerLeaf)
+        private TriangleKDNode Optimize(TriangleKDLeaf leaf, int currentHeight) {
+            if (currentHeight > Height)
+                Height = currentHeight;
+
+            // Stop here if max leaf count is already satisfied or tree gets too high
+            if (leaf.triangles.Count <= MaxDesiredTrianglesPerLeafCount || currentHeight++ == MaxHeight)
                 return leaf;
 
-            LeafesCount++;
-
+            // Find mid of all triangles (will be used as splitting position)
             Triangle currentTriangle = leaf.triangles[0];
-
             Vec3 mid = (1f / 3f) * (currentTriangle.p1 + currentTriangle.p2 + currentTriangle.p3);
             for (int i = 1; i < leaf.triangles.Count; i++ ) {
                 currentTriangle = leaf.triangles[i];
                 mid =  (i / (i + 1f)) * mid + (1f / (i + 1f)) * (1f / 3f) * (currentTriangle.p1 + currentTriangle.p2 + currentTriangle.p3);
             }
+
+            // Choose best splitting axis
+            Axis splitAxis = Axis.X;
+            float planePosition = mid.x;
             
-            TriangleKDLeaf leftLeaf = new TriangleKDLeaf(SplitOnPlane(leaf.triangles, splitAxis, mid, true));
-            TriangleKDLeaf rightLeaf = new TriangleKDLeaf(SplitOnPlane(leaf.triangles, splitAxis, mid, false));
-            TriangleKDInner newNode = null;
-            TriangleKDNode leftNode, rightNode;
-            switch(splitAxis) {
-                case Axis.X:
-                    leftNode = Optimize(leftLeaf, Axis.Y);
-                    rightNode = Optimize(rightLeaf, Axis.Y);
-                    newNode = new TriangleKDInner(leftNode, rightNode, splitAxis, mid.x);
-                    break;
-                case Axis.Y:
-                    leftNode = Optimize(leftLeaf, Axis.Z);
-                    rightNode = Optimize(rightLeaf, Axis.Z);
-                    newNode = new TriangleKDInner(leftNode, rightNode, splitAxis, mid.y);
-                    break;
-                case Axis.Z:
-                    leftNode = Optimize(leftLeaf, Axis.X);
-                    rightNode = Optimize(rightLeaf, Axis.X);
-                    newNode = new TriangleKDInner(leftNode, rightNode, splitAxis, mid.z);
-                    break;
+            List<Triangle> leftTriangles, rightTriangles;
+            SplitOnPlane(leaf.triangles, Axis.X, mid, out leftTriangles, out rightTriangles);
+            
+            List<Triangle> alternativeLeftTriangles, alternativeRightTriangles;
+            SplitOnPlane(leaf.triangles, Axis.Y, mid, out alternativeLeftTriangles, out alternativeRightTriangles);            
+            if (alternativeLeftTriangles.Count + alternativeRightTriangles.Count
+                    < leftTriangles.Count + rightTriangles.Count) {
+                leftTriangles = alternativeLeftTriangles;
+                rightTriangles = alternativeRightTriangles;
+                splitAxis = Axis.Y;
+                planePosition = mid.y;
             }
-            return newNode;
+
+            SplitOnPlane(leaf.triangles, Axis.Z, mid, out alternativeLeftTriangles, out alternativeRightTriangles);
+            if (alternativeLeftTriangles.Count + alternativeRightTriangles.Count
+                    < leftTriangles.Count + rightTriangles.Count) {
+                leftTriangles = alternativeLeftTriangles;
+                rightTriangles = alternativeRightTriangles;
+                splitAxis = Axis.Z;
+                planePosition = mid.z;
+            }
+
+            // Stop here if triangle count could not be lowered anymore
+            if (leftTriangles.Count == leaf.triangles.Count || rightTriangles.Count == leaf.triangles.Count)
+                return leaf;
+
+            LeafesCount++;
+
+            // Recursivly optimize left side
+            TriangleKDNode leftNode = Optimize(new TriangleKDLeaf(leftTriangles), currentHeight + 1);
+            // Recursivly optimize right side
+            TriangleKDNode rightNode = Optimize(new TriangleKDLeaf(rightTriangles), currentHeight + 1);
+
+            // Create and return new inner node                        
+            return new TriangleKDInner(leftNode, rightNode, splitAxis, planePosition);
         }
 
-        private List<Triangle> SplitOnPlane(List<Triangle> triangles, Axis axis, Vec3 position, bool lower) { 
-            List<Triangle> result = new List<Triangle>();
+        private void SplitOnPlane(
+                List<Triangle> triangles, 
+                Axis axis, 
+                Vec3 position, 
+                out List<Triangle> leftTriangles, 
+                out List<Triangle> rightTriangles) { 
+
+            leftTriangles = new List<Triangle>();
+            rightTriangles = new List<Triangle>();
+
             switch (axis) { 
                 case Axis.X:
-                    if (lower) {
-                        foreach (Triangle triangle in triangles) {
-                            if (triangle.p1.x <= position.x || triangle.p2.x <= position.x || triangle.p3.x <= position.x)
-                                result.Add(triangle);
-                        }
-                    } else {
-                        foreach (Triangle triangle in triangles) {
-                            if (triangle.p1.x > position.x || triangle.p2.x > position.x || triangle.p3.x > position.x)
-                                result.Add(triangle);
-                        }
+                    foreach (Triangle triangle in triangles) {
+                        if (triangle.p1.x <= position.x || triangle.p2.x <= position.x || triangle.p3.x <= position.x)
+                            leftTriangles.Add(triangle);
+                        if (triangle.p1.x > position.x || triangle.p2.x > position.x || triangle.p3.x > position.x)
+                            rightTriangles.Add(triangle);
                     }
                     break;
                 case Axis.Y:
-                    if (lower) {
-                        foreach (Triangle triangle in triangles) {
-                            if (triangle.p1.y <= position.y || triangle.p2.y <= position.y || triangle.p3.y <= position.y)
-                                result.Add(triangle);
-                        }
-                    }
-                    else {
-                        foreach (Triangle triangle in triangles) {
-                            if (triangle.p1.y > position.y || triangle.p2.y > position.y || triangle.p3.y > position.y)
-                                result.Add(triangle);
-                        }
+                    foreach (Triangle triangle in triangles) {
+                        if (triangle.p1.y <= position.y || triangle.p2.y <= position.y || triangle.p3.y <= position.y)
+                            leftTriangles.Add(triangle);
+                        if (triangle.p1.y > position.y || triangle.p2.y > position.y || triangle.p3.y > position.y)
+                            rightTriangles.Add(triangle);
                     }
                     break;
                 case Axis.Z:
-                    if (lower) {
-                        foreach (Triangle triangle in triangles) {
-                            if (triangle.p1.z <= position.z || triangle.p2.z <= position.z || triangle.p3.z <= position.z)
-                                result.Add(triangle);
-                        }
-                    }
-                    else {
-                        foreach (Triangle triangle in triangles) {
-                            if (triangle.p1.z > position.z || triangle.p2.z > position.z || triangle.p3.z > position.z)
-                                result.Add(triangle);
-                        }
+                    foreach (Triangle triangle in triangles) {
+                        if (triangle.p1.z <= position.z || triangle.p2.z <= position.z || triangle.p3.z <= position.z)
+                            leftTriangles.Add(triangle);
+                        if (triangle.p1.z > position.z || triangle.p2.z > position.z || triangle.p3.z > position.z)
+                            rightTriangles.Add(triangle);
                     }
                     break;
             }
-            return result;
         }
 
         public bool Intersect(Ray ray) {
