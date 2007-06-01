@@ -8,12 +8,43 @@ namespace RayTracerFramework.Geometry {
         public TriangleKDNode root;
         public List<Triangle> triangles;
         public int MaxDesiredTrianglesPerLeafCount;
-        public int MaxHeight;
-        public int LeafesCount;
+        public int MaxHeight;        
         public int Height;
+        
+        // For test only :
+        //public int xSplitCount = 0;
+        //public int ySplitCount = 0;
+        //public int zSplitCount = 0;
+        //public int leafesTriangleSum = 0;
+        //public int LeafesCount;
+        //public int GreatestTrianglePerLeafCount = 0;
+
+        private float weightDivisionQuality;
+        public float WeightDivisionQuality {
+            get { return weightDivisionQuality; }
+            set {
+                if (value < 0 || value > 1)
+                    throw new Exception("WeightDivisionQuality must be between 0 and 1");
+                weightDivisionQuality = value;
+                weightTriangleSum = 1 - value;
+            }
+        }
+
+        private float weightTriangleSum;
+        public float WeightTriangleSum {
+            get { return weightTriangleSum; }
+            set {
+                if (value < 0 || value > 1)
+                    throw new Exception("WeightBadTriangleCount must be between 0 and 1");
+                weightTriangleSum = value;
+                weightDivisionQuality = 1 - value;
+            }
+        }
 
         private readonly static int DefaultMaxHeight = 25;
         private readonly static int DefaultMaxDesiredTrianglesPerLeafCount = 12;
+        private readonly static float DefaultWeightDivisionQuality = 0f;
+        private readonly static float DefaultWeightBadTriangleCount = 1f - DefaultWeightDivisionQuality;
 
         public enum Axis { X=0, Y, Z }
 
@@ -22,8 +53,10 @@ namespace RayTracerFramework.Geometry {
             root = new TriangleKDLeaf(triangles);
             MaxDesiredTrianglesPerLeafCount = DefaultMaxDesiredTrianglesPerLeafCount;
             MaxHeight = DefaultMaxHeight;
+            WeightTriangleSum = DefaultWeightBadTriangleCount;
+            WeightDivisionQuality = DefaultWeightDivisionQuality;
             Height = 1;
-            LeafesCount = 1;
+            //LeafesCount = 1;
         }
 
         public TriangleKDTree(List<Triangle> triangles) {
@@ -31,12 +64,14 @@ namespace RayTracerFramework.Geometry {
             this.triangles = triangles;
             MaxDesiredTrianglesPerLeafCount = DefaultMaxDesiredTrianglesPerLeafCount;
             MaxHeight = DefaultMaxHeight;
+            WeightTriangleSum = DefaultWeightBadTriangleCount;
+            WeightDivisionQuality = DefaultWeightDivisionQuality;
             Height = 1;
-            LeafesCount = 1;
+            //LeafesCount = 1;
         }
 
         public void Optimize() {
-            LeafesCount = 1;
+            //LeafesCount = 1;
             root = Optimize(new TriangleKDLeaf(triangles), 1);
         }
 
@@ -45,8 +80,11 @@ namespace RayTracerFramework.Geometry {
                 Height = currentHeight;
 
             // Stop here if max leaf count is already satisfied or tree gets too high
-            if (leaf.triangles.Count <= MaxDesiredTrianglesPerLeafCount || currentHeight++ == MaxHeight)
+            if (leaf.triangles.Count <= MaxDesiredTrianglesPerLeafCount || currentHeight++ == MaxHeight) {
+                //if (GreatestTrianglePerLeafCount < leaf.triangles.Count)
+                //    GreatestTrianglePerLeafCount = leaf.triangles.Count;
                 return leaf;
+            }
 
             // Find mid of all triangles (will be used as splitting position)
             Triangle currentTriangle = leaf.triangles[0];
@@ -57,41 +95,79 @@ namespace RayTracerFramework.Geometry {
             }
 
             // Choose best splitting axis
+            // This should be the one wich divides the triangles best
+            // and does have the least triangles in both sides
             Axis splitAxis = Axis.X;
             float planePosition = mid.x;
             
             List<Triangle> leftTriangles, rightTriangles;
             SplitOnPlane(leaf.triangles, Axis.X, mid, out leftTriangles, out rightTriangles);
+
+            float currentDivisionQuality = leftTriangles.Count > rightTriangles.Count
+                    ? ((float)rightTriangles.Count) / leftTriangles.Count
+                    : ((float)leftTriangles.Count) / rightTriangles.Count;
+            float currentTriangleSum = leftTriangles.Count + rightTriangles.Count;
             
-            List<Triangle> alternativeLeftTriangles, alternativeRightTriangles;
-            SplitOnPlane(leaf.triangles, Axis.Y, mid, out alternativeLeftTriangles, out alternativeRightTriangles);            
-            if (alternativeLeftTriangles.Count + alternativeRightTriangles.Count
-                    < leftTriangles.Count + rightTriangles.Count) {
+            List<Triangle> alternativeLeftTriangles, alternativeRightTriangles;                        
+            SplitOnPlane(leaf.triangles, Axis.Y, mid, out alternativeLeftTriangles, out alternativeRightTriangles);
+
+            float alternativeDivisionQuality = alternativeLeftTriangles.Count > alternativeRightTriangles.Count
+                    ? ((float)alternativeRightTriangles.Count) / alternativeLeftTriangles.Count
+                    : ((float)alternativeLeftTriangles.Count) / alternativeRightTriangles.Count;
+            float alternativeTriangleSum = alternativeLeftTriangles.Count + alternativeRightTriangles.Count;
+
+            if ((WeightDivisionQuality * alternativeDivisionQuality / currentDivisionQuality +
+                    WeightTriangleSum * currentTriangleSum / alternativeTriangleSum) > 1f) {
                 leftTriangles = alternativeLeftTriangles;
                 rightTriangles = alternativeRightTriangles;
                 splitAxis = Axis.Y;
                 planePosition = mid.y;
+                currentDivisionQuality = alternativeDivisionQuality;
+                currentTriangleSum = alternativeTriangleSum;
             }
 
             SplitOnPlane(leaf.triangles, Axis.Z, mid, out alternativeLeftTriangles, out alternativeRightTriangles);
-            if (alternativeLeftTriangles.Count + alternativeRightTriangles.Count
-                    < leftTriangles.Count + rightTriangles.Count) {
+            
+            alternativeDivisionQuality = alternativeLeftTriangles.Count > alternativeRightTriangles.Count
+                    ? ((float)alternativeRightTriangles.Count) / alternativeLeftTriangles.Count
+                    : ((float)alternativeLeftTriangles.Count) / alternativeRightTriangles.Count;
+            alternativeTriangleSum = alternativeLeftTriangles.Count + alternativeRightTriangles.Count;
+
+            if ((WeightDivisionQuality * alternativeDivisionQuality / currentDivisionQuality +
+                    WeightTriangleSum * currentTriangleSum / alternativeTriangleSum) > 1f) {
                 leftTriangles = alternativeLeftTriangles;
                 rightTriangles = alternativeRightTriangles;
                 splitAxis = Axis.Z;
                 planePosition = mid.z;
-            }
+            }            
 
             // Stop here if triangle count could not be lowered anymore
-            if (leftTriangles.Count == leaf.triangles.Count || rightTriangles.Count == leaf.triangles.Count)
+            if (leftTriangles.Count == leaf.triangles.Count || rightTriangles.Count == leaf.triangles.Count) {
+                //if (GreatestTrianglePerLeafCount < leaf.triangles.Count)
+                //    GreatestTrianglePerLeafCount = leaf.triangles.Count;
                 return leaf;
+            }
 
-            LeafesCount++;
+            // For test only:
+            //leafesTriangleSum += (int)currentTriangleSum;
+            //switch (splitAxis) {
+            //    case Axis.X:
+            //        xSplitCount++;
+            //        break;
+            //    case Axis.Y:
+            //        ySplitCount++;
+            //        break;
+            //    case Axis.Z:
+            //        zSplitCount++;
+            //        break;
+            //}
+
+            //LeafesCount++;
 
             // Recursivly optimize left side
-            TriangleKDNode leftNode = Optimize(new TriangleKDLeaf(leftTriangles), currentHeight + 1);
+            TriangleKDNode leftNode = Optimize(new TriangleKDLeaf(leftTriangles), currentHeight);
             // Recursivly optimize right side
-            TriangleKDNode rightNode = Optimize(new TriangleKDLeaf(rightTriangles), currentHeight + 1);
+            TriangleKDNode rightNode = Optimize(new TriangleKDLeaf(rightTriangles), currentHeight);
 
             // Create and return new inner node                        
             return new TriangleKDInner(leftNode, rightNode, splitAxis, planePosition);
