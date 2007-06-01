@@ -92,16 +92,16 @@ namespace RayTracerFramework.Loading {
                             n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
                         }
                         
-                        currentSubset.kdTree.triangles.Add(new Triangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
+                        currentSubset.kdTree.content.Add(new Triangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
                         break;
                 }               
             }
             reader.Close();
 
-            if (defaultSubset.kdTree.triangles.Count > 0)
+            if (defaultSubset.kdTree.content.Count > 0)
                 mesh.AddSubset(defaultSubset);
             foreach (DMeshSubset materialGroup in meshSubsets.Values) {
-                if (materialGroup.kdTree.triangles.Count > 0) {
+                if (materialGroup.kdTree.content.Count > 0) {
                     mesh.AddSubset(materialGroup);
                 }
             }            
