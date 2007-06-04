@@ -203,5 +203,15 @@ namespace RayTracerFramework.Geometry {
             return 1;    
         }
 
+        public BSphere BSphere {
+            get { 
+                Vec3 center = (1f/3f) * (p1 + p2 + p3);
+                float radiusSq = Vec3.GetLengthSq(p1 - center);
+                radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p2 - center));
+                radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p3 - center));
+                return new BSphere(center, (float)Math.Sqrt(radiusSq), radiusSq);
+            }
+        }
+
     }
 }

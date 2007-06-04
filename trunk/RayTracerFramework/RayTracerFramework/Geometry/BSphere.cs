@@ -4,8 +4,8 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
     class BSphere : IIntersectable {
-        public readonly Vec3 center;
-        public readonly float radius, radiusSq;
+        public Vec3 center;
+        public float radius, radiusSq;
 
         public BSphere(Vec3 center, float radius) {
             this.center = center;

@@ -18,14 +18,15 @@ namespace RayTracerFramework.Geometry {
             this.material = material;
         }
 
-        private DBox(
+        protected DBox(
                 float width,
                 float height,
                 float depth,
                 Matrix transform,
                 Matrix invTransform,
+                BSphere boundingSphere,
                 Material material)
-            : base(transform, invTransform, width, height, depth) {
+            : base(transform, invTransform, width, height, depth, boundingSphere) {
             this.material = material;
         }
 
