@@ -24,7 +24,7 @@ namespace RayTracerFramework.Shading {
 
         // public Material() : this(Color.White, Color.White, Color.White, Color.White, 10, 0f, 0.0f, 2f) { }
 
-        public Material() : this(Color.White, new Color(64, 45, 26), new Color(147, 103, 55), new Color(209, 167, 143), 10, 0, 0, 2) { }
+        public Material() : this(Color.White, new Color(64, 45, 26), new Color(147, 103, 55), new Color(209, 167, 143), 10, 0.5f, 0, 2) { }
         public Material(Material other) {
             this.emissive = other.emissive;
             this.ambient = other.ambient;
