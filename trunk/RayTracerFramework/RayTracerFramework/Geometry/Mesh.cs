@@ -33,7 +33,7 @@ namespace RayTracerFramework.Geometry {
             boundingSphere = new BSphere(Vec3.Zero, 0f);            
         }
 
-        public void Setup() {
+        protected void Setup() {
             // Update bounding sphere
             Vec3 center = vertices[0];
             for (int i = 1; i < vertices.Count; i++) {
