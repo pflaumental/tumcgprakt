@@ -72,6 +72,8 @@ namespace RayTracerFramework.RayTracer {
             float lastMillis = Environment.TickCount;
             float currentMillis;
             float elapsedTime = 0;
+            float stepTime = 0;
+            float stepTimeSum = 0;
             int computedPixels = 0;
             #endregion
 
@@ -99,11 +101,15 @@ namespace RayTracerFramework.RayTracer {
                 #region Calculate remaining time
                 computedPixels += targetWidth;
                 currentMillis = Environment.TickCount;
-                elapsedTime += (currentMillis - lastMillis);
-                int remainingSeconds = (int)(((resolution - computedPixels) * elapsedTime) / (computedPixels * 1000f));
-                statusBar.Items.Clear();
-                statusBar.Items.Add("Estimated remaining time: " + remainingSeconds + "s.");
-                statusBar.Refresh();
+                elapsedTime += stepTime = (currentMillis - lastMillis);
+                stepTimeSum += stepTime;
+                if (stepTimeSum > 1000) {
+                    stepTimeSum = 0f;
+                    int remainingSeconds = (int)(((resolution - computedPixels) * elapsedTime) / (computedPixels * 1000f));
+                    statusBar.Items.Clear();
+                    statusBar.Items.Add("Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
+                    statusBar.Refresh();
+                }
                 
                 lastMillis = currentMillis;
                 #endregion
