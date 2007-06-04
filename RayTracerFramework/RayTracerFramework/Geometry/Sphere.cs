@@ -9,23 +9,23 @@ namespace RayTracerFramework.Geometry {
         protected float radius, radiusSq;
         protected Matrix transform;
         protected Matrix invTransform;
-        //protected bool containsOther;
+        protected BSphere boundingSphere;
 
-        protected Sphere(Vec3 center, float radius) {
+        protected Sphere(Vec3 center, float radius) {           
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = Matrix.GetTranslation(center);
             this.invTransform = Matrix.GetTranslation(-center);
-            //this.containsOther = false;
+            this.boundingSphere = new BSphere(center, radius, radiusSq);
         }
 
-        protected Sphere(float radius, Matrix transform, Matrix invTransform)
+        protected Sphere(float radius, Matrix transform, Matrix invTransform, BSphere bSphere)
         {
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = transform;
             this.invTransform = invTransform;
-            //this.containsOther = false;
+            this.boundingSphere = bSphere;
         }
 
         public bool Intersect(Ray ray) {
@@ -167,11 +167,29 @@ namespace RayTracerFramework.Geometry {
         public void Transform(Matrix transformation) {
             this.transform *= transformation;
             this.invTransform = Matrix.Invert(this.transform);
+            Setup();
         }
 
         public void Transform(Matrix transformation, Matrix invTransformation) {
             this.transform *= transformation;
             this.invTransform = invTransform * this.invTransform;
+            Setup();
+        }
+
+        protected void Setup() {
+            boundingSphere.center = Vec3.TransformPosition3(Vec3.Zero, transform);
+            Vec3 onSphereX = Vec3.TransformPosition3(new Vec3(radius, 0f, 0f), transform);
+            Vec3 onSphereY = Vec3.TransformPosition3(new Vec3(0f, radius, 0f), transform);
+            Vec3 onSphereZ = Vec3.TransformPosition3(new Vec3(0f, 0f, radius), transform);
+            float transformedRadiusXSq = Vec3.GetLengthSq(onSphereX - boundingSphere.center);
+            float transformedRadiusYSq = Vec3.GetLengthSq(onSphereY - boundingSphere.center);
+            float transformedRadiusZSq = Vec3.GetLengthSq(onSphereZ - boundingSphere.center);
+            boundingSphere.radiusSq = Math.Max(transformedRadiusZSq, Math.Max(transformedRadiusXSq, transformedRadiusYSq));
+            boundingSphere.radius = (float)Math.Sqrt(boundingSphere.radiusSq);
+        }
+
+        public BSphere BSphere {
+            get { return boundingSphere; }
         }
 
     }

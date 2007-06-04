@@ -13,8 +13,8 @@ namespace RayTracerFramework.Shading {
             this.material = material;
         }
 
-	    private DSphere(float radius, Matrix transform, 
-                    Matrix invTransform, Material material):base(radius, transform, invTransform) {
+	    protected DSphere(float radius, Matrix transform, 
+                    Matrix invTransform, BSphere boundingSphere, Material material):base(radius, transform, invTransform, boundingSphere) {
             this.material = material;
 	    }
 

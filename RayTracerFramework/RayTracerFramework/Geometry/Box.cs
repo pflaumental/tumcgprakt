@@ -12,35 +12,65 @@ namespace RayTracerFramework.Geometry {
         protected Matrix transform;
         protected Matrix invTransform;
 
+        protected BSphere boundingSphere;
+
         protected Box(Vec3 position, float width, float height, float depth) {            
             this.dx = width;
             this.dy = height;
             this.dz = depth;
             transform = Matrix.GetTranslation(position);
             invTransform = Matrix.GetTranslation(-position);
-            //containsOther = false;
+            Vec3 r = new Vec3(width / 2, width / 2, width / 2);
+            float radiusSq = Vec3.GetLengthSq(r);
+            boundingSphere = new BSphere(position + r, (float)Math.Sqrt(radiusSq), radiusSq);            
         }
 
-        protected Box(Matrix transform, Matrix invTransform, float width, float height, float depth) {
+        protected Box(Matrix transform, Matrix invTransform, float width, float height, float depth, BSphere boundingSphere) {
             this.dx = width;
             this.dy = height;
             this.dz = depth;
             this.transform = transform;
             this.invTransform = invTransform;
+            this.boundingSphere = boundingSphere;
         }
 
         public void Transform(Matrix transformation)
         {
             this.transform *= transformation;
             this.invTransform = Matrix.Invert(this.transform);
+            Setup();
         }
 
         
         public void Transform(Matrix transformation, Matrix invTransformation) {
             this.transform *= transformation;
             this.invTransform = invTransform * this.invTransform;
+            Setup();
         }
-        
+
+        protected void Setup() {
+            Vec3 p1 = Vec3.TransformPosition3(new Vec3(0f, 0f, 0f), transform);
+            Vec3 p2 = Vec3.TransformPosition3(new Vec3(0f, 0f, dz), transform);
+            Vec3 p3 = Vec3.TransformPosition3(new Vec3(0f, dy, 0f), transform);
+            Vec3 p4 = Vec3.TransformPosition3(new Vec3(0f, dy, dz), transform);
+            Vec3 p5 = Vec3.TransformPosition3(new Vec3(dx, 0f, 0f), transform);
+            Vec3 p6 = Vec3.TransformPosition3(new Vec3(dx, 0f, dz), transform);
+            Vec3 p7 = Vec3.TransformPosition3(new Vec3(dx, dy, 0f), transform);
+            Vec3 p8 = Vec3.TransformPosition3(new Vec3(dx, dy, dz), transform);
+
+            Vec3 center = (1f/8f) * (p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8);
+            
+            float radiusSq = Vec3.GetLengthSq(p1 - center);
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p2 - center));
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p3 - center));
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p4 - center));
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p5 - center));
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p6 - center));
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p7 - center));
+            radiusSq = Math.Max(radiusSq, Vec3.GetLengthSq(p8 - center));
+
+            boundingSphere = new BSphere(center, (float)Math.Sqrt(radiusSq), radiusSq);
+        }
 
         public bool Intersect(Ray ray) {
             // Transform ray to object space
@@ -329,6 +359,10 @@ namespace RayTracerFramework.Geometry {
             }
 
             return numIntersections;
+        }
+
+        public BSphere BSphere {
+            get { throw new Exception("The method or operation is not implemented."); }
         }
 
     }

@@ -25,12 +25,10 @@ namespace RayTracerFramework.Geometry {
             this.boundingSphere = boundingSphere;
             this.vertices = vertices;
             this.normals = normals;
-            Setup();
         }
 
         public void AddSubset(MeshSubset subset) {
-            subsets.Add(subset);
-            boundingSphere = new BSphere(Vec3.Zero, 0f);            
+            subsets.Add(subset);           
         }
 
         protected void Setup() {
@@ -66,7 +64,7 @@ namespace RayTracerFramework.Geometry {
                 vertices[i].x = v.x;
                 vertices[i].y = v.y;
                 vertices[i].z = v.z;
-                Vec3 n = Vec3.TransformNormal3n(normals[i], transformation);
+                Vec3 n = Vec3.TransformNormal3n(normals[i], transformation); // Fast, but right?
                 normals[i].x = n.x;
                 normals[i].y = n.y;
                 normals[i].z = n.z;
@@ -163,5 +161,10 @@ namespace RayTracerFramework.Geometry {
             }
             return numIntersections;     
         }
+
+        public BSphere BSphere {
+            get { return boundingSphere; }
+        }
+
     }
 }
