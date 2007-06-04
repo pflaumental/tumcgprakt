@@ -362,7 +362,7 @@ namespace RayTracerFramework.Geometry {
         }
 
         public BSphere BSphere {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return boundingSphere; }
         }
 
     }

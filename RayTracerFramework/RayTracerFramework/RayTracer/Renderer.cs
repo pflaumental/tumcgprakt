@@ -20,7 +20,7 @@ namespace RayTracerFramework.RayTracer {
             this.statusBar = statusBar;
         }
 
-        public void Render(Scene scene, Bitmap target) {
+        public void Render(Scene scene, Bitmap target) {            
             int targetWidth = target.Width;
             int targetHeight = target.Height;
 

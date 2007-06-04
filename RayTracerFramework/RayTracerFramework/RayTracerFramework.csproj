@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Geometry\BSphere.cs" />
+    <Compile Include="Geometry\GeoObjectKDTree.cs" />
     <Compile Include="Geometry\IBounding.cs" />
     <Compile Include="Geometry\KDTree.cs" />
     <Compile Include="Geometry\Mesh.cs" />
