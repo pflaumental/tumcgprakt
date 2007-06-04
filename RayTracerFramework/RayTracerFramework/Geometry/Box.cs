@@ -331,6 +331,5 @@ namespace RayTracerFramework.Geometry {
             return numIntersections;
         }
 
-        public void Setup() { }
     }
 }
