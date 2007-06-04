@@ -45,9 +45,9 @@ namespace RayTracerFramework.Geometry {
 
         // Constants
         protected readonly static int DefaultMaxHeight = 25;
-        protected readonly static int DefaultMaxDesiredTrianglesPerLeafCount = 12;
+        protected readonly static int DefaultMaxDesiredObjectsPerLeafCount = 12;
         protected readonly static float DefaultWeightDivisionQuality = 0f;
-        protected readonly static float DefaultWeightBadTriangleCount = 1f - DefaultWeightDivisionQuality;
+        protected readonly static float DefaultWeightSum = 1f - DefaultWeightDivisionQuality;
 
         // Enums
         public enum Axis { X = 0, Y, Z }
@@ -93,9 +93,9 @@ namespace RayTracerFramework.Geometry {
         protected KDTree() {
             content = new List<IIntersectable>();
             root = new KDTree.Leaf(content);
-            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredTrianglesPerLeafCount;
+            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredObjectsPerLeafCount;
             MaxHeight = DefaultMaxHeight;
-            WeightSum = DefaultWeightBadTriangleCount;
+            WeightSum = DefaultWeightSum;
             WeightDivisionQuality = DefaultWeightDivisionQuality;
             Height = 1;
             //LeafesCount = 1;
@@ -104,9 +104,9 @@ namespace RayTracerFramework.Geometry {
         protected KDTree(List<IIntersectable> content) {
             root = new KDTree.Leaf(content);
             this.content = content;
-            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredTrianglesPerLeafCount;
+            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredObjectsPerLeafCount;
             MaxHeight = DefaultMaxHeight;
-            WeightSum = DefaultWeightBadTriangleCount;
+            WeightSum = DefaultWeightSum;
             WeightDivisionQuality = DefaultWeightDivisionQuality;
             Height = 1;
             //LeafesCount = 1;
@@ -114,7 +114,7 @@ namespace RayTracerFramework.Geometry {
 
         // Abstract methods
         protected abstract void SplitOnPlane(
-                List<IIntersectable> content,
+                List<IIntersectable> splitContent,
                 Axis axis,
                 Vec3 position,
                 out List<IIntersectable> leftContent,
@@ -223,6 +223,36 @@ namespace RayTracerFramework.Geometry {
             return new KDTree.Inner(leftNode, rightNode, splitAxis, planePosition);
         }
 
+        protected bool Traverse(Ray ray, KDTree.Node node, float tMin, float tMax) {
+            if (node.isLeaf) {
+                KDTree.Leaf leaf = (KDTree.Leaf)node;
+
+                foreach (IIntersectable obj in leaf.content) {
+                    if (obj.Intersect(ray)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            KDTree.Inner inner = (KDTree.Inner)node;
+
+            KDTree.Node near, far;
+            float tSplit;
+            CalculateInner(ray, inner, out near, out far, out tSplit);
+
+            if ((tSplit >= tMax) || (tSplit < 0f))
+                return Traverse(ray, near, tMin, tMax);
+            else if (tSplit < tMin)
+                return Traverse(ray, far, tMin, tMax);
+            else {
+                if (Traverse(ray, near, tMin, tSplit))
+                    return true;
+                return Traverse(ray, far, tSplit, tMax);
+            }
+        }
+
         protected bool Traverse(Ray ray, KDTree.Node node, float tMin, float tMax, out RayIntersectionPoint firstIntersection) {
             if (node.isLeaf) {
                 KDTree.Leaf leaf = (KDTree.Leaf)node;
@@ -247,8 +277,62 @@ namespace RayTracerFramework.Geometry {
 
             KDTree.Inner inner = (KDTree.Inner)node;
 
-            KDTree.Node near = null, far = null;
-            float tSplit = 0f;
+            KDTree.Node near, far;
+            float tSplit;
+            CalculateInner(ray, inner, out near, out far, out tSplit);
+
+            if ((tSplit >= tMax) || (tSplit < 0f))
+                return Traverse(ray, near, tMin, tMax, out firstIntersection);
+            else if (tSplit < tMin)
+                return Traverse(ray, far, tMin, tMax, out firstIntersection);
+            else {
+                if (Traverse(ray, near, tMin, tSplit, out firstIntersection))
+                    if (firstIntersection.t < tSplit)
+                        return true;
+                return Traverse(ray, far, tSplit, tMax, out firstIntersection);
+            }
+        }
+
+        protected int Traverse(Ray ray, KDTree.Node node, float tMin, float tMax, ref SortedList<float, RayIntersectionPoint> intersections) {
+            if (node.isLeaf) {
+                KDTree.Leaf leaf = (KDTree.Leaf)node;
+
+                int numCurrentIntersections = 0;
+
+                foreach (IIntersectable obj in leaf.content) {
+                    numCurrentIntersections += obj.Intersect(ray, ref intersections);
+                }
+
+                return numCurrentIntersections;
+            }
+
+            KDTree.Inner inner = (KDTree.Inner)node;
+
+            KDTree.Node near, far;
+            float tSplit;
+            CalculateInner(ray, inner, out near, out far, out tSplit);
+
+            if ((tSplit >= tMax) || (tSplit < 0f))
+                return Traverse(ray, near, tMin, tMax, ref intersections);
+            else if (tSplit < tMin)
+                return Traverse(ray, far, tMin, tMax, ref intersections);
+            else {
+                int numCurrentIntersections = Traverse(ray, near, tMin, tSplit, ref intersections);
+                return numCurrentIntersections + Traverse(ray, far, tSplit, tMax, ref intersections);
+            }
+        }
+
+        protected void CalculateInner(
+                Ray ray,
+                KDTree.Inner inner,
+                out KDTree.Node near,
+                out KDTree.Node far,
+                out float tSplit) {
+            
+            near = null;
+            far = null;
+            tSplit = 0f;
+
             switch (inner.axis) {
                 case Axis.X:
                     if (ray.position.x > inner.planePosition) {
@@ -290,21 +374,10 @@ namespace RayTracerFramework.Geometry {
                         tSplit = (inner.planePosition - ray.position.z) / ray.direction.z;
                     break;
             }
-
-            if ((tSplit >= tMax) || (tSplit < 0f))
-                return Traverse(ray, near, tMin, tMax, out firstIntersection);
-            else if (tSplit < tMin)
-                return Traverse(ray, far, tMin, tMax, out firstIntersection);
-            else {
-                if (Traverse(ray, near, tMin, tSplit, out firstIntersection))
-                    if (firstIntersection.t < tSplit)
-                        return true;
-                return Traverse(ray, far, tSplit, tMax, out firstIntersection);
-            }
         }
 
         public bool Intersect(Ray ray) {
-            throw new Exception("The method or operation is not implemented.");
+            return Traverse(ray, root, 0f, float.PositiveInfinity);
         }
 
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
@@ -312,7 +385,7 @@ namespace RayTracerFramework.Geometry {
         }
 
         public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
-            throw new Exception("The method or operation is not implemented and never will be!.");
+            return Traverse(ray, root, 0f, float.PositiveInfinity, ref intersections);
         }
 
     } // End class
