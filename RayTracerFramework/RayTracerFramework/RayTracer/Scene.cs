@@ -36,6 +36,16 @@ namespace RayTracerFramework.RayTracer {
             //refractionIndex = 1.0f;         
         }
 
+        public DPoint AddDPoint(Vec3 position) { 
+            DPoint point = new DPoint(position);
+            kdTree.content.Add(point);
+            return point;
+        }
+
+        public void AddDPoints(List<IIntersectable> points) {
+            kdTree.content.AddRange(points);
+        }
+
         public DSphere AddDSphere(Vec3 worldPos, float radius, Material material) {
             DSphere sphere = new DSphere(Vec3.Zero, radius, material);
             sphere.Transform(Matrix.GetTranslation(worldPos));
