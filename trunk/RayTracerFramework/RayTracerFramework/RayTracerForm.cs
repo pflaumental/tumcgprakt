@@ -69,10 +69,14 @@ namespace RayTracerFramework {
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
 
-            OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
+            //OBJLoader loader = new OBJLoader();
+            //DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
+            //scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
 
-            scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
+            OBJPointLoader pointLoader = new OBJPointLoader();
+            List<IIntersectable> points = pointLoader.LoadFromFile("bunny_t4046.obj");
+            scene.AddDPoints(points);
+
 
             scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, 0f, 1f, 1.04f));
             scene.AddDSphere(new Vec3(6.0f, 3.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0f, 0f, 1.04f));

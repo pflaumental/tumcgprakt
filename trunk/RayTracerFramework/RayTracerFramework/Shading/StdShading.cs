@@ -131,6 +131,7 @@ namespace RayTracerFramework.Shading {
                 resultColor += (reflectionColor * reflectionPartSum);
             }
 
+            resultColor.Saturate();
             return resultColor;
         }
     }

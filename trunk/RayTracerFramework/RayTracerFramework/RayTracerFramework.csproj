@@ -47,7 +47,9 @@
     <Compile Include="Geometry\Triangle.cs" />
     <Compile Include="Geometry\TriangleKDTree.cs" />
     <Compile Include="Loading\IMeshLoader.cs" />
+    <Compile Include="Loading\IPointLoader.cs" />
     <Compile Include="Loading\OBJLoader.cs" />
+    <Compile Include="Loading\OBJPointLoader.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +66,7 @@
     <Compile Include="Geometry\Vec2.cs" />
     <Compile Include="Shading\DMesh.cs" />
     <Compile Include="Shading\DMeshSubset.cs" />
+    <Compile Include="Shading\DPoint.cs" />
     <Compile Include="Shading\DSphere.cs" />
     <Compile Include="Geometry\IIntersectable.cs" />
     <Compile Include="Geometry\IntersectionPoint.cs" />
