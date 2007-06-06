@@ -20,7 +20,7 @@ namespace RayTracerFramework {
         private Camera cam;
         
         private int pos = 0;
-        private Matrix camTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
+        private Matrix camTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER / 4f);
         
         public RayTracerForm() {            
             InitializeComponent();
@@ -34,7 +34,9 @@ namespace RayTracerFramework {
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
 
-            Vec3 camPos = new Vec3(0, 0, -500000);
+            //Vec3 camPos = new Vec3(253397.460f, 1245810.058f, -21396.996f);
+            //Vec3 camLookAt = new Vec3(253397.460f, 1245810.058f, -21395.996f);
+            Vec3 camPos = new Vec3(0, 0, -15);
             Vec3 camLookAt = Vec3.Zero;
             cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Trigonometric.PI_QUARTER, 4f/3f);
             //cam.aspectRatio = aspectRatio;
