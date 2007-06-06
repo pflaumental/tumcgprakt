@@ -50,6 +50,7 @@
     <Compile Include="Loading\IPointLoader.cs" />
     <Compile Include="Loading\OBJLoader.cs" />
     <Compile Include="Loading\OBJPointLoader.cs" />
+    <Compile Include="Loading\PointLoader.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
     </Compile>
