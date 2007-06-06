@@ -6,58 +6,74 @@ using System.Text.RegularExpressions;
 
 namespace ObjPointExtractor {
     class Program {
-        private readonly static int reductionFactor = 8000;
+        private readonly static int reductionFactor = 1000;
 
         static void Main(string[] args) {
-            StreamWriter outputStreamWriter = new StreamWriter("out.point", true);
+            //StreamWriter outputStreamWriter = new StreamWriter("out.point", true);
+            FileStream outputFileStream = new FileStream("out.point" , FileMode.Create);
             Regex regex = new Regex(@"\s+");
-            int iPoint = 0;
+            int iPoint = 0, readBlockCount = 0;
             foreach (string inputFilename in args) {
                 FileStream inputFileStream = new FileStream(inputFilename, FileMode.Open);
-                int blockSize = 1024;
-                byte[] block = new byte[blockSize];
-                MemoryStream memStream = new MemoryStream(block);
-                StreamReader reader = new StreamReader(memStream);
-                StreamWriter writer = new StreamWriter(memStream);
+                Console.WriteLine("Processing " + inputFilename);
+                int blockSize = 1024 * 1024 * 100;
+                byte[] inputBlock = new byte[blockSize];
+                byte[] outputBlock = new byte[blockSize];
+                MemoryStream inputMemStream = new MemoryStream(inputBlock);
+                MemoryStream outputMemStream = new MemoryStream(outputBlock);
+                StreamReader inputReader = new StreamReader(inputMemStream);
+                StreamWriter inputWriter = new StreamWriter(inputMemStream);
+                StreamWriter outputWriter = new StreamWriter(outputMemStream);
              
-                int readCount;
+                int readCount, writeCount;
                 int offset = 0;
                 
                 while (true) {
-                    readCount = inputFileStream.Read(block, offset, blockSize - offset);
+                    readCount = inputFileStream.Read(inputBlock, offset, blockSize - offset);
+                    readBlockCount++;
                     if (readCount == 0)
                         break;                     
 
-                    string line = reader.ReadLine();                    
+                    writeCount = 0;
+
+                    string line = inputReader.ReadLine();                    
 
                     string nextLine = null;
 
                     while (true) {
-                        nextLine = reader.ReadLine();
+                        nextLine = inputReader.ReadLine();
                         if (nextLine == null)
                             break; // line may be incomplete
 
                         string[] tokens = regex.Split(line);
                         if (tokens[0] == "v") {
-                            if ((iPoint = (iPoint++ % reductionFactor)) == 0) {
-                                outputStreamWriter.WriteLine(tokens[1] + " " + tokens[2] + " " + tokens[3]);
+                            if ((iPoint++ % reductionFactor) == 0) {
+                                iPoint = 1;
+                                string outputLine = tokens[1] + " " + tokens[2] + " " + tokens[3] + "\n";
+                                outputWriter.Write(outputLine);
+                                writeCount += outputLine.Length;
                             }
                         }
                         line = nextLine;
-                    }
+                    }                    
+                    inputMemStream.Seek(0, SeekOrigin.Begin);
+                    inputWriter.WriteLine(line);
+                    inputWriter.Flush();
+                    inputMemStream.Seek(0, SeekOrigin.Begin);
+                    offset = line.Length;
 
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    writer.WriteLine(line);
-                    writer.Flush();
-                    memStream.Seek(0, SeekOrigin.Begin);
+                    outputWriter.Flush();
+                    outputFileStream.Write(outputBlock, 0, writeCount); 
+                    outputMemStream.Seek(0, SeekOrigin.Begin);
 
-                    offset = line.Length;                    
+                    Console.WriteLine("Read block " + readBlockCount + " (blocksize " + readCount + " )");
                 }
-                memStream.Close();
+                inputMemStream.Close();
+                outputMemStream.Close();
                 inputFileStream.Close();
 	        }
 
-            outputStreamWriter.Close();
+            outputFileStream.Close();
         }
     }
 }
