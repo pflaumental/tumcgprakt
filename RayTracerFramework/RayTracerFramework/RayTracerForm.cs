@@ -75,7 +75,7 @@ namespace RayTracerFramework {
             //scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
 
             PointLoader pointLoader = new PointLoader();
-            List<IIntersectable> points = pointLoader.LoadFromFile("reduced_7474.point");
+            List<IIntersectable> points = pointLoader.LoadFromFile("reduced_186985.point");
             scene.AddDPoints(points);
 
             //scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, 0f, 1f, 1.04f));

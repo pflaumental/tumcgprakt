@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace ObjPointExtractor {
     class Program {
-        private readonly static int reductionFactor = 1000;
+        private readonly static int reductionFactor = 1;
 
         static void Main(string[] args) {
             //StreamWriter outputStreamWriter = new StreamWriter("out.point", true);
@@ -16,7 +16,7 @@ namespace ObjPointExtractor {
             foreach (string inputFilename in args) {
                 FileStream inputFileStream = new FileStream(inputFilename, FileMode.Open);
                 Console.WriteLine("Processing " + inputFilename);
-                int blockSize = 1024 * 1024 * 100;
+                int blockSize = 1024;// * 1024 * 100;
                 byte[] inputBlock = new byte[blockSize];
                 byte[] outputBlock = new byte[blockSize];
                 MemoryStream inputMemStream = new MemoryStream(inputBlock);
