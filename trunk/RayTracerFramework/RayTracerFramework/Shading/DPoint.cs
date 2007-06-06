@@ -73,7 +73,10 @@ namespace RayTracerFramework.Shading {
         }
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, RayTracerFramework.RayTracer.Scene scene, float contribution) {
-            return Color.White;
+            float factor = (25f - intersection.t) / 25f;
+            if (factor < 0f)
+                factor = 0f;
+            return Color.White * factor;
         }
 
         public Material Material {
