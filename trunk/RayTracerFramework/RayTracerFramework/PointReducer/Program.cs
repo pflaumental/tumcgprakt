@@ -5,7 +5,7 @@ using System.IO;
 
 namespace PointReducer {
     class Program {
-        private readonly static int reductionFactor = 25;
+        private readonly static int reductionFactor = 10;
 
         static void Main(string[] args) {
             string inputFileName = args[0];
