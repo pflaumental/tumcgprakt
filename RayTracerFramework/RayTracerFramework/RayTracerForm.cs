@@ -18,11 +18,11 @@ namespace RayTracerFramework {
         private Scene scene;
         private Renderer renderer;
         private Camera cam;
-        
+
         private int pos = 0;
-        private Matrix camTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER / 4f);
-        
-        public RayTracerForm() {            
+        private Matrix camTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
+
+        public RayTracerForm() {
             InitializeComponent();
             Setup();
         }
@@ -34,15 +34,12 @@ namespace RayTracerFramework {
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
 
-            //Vec3 camPos = new Vec3(253397.460f, 1245810.058f, -21396.996f);
-            //Vec3 camLookAt = new Vec3(253397.460f, 1245810.058f, -21395.996f);
-            Vec3 camPos = new Vec3(0, 0, -15);
+            Vec3 camPos = new Vec3(0, 0, -5);
             Vec3 camLookAt = Vec3.Zero;
-            cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Trigonometric.PI_QUARTER, 4f/3f);
+            cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Trigonometric.PI_QUARTER, 4f / 3f);
             //cam.aspectRatio = aspectRatio;
 
             scene = new Scene(cam);
-            scene.useCubeMap = false;
 
             Light l = new PointLight(new Vec3(1, 4, -6));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
@@ -64,29 +61,28 @@ namespace RayTracerFramework {
             l4.diffuse = new Color(0.2f, 0.3f, 0.2f);
             l4.specular = new Color(0.5f, 0.5f, 0.3f);
 
+            scene.useCubeMap = true;
+
             scene.lightManager.AddWorldSpaceLight(l);
             scene.lightManager.AddWorldSpaceLight(l2);
 
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
 
-            //OBJLoader loader = new OBJLoader();
-            //DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
-            //scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
+            OBJLoader loader = new OBJLoader();
+            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
 
-            PointLoader pointLoader = new PointLoader();
-            List<IIntersectable> points = pointLoader.LoadFromFile("reduced_186985.point");
-            scene.AddDPoints(points);
+            scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
 
-            //scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, 0f, 1f, 1.04f));
-            //scene.AddDSphere(new Vec3(6.0f, 3.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, 0f, 0f, 1.04f));
+            scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.96f, 0.85f));
+            scene.AddDSphere(new Vec3(6.0f, 3.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.70f, 0f));
 
-            //DBox box1 = scene.AddDBox(Matrix.GetRotationY(-Trigonometric.PI_QUARTER) * Matrix.GetTranslation(new Vec3(-4f, -2f, 2f)), 4f, 4f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 10, 0.7f, 0, 1));
-            //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.15f, 0.75f, 1.03f));
+            //DBox box1 = scene.AddDBox(Matrix.GetRotationY(-Trigonometric.PI_QUARTER) * Matrix.GetTranslation(new Vec3(-4f, -2f, 2f)), 4f, 4f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 10, true, false, 0.5f, 0f));
+            //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, true, 0.97f, 0.8f));
 
 
-            //scene.AddDBox(Matrix.GetTranslation(-10.0f, -3f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, 0.3f, 0, 1));
-            //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, 0.7f, 0, 0));
+            scene.AddDBox(Matrix.GetTranslation(-10.0f, -3f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f));
+            //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, true, false, 0.5f, 0f));
             //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
             //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
             //box1.Transform(Matrix.GetTranslation(0f, -0.2f, 0f));
@@ -99,7 +95,7 @@ namespace RayTracerFramework {
             float startMillis = Environment.TickCount;
 
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
-            cam.aspectRatio = ((float)bitmap.Width) / bitmap.Height;            
+            cam.aspectRatio = ((float)bitmap.Width) / bitmap.Height;
 
             renderer.Render(scene, bitmap);
 
