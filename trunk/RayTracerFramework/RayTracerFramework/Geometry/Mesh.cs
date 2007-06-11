@@ -136,8 +136,13 @@ namespace RayTracerFramework.Geometry {
             if (firstIntersection == null)
                 return false;
 
-            firstIntersection = new RayMeshIntersectionPoint(firstIntersection.position,
-                firstIntersection.normal, firstIntersection.t, this, null, firstSubset);
+            firstIntersection = new RayMeshIntersectionPoint(
+                    firstIntersection.position,
+                    firstIntersection.normal, 
+                    firstIntersection.t, 
+                    this, 
+                    firstIntersection.textureCoordinates, 
+                    firstSubset);
             return true;    
         }
 
@@ -155,8 +160,12 @@ namespace RayTracerFramework.Geometry {
                 numIntersections += subset.kdTree.Intersect(ray, ref subsetIntersections);
                 foreach (RayIntersectionPoint intersectionPoint in subsetIntersections.Values) {
                     intersections.Add(intersectionPoint.t, new RayMeshIntersectionPoint(
-                            intersectionPoint.position, intersectionPoint.normal,
-                            intersectionPoint.t, this, null, subset));
+                            intersectionPoint.position, 
+                            intersectionPoint.normal,
+                            intersectionPoint.t, 
+                            this, 
+                            intersectionPoint.textureCoordinates, 
+                            subset));
                 }
             }
             return numIntersections;     

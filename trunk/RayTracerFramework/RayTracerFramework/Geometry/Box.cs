@@ -321,22 +321,28 @@ namespace RayTracerFramework.Geometry {
 
             // Z
             numIntersections += TestTwo(ray, rayOS, rayOS.direction.z, rayOS.direction.x, rayOS.direction.y,
-                    rayOS.position.z, rayOS.position.x, rayOS.position.y, dz, dx, dy, Vec3.StdZAxis,
-                    inside, ref intersections);
+                    rayOS.position.z, rayOS.position.x, rayOS.position.y, dz, dx, dy,
+                    tex1_00, tex1_01, tex1_10, tex1_11,
+                    tex3_01, tex3_00, tex3_11, tex3_10, 
+                    Vec3.StdZAxis, inside, ref intersections);
             if (numIntersections == maxIntersections)
                 return numIntersections;
 
             // Y
             numIntersections += TestTwo(ray, rayOS, rayOS.direction.y, rayOS.direction.x, rayOS.direction.z,
-                rayOS.position.y, rayOS.position.x, rayOS.position.z, dy, dx, dz, Vec3.StdYAxis,
-                inside, ref intersections);
+                rayOS.position.y, rayOS.position.x, rayOS.position.z, dy, dx, dz,
+                    tex6_10, tex6_11, tex6_00, tex6_01,
+                    tex5_00, tex5_01, tex5_10, tex5_11, 
+                    Vec3.StdYAxis, inside, ref intersections);
             if (numIntersections == maxIntersections)
                 return numIntersections;
 
             // X
             numIntersections += TestTwo(ray, rayOS, rayOS.direction.x, rayOS.direction.y, rayOS.direction.z,
-                    rayOS.position.x, rayOS.position.y, rayOS.position.z, dx, dy, dz, Vec3.StdXAxis,
-                    inside, ref intersections);
+                    rayOS.position.x, rayOS.position.y, rayOS.position.z, dx, dy, dz, 
+                    tex4_01, tex4_11, tex4_00, tex4_10,
+                    tex2_00, tex2_10, tex2_01, tex2_11, 
+                    Vec3.StdXAxis, inside, ref intersections);
             return numIntersections;
         }
 
@@ -350,12 +356,21 @@ namespace RayTracerFramework.Geometry {
                 float rayOSPos2, 
                 float rayOSPos3, 
                 float d1, 
-                float d2, 
-                float d3, 
+                float d2,
+                float d3,
+                Vec2 texFront00,
+                Vec2 texFront01,
+                Vec2 texFront10,
+                Vec2 texFront11,
+                Vec2 texBack00,
+                Vec2 texBack01,
+                Vec2 texBack10,
+                Vec2 texBack11,
                 Vec3 normalAxis,
                 bool inside,
                 ref SortedList<float, RayIntersectionPoint> intersections) {
             float tOS = 0.0f, p2, p3;
+            Vec2 tex = null;
             Vec3 intersectionPos, intersectionNormal, localPos;
             float t = 0.0f;
             int numIntersections = 0;
@@ -369,7 +384,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
+                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections ++;
                     }
                 } else if (rayOSDir1 > 0) { // Test against back plane
@@ -381,7 +397,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
+                        tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections++;
                     }
                 }
@@ -395,7 +412,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
+                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections++;
                     }
                 } else if (rayOSDir1 < 0 && rayOSPos1 > d1) { // Test against back plane
@@ -407,7 +425,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
+                        tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections++;
                     }
                 }

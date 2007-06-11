@@ -77,7 +77,7 @@ namespace RayTracerFramework {
             scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.96f, 0.85f, null));
             scene.AddDSphere(new Vec3(6.0f, 3.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.70f, 0f, null));
 
-            FastBitmap boxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/WarriorEye.jpg")));
+            FastBitmap boxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
             Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetTranslation(0.5f, 0f, -1.5f);

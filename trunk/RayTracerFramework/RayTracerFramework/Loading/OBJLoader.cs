@@ -26,7 +26,7 @@ namespace RayTracerFramework.Loading {
 
             List<Vec3> vertices = new List<Vec3>();
             List<Vec3> normals = new List<Vec3>();
-            List<Vec3> texCoords = new List<Vec3>();
+            List<Vec2> texCoords = new List<Vec2>();
 
             Dictionary<string, DMeshSubset> meshSubsets = new Dictionary<string,DMeshSubset>();
             DMeshSubset defaultSubset = new DMeshSubset();
@@ -54,8 +54,8 @@ namespace RayTracerFramework.Loading {
                                               float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"))));
                         break;
                     case "vt":
-                        texCoords.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
-                                               float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us")), 0));
+                        texCoords.Add(new Vec2(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
+                                               float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us"))));
                         break;
                     case "vn":
                         normals.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
@@ -73,7 +73,7 @@ namespace RayTracerFramework.Loading {
                         Vec3 p3 = vertices[Int32.Parse(v3Tokens[0]) - 1];
 
                         // Extract diffuseTexture coordinates
-                        Vec3 t1, t2, t3;
+                        Vec2 t1, t2, t3;
                         if (v1Tokens[1] == "") 
                             t1 = t2 = t3 = null;
                         else {
