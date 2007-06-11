@@ -19,6 +19,7 @@ namespace RayTracerFramework.Geometry {
         //         | /     6    |/
         // (0,0,0) |/___________/(dx,0,0)
 
+        protected bool textured;
         public Vec2 tex1_00 = Vec2.Vec00,     // ( 0,  0,  0)
                 tex1_01 = Vec2.Vec01,         // (dx,  0,  0)
                 tex1_10 = Vec2.Vec10,         // ( 0, dy,  0)
@@ -49,10 +50,11 @@ namespace RayTracerFramework.Geometry {
 
         protected BSphere boundingSphere;
 
-        protected Box(Vec3 position, float width, float height, float depth) {            
+        protected Box(Vec3 position, float width, float height, float depth, bool textured) {
             this.dx = width;
             this.dy = height;
             this.dz = depth;
+            this.textured = textured;
             transform = Matrix.GetTranslation(position);
             invTransform = Matrix.GetTranslation(-position);
             Vec3 r = new Vec3(width / 2, width / 2, width / 2);
@@ -60,10 +62,18 @@ namespace RayTracerFramework.Geometry {
             boundingSphere = new BSphere(position + r, (float)Math.Sqrt(radiusSq), radiusSq);            
         }
 
-        protected Box(Matrix transform, Matrix invTransform, float width, float height, float depth, BSphere boundingSphere) {
+        protected Box(
+                Matrix transform, 
+                Matrix invTransform, 
+                float width, 
+                float height, 
+                float depth, 
+                bool textured, 
+                BSphere boundingSphere) {
             this.dx = width;
             this.dy = height;
             this.dz = depth;
+            this.textured = textured;
             this.transform = transform;
             this.invTransform = invTransform;
             this.boundingSphere = boundingSphere;
@@ -251,7 +261,8 @@ namespace RayTracerFramework.Geometry {
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         intersect = true;
-                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                        if (textured)
+                            tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
                     }
                 }
                 else if (rayOSDir1 > 0)
@@ -262,7 +273,8 @@ namespace RayTracerFramework.Geometry {
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         negateNormal = true;
                         intersect = true;
-                        tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
+                        if (textured) 
+                            tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
                     }
                 }
             } else {
@@ -275,7 +287,8 @@ namespace RayTracerFramework.Geometry {
                     {
                         intersect = true;
                         negateNormal = true;
-                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                        if (textured) 
+                            tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
                     }
                 }
                 else if (rayOSDir1 < 0 && rayOSPos1 > d1)
@@ -283,10 +296,12 @@ namespace RayTracerFramework.Geometry {
                     tOS = (rayOSPos1 - d1) / -rayOSDir1;
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
-                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         intersect = true;
-                    tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
+                        if (textured)
+                            tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
                     }
+                }
             }
 
             if (intersect) {
@@ -384,7 +399,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                        if (textured) 
+                            tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections ++;
                     }
@@ -397,7 +413,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
+                        if (textured) 
+                            tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections++;
                     }
@@ -412,7 +429,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                        if (textured) 
+                            tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections++;
                     }
@@ -425,7 +443,8 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
+                        if (textured) 
+                            tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
                         intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex));
                         numIntersections++;
                     }

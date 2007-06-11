@@ -47,7 +47,7 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public DSphere AddDSphere(Vec3 worldPos, float radius, Material material) {
-            DSphere sphere = new DSphere(Vec3.Zero, radius, material);
+            DSphere sphere = new DSphere(Vec3.Zero, radius, material.diffuseTexture != null, material);
             sphere.Transform(Matrix.GetTranslation(worldPos));
             //transformedObjects.Add(sphere);
             kdTree.content.Add(sphere);
@@ -61,8 +61,14 @@ namespace RayTracerFramework.RayTracer {
             return mesh;
         }
 
-        public DBox AddDBox(Matrix transformation, float width, float height, float depth, Material material) {
-            DBox box = new DBox(Vec3.Zero, width, height, depth, material);
+        public DBox AddDBox(
+                Matrix transformation, 
+                float width, 
+                float height, 
+                float depth, 
+                bool textured, 
+                Material material) {
+            DBox box = new DBox(Vec3.Zero, width, height, depth, textured, material);
             box.Transform(Matrix.GetTranslation(-width / 2f, -height / 2f, -depth / 2f));
             box.Transform(transformation);
             //transformedObjects.Add(box);

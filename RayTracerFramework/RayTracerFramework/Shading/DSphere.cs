@@ -9,12 +9,17 @@ namespace RayTracerFramework.Shading {
     class DSphere : Sphere, IObject {
         private Material material;
 
-        public DSphere(Vec3 center, float radius, Material material) : base(center, radius) {
+        public DSphere(Vec3 center, float radius, bool textured, Material material) : base(center, radius, textured) {
             this.material = material;
         }
 
-	    protected DSphere(float radius, Matrix transform, 
-                    Matrix invTransform, BSphere boundingSphere, Material material):base(radius, transform, invTransform, boundingSphere) {
+	    protected DSphere(
+                float radius, 
+                bool textured, 
+                Matrix transform, 
+                Matrix invTransform, 
+                BSphere boundingSphere, 
+                Material material) : base(radius, textured, transform, invTransform, boundingSphere) {
             this.material = material;
 	    }
 

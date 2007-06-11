@@ -45,7 +45,6 @@ namespace RayTracerFramework.Shading {
                         Vec3 H = Vec3.Normalize(L + V);
 
                         float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
-                        Color materialDiffuseColor;
                         iTotal = iTotal + (material.ambient * pointLight.ambient) +
                                           (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse) +
                                           (material.specular * pointLight.specular * specular);
