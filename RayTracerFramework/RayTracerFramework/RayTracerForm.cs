@@ -41,12 +41,12 @@ namespace RayTracerFramework {
 
             scene = new Scene(cam);
 
-            Light l = new PointLight(new Vec3(1, 4, -6));
+            Light l = new PointLight(new Vec3(2, 8, -12));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
             l.diffuse = new Color(0.6f, 0.4f, 0.4f);
             l.specular = new Color(0.8f, 0.5f, 0.5f);
 
-            Light l2 = new PointLight(new Vec3(2, 3, -3));
+            Light l2 = new PointLight(new Vec3(4, 6, -6));
             l2.ambient = new Color(0.05f, 0.05f, 0.05f);
             l2.diffuse = new Color(0.3f, 0.4f, 0.5f);
             l2.specular = new Color(0.5f, 0.5f, 0.6f);
@@ -77,15 +77,12 @@ namespace RayTracerFramework {
             scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.96f, 0.85f, null));
             scene.AddDSphere(new Vec3(6.0f, 3.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.70f, 0f, null));
 
-            //DBox box1 = scene.AddDBox(Matrix.GetRotationY(-Trigonometric.PI_QUARTER) * Matrix.GetTranslation(new Vec3(-4f, -2f, 2f)), 4f, 4f, 2f, new Material(Color.White, Color.White, Color.White, Color.White, 10, true, false, 0.5f, 0f, null));
-            //scene.AddDBox(new Vec3(-6,-2.02f,0), 0.2f, 6f, 3f, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, true, 0.97f, 0.8f));
-
             FastBitmap boxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/WarriorEye.jpg")));
-            scene.AddDBox(Matrix.GetTranslation(-10.0f, -3f, -10f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, boxTexture));
-            //DBox box1 = scene.AddDBox(new Vec3(0.0f, 0f, 0f),2f, 2f, 2f, new Material(Color.Green, Color.Green, Color.Green, Color.Green, 30, true, false, 0.5f, 0f, null));
-            //box1.Transform(Matrix.GetRotationX((float)Math.PI * -0.25f));
-            //box1.Transform(Matrix.GetRotationY((float)Math.PI * 0.125f));
-            //box1.Transform(Matrix.GetTranslation(0f, -0.2f, 0f));
+            Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
+            boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
+            boxTransform *= Matrix.GetTranslation(0.5f, 0f, -1.5f);
+            scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, boxTexture));
+            scene.AddDBox(Matrix.GetTranslation(0f, -2.85f, 0f), 20f, 0.3f, 20f, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f, null));
 
             // Do not forget:
             scene.Setup();
