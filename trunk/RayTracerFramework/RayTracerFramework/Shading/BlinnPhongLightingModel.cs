@@ -43,8 +43,9 @@ namespace RayTracerFramework.Shading {
                         //Vec3 V = -ray.direction;
                         Vec3 V = Vec3.Normalize(scene.cam.eyePos - intersection.position);
                         Vec3 H = Vec3.Normalize(L + V);
-
+                       
                         float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
+                        // assert if (material.diffuseTexture != null && (intersection.textureCoordinates.x < 0f || intersection.textureCoordinates.x > 1f || intersection.textureCoordinates.y < 0f || intersection.textureCoordinates.y > 1f)) throw new Exception("Texture coordinates out of bounds");
                         iTotal = iTotal + (material.ambient * pointLight.ambient) +
                                           (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse) +
                                           (material.specular * pointLight.specular * specular);
