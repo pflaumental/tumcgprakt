@@ -58,7 +58,7 @@ namespace RayTracerFramework.Geometry {
                 t = o_x + (float)Math.Sqrt(x_iSq);
                 Vec3 iPos = ray.GetPoint(t);
                 Vec3 c_iVec = iPos - center;
-                firstIntersection = new RayIntersectionPoint(iPos, Vec3.Normalize(-c_iVec), t, this);
+                firstIntersection = new RayIntersectionPoint(iPos, Vec3.Normalize(-c_iVec), t, this, null);
                 return true;
             } else {
                 float o_x = Vec3.Dot(o_cVec, ray.direction); // negative if ray points away from center
@@ -78,7 +78,7 @@ namespace RayTracerFramework.Geometry {
                 t = o_x - (float)Math.Sqrt(x_iSq);
                 Vec3 iPos = ray.GetPoint(t);
                 Vec3 c_iVec = iPos - center;
-                firstIntersection = new RayIntersectionPoint(iPos, Vec3.Normalize(c_iVec), t, this);
+                firstIntersection = new RayIntersectionPoint(iPos, Vec3.Normalize(c_iVec), t, this, null);
                 return true;
             }
         }
@@ -101,7 +101,7 @@ namespace RayTracerFramework.Geometry {
                 t1 = o_x + (float)Math.Sqrt(x_iSq);
                 Vec3 iPos = ray.GetPoint(t1);
                 Vec3 c_iVec = iPos - center;
-                intersections.Add(t1, new RayIntersectionPoint(iPos, Vec3.Normalize(c_iVec), t1, this));
+                intersections.Add(t1, new RayIntersectionPoint(iPos, Vec3.Normalize(c_iVec), t1, this, null));
                 return 1;
             } else {
                 float o_x = Vec3.Dot(o_cVec, ray.direction); // negative if ray points away from center
@@ -125,8 +125,8 @@ namespace RayTracerFramework.Geometry {
                 Vec3 i2Pos = ray.GetPoint(t2);
                 Vec3 c_i1Vec = i1Pos - center;
                 Vec3 c_i2Vec = i2Pos - center;
-                intersections.Add(t1, new RayIntersectionPoint(i1Pos, Vec3.Normalize(c_i1Vec), t1, this));
-                intersections.Add(t2, new RayIntersectionPoint(i1Pos, Vec3.Normalize(c_i2Vec), t2, this));
+                intersections.Add(t1, new RayIntersectionPoint(i1Pos, Vec3.Normalize(c_i1Vec), t1, this, null));
+                intersections.Add(t2, new RayIntersectionPoint(i1Pos, Vec3.Normalize(c_i2Vec), t2, this, null));
                 return 2;
             }
         }

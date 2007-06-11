@@ -137,7 +137,7 @@ namespace RayTracerFramework.Geometry {
                 return false;
 
             firstIntersection = new RayMeshIntersectionPoint(firstIntersection.position,
-                firstIntersection.normal, firstIntersection.t, this, firstSubset, 0.5f, 0.5f);
+                firstIntersection.normal, firstIntersection.t, this, null, firstSubset);
             return true;    
         }
 
@@ -156,7 +156,7 @@ namespace RayTracerFramework.Geometry {
                 foreach (RayIntersectionPoint intersectionPoint in subsetIntersections.Values) {
                     intersections.Add(intersectionPoint.t, new RayMeshIntersectionPoint(
                             intersectionPoint.position, intersectionPoint.normal,
-                            intersectionPoint.t, this, subset, 0.5f, 0.5f));
+                            intersectionPoint.t, this, null, subset));
                 }
             }
             return numIntersections;     

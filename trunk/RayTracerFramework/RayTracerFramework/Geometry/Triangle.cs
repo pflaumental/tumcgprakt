@@ -122,7 +122,7 @@ namespace RayTracerFramework.Geometry {
             //}
 
             firstIntersection = new RayIntersectionPoint(ray.position + t * ray.direction,
-                                                         normal, t, this);
+                                                         normal, t, this, null);
             return true;
 
 
@@ -199,7 +199,7 @@ namespace RayTracerFramework.Geometry {
             Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
 
             intersections.Add(t, new RayIntersectionPoint(ray.position + t * ray.direction,
-                                                          normal, t, this));
+                                                          normal, t, this, null));
             return 1;    
         }
 
