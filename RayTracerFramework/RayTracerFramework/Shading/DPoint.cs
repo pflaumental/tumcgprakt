@@ -45,7 +45,7 @@ namespace RayTracerFramework.Shading {
             float o_pSq = Vec3.GetLengthSq(o_pVec);
             //   |       p_xSq      |            
             if ((o_pSq - (o_x * o_x)) < EPSILON_SQ) {
-                firstIntersection = new RayIntersectionPoint(position, -ray.direction, (float)Math.Sqrt(o_pSq), this);
+                firstIntersection = new RayIntersectionPoint(position, -ray.direction, (float)Math.Sqrt(o_pSq), this, null);
                 return true;
             } else {
                 firstIntersection = null;
@@ -62,7 +62,7 @@ namespace RayTracerFramework.Shading {
             //   |       p_xSq      |            
             if ((o_pSq - (o_x * o_x)) < EPSILON_SQ) {
                 float t = (float)Math.Sqrt(o_pSq);
-                intersections.Add(t, new RayIntersectionPoint(position, -ray.direction, t, this));
+                intersections.Add(t, new RayIntersectionPoint(position, -ray.direction, t, this, null));
                 return 1;
             } else
                 return 0;

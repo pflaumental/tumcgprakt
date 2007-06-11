@@ -9,6 +9,41 @@ namespace RayTracerFramework.Geometry {
     abstract class Box : IGeometricObject {        
         protected float dx, dy, dz;
 
+        //   (0,dy,dz)_____________(dx,dy,dz)
+        //           /|           /|
+        //          / |   5      / |
+        // (0,dy,0)/__|_____3___/<-|(dx,dy,0)
+        //         | 4|         | 2|
+        // (0,0,dz)|->|_________|__|(dx,0,dz)
+        //         |  /   1     | /
+        //         | /     6    |/
+        // (0,0,0) |/___________/(dx,0,0)
+
+        public Vec2 tex1_00 = Vec2.Vec00,     // ( 0,  0,  0)
+                tex1_01 = Vec2.Vec01,         // (dx,  0,  0)
+                tex1_10 = Vec2.Vec10,         // ( 0, dy,  0)
+                tex1_11 = Vec2.Vec11;         // (dx, dy,  0)
+        public Vec2 tex2_00 = Vec2.Vec00,     // (dx,  0,  0)
+                tex2_01 = Vec2.Vec01,         // (dx,  0, dz)
+                tex2_10 = Vec2.Vec10,         // (dx, dy,  0)
+                tex2_11 = Vec2.Vec11;         // (dx, dy, dz)
+        public Vec2 tex3_00 = Vec2.Vec00,     // (dx,  0, dz)
+                tex3_01 = Vec2.Vec01,         // ( 0,  0, dz)
+                tex3_10 = Vec2.Vec10,         // (dx, dy, dz)
+                tex3_11 = Vec2.Vec11;         // ( 0, dy, dz)
+        public Vec2 tex4_00 = Vec2.Vec00,     // ( 0,  0, dz)
+                tex4_01 = Vec2.Vec01,         // ( 0,  0,  0)
+                tex4_10 = Vec2.Vec10,         // ( 0, dy, dz)
+                tex4_11 = Vec2.Vec11;         // ( 0, dy,  0)
+        public Vec2 tex5_00 = Vec2.Vec00,     // ( 0, dy,  0)
+                tex5_01 = Vec2.Vec01,         // (dx, dy,  0)
+                tex5_10 = Vec2.Vec10,         // ( 0, dy, dz)
+                tex5_11 = Vec2.Vec11;         // (dx, dy, dz)
+        public Vec2 tex6_00 = Vec2.Vec00,     // ( 0,  0, dz)
+                tex6_01 = Vec2.Vec01,         // (dx,  0, dz)
+                tex6_10 = Vec2.Vec10,         // ( 0,  0,  0)
+                tex6_11 = Vec2.Vec11;         // (dx,  0,  0)
+
         protected Matrix transform;
         protected Matrix invTransform;
 
@@ -152,20 +187,26 @@ namespace RayTracerFramework.Geometry {
 
             // Z
             if (TestOne(ray, rayOS, rayOS.direction.z, rayOS.direction.x, rayOS.direction.y,
-                    rayOS.position.z, rayOS.position.x, rayOS.position.y, dz, dx, dy, Vec3.StdZAxis,
-                    inside, out firstIntersection))
+                    rayOS.position.z, rayOS.position.x, rayOS.position.y, dz, dx, dy,
+                    tex1_00, tex1_01, tex1_10, tex1_11,
+                    tex3_01, tex3_00, tex3_11, tex3_10,
+                    Vec3.StdZAxis, inside, out firstIntersection))
                 return true;
 
             // Y
             if (TestOne(ray, rayOS, rayOS.direction.y, rayOS.direction.x, rayOS.direction.z,
-                    rayOS.position.y, rayOS.position.x, rayOS.position.z, dy, dx, dz, Vec3.StdYAxis,
-                    inside, out firstIntersection))
+                    rayOS.position.y, rayOS.position.x, rayOS.position.z, dy, dx, dz,
+                    tex6_10, tex6_11, tex6_00, tex6_01,
+                    tex5_00, tex5_01, tex5_10, tex5_11,
+                    Vec3.StdYAxis, inside, out firstIntersection))
                 return true;
 
             // X
             if (TestOne(ray, rayOS, rayOS.direction.x, rayOS.direction.y, rayOS.direction.z,
-                    rayOS.position.x, rayOS.position.y, rayOS.position.z, dx, dy, dz, Vec3.StdXAxis,
-                    inside, out firstIntersection))
+                    rayOS.position.x, rayOS.position.y, rayOS.position.z, dx, dy, dz,
+                    tex4_01, tex4_11, tex4_00, tex4_10,
+                    tex2_00, tex2_10, tex2_01, tex2_11,
+                    Vec3.StdXAxis, inside, out firstIntersection))
                 return true;
 
             //assert if (inside) throw new Exception("inside box but no intersection");
@@ -186,11 +227,20 @@ namespace RayTracerFramework.Geometry {
                 float d1, // dz
                 float d2, // dx
                 float d3, // dy
+                Vec2 texFront00,
+                Vec2 texFront01,
+                Vec2 texFront10,
+                Vec2 texFront11,
+                Vec2 texBack00,
+                Vec2 texBack01,
+                Vec2 texBack10,
+                Vec2 texBack11,
                 Vec3 normalAxis,
                 bool inside,
                 out RayIntersectionPoint firstIntersection) {
             float tOS = 0.0f, p2, p3;
             Vec3 intersectionPos, intersectionNormal, localPos;
+            Vec2 tex = null;
             float t = 0.0f;
             bool intersect = false, negateNormal = false;
             if (inside) {
@@ -199,8 +249,10 @@ namespace RayTracerFramework.Geometry {
                     tOS = rayOSPos1 / -rayOSDir1;
                     p2 = rayOSPos2 + rayOSDir2 * tOS;
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
-                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
-                        intersect = true; 
+                    if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
+                        intersect = true;
+                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
+                    }
                 }
                 else if (rayOSDir1 > 0)
                 { // Test against back plane
@@ -210,6 +262,7 @@ namespace RayTracerFramework.Geometry {
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3) {
                         negateNormal = true;
                         intersect = true;
+                        tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
                     }
                 }
             } else {
@@ -222,6 +275,7 @@ namespace RayTracerFramework.Geometry {
                     {
                         intersect = true;
                         negateNormal = true;
+                        tex = Vec2.BiLerp(texFront00, texFront01, texFront10, texFront11, p2 / d2, p3 / d3);
                     }
                 }
                 else if (rayOSDir1 < 0 && rayOSPos1 > d1)
@@ -231,6 +285,7 @@ namespace RayTracerFramework.Geometry {
                     p3 = rayOSPos3 + rayOSDir3 * tOS;
                     if (p2 >= 0 && p2 <= d2 && p3 >= 0 && p3 <= d3)
                         intersect = true;
+                    tex = Vec2.BiLerp(texBack00, texBack01, texBack10, texBack11, p2 / d2, p3 / d3);
                     }
             }
 
@@ -239,7 +294,7 @@ namespace RayTracerFramework.Geometry {
                 intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                 intersectionNormal = Vec3.TransformNormal3n(negateNormal ? -normalAxis : normalAxis, transform);
                 t = Vec3.GetLength(intersectionPos - ray.position);
-                firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this);
+                firstIntersection = new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, tex);
                 // .. p2/d2, p3/d3)
                 return true;
             }
@@ -314,7 +369,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
                         numIntersections ++;
                     }
                 } else if (rayOSDir1 > 0) { // Test against back plane
@@ -326,7 +381,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
                         numIntersections++;
                     }
                 }
@@ -340,7 +395,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(-normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
                         numIntersections++;
                     }
                 } else if (rayOSDir1 < 0 && rayOSPos1 > d1) { // Test against back plane
@@ -352,7 +407,7 @@ namespace RayTracerFramework.Geometry {
                         intersectionPos = Vec3.TransformPosition3(rayOS.GetPoint(tOS), transform);
                         intersectionNormal = Vec3.TransformNormal3n(normalAxis, transform);
                         t = Vec3.GetLength(intersectionPos - ray.position);
-                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this));
+                        intersections.Add(t, new RayIntersectionPoint(intersectionPos, intersectionNormal, t, this, null));
                         numIntersections++;
                     }
                 }

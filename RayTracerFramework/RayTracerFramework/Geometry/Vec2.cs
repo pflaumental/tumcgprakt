@@ -8,6 +8,11 @@ namespace RayTracerFramework.Geometry {
         public float x, y;
         public static readonly Vec2 StdXAxis = new Vec2(1, 0);
         public static readonly Vec2 StdYAxis = new Vec2(0, 1);
+        public static readonly Vec2 Zero = new Vec2(0, 0);
+        public static readonly Vec2 Vec00 = new Vec2(0, 0);
+        public static readonly Vec2 Vec01 = new Vec2(0, 1);
+        public static readonly Vec2 Vec10 = new Vec2(1, 0);
+        public static readonly Vec2 Vec11 = new Vec2(1, 1);
 
         public Vec2() : this(0, 0) { }
 
@@ -34,6 +39,31 @@ namespace RayTracerFramework.Geometry {
 
         public static Vec2 Lerp(Vec2 left, Vec2 right, float interpolator) {
             return left + interpolator * (right - left);
+        }
+
+        public static Vec2 BiLerp(
+                Vec2 bottomLeft,
+                Vec2 bottomRight,
+                Vec2 topLeft,
+                Vec2 topRight,
+                float xInterpolator,
+                float yInterpolator) {
+            return    bottomLeft  * ( (1 - xInterpolator) * (1 - yInterpolator) )
+                    + bottomRight * ( (1 - xInterpolator) *      yInterpolator  )
+                    + topLeft     * (      xInterpolator  * (1 - yInterpolator) )
+                    + topRight    * (      xInterpolator  *      yInterpolator  );
+        }
+
+        public static Vec2 BiLerp(
+                Vec2 bottomLeft,
+                Vec2 bottomRight,
+                Vec2 topLeft,
+                Vec2 topRight,
+                Vec2 interpolator) {
+            return    bottomLeft  * ( (1 - interpolator.x) * (1 - interpolator.y) )
+                    + bottomRight * ( (1 - interpolator.x) *      interpolator.y  )
+                    + topLeft     * (      interpolator.x  * (1 - interpolator.y) )
+                    + topRight    * (      interpolator.x  *      interpolator.y  );
         }
 
         public static Vec2 Normalize(Vec2 v) {

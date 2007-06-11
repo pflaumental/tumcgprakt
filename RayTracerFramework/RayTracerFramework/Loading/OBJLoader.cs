@@ -11,7 +11,7 @@ using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Loading {
 
-    // This class loads meshes stored in obj files. Only twodimensional texture coordinates and
+    // This class loads meshes stored in obj files. Only twodimensional diffuseTexture coordinates and
     // triangles are allowed.
     // Currently only positive indices are supported
     class OBJLoader : IMeshLoader {
@@ -72,7 +72,7 @@ namespace RayTracerFramework.Loading {
                         Vec3 p2 = vertices[Int32.Parse(v2Tokens[0]) - 1];
                         Vec3 p3 = vertices[Int32.Parse(v3Tokens[0]) - 1];
 
-                        // Extract texture coordinates
+                        // Extract diffuseTexture coordinates
                         Vec3 t1, t2, t3;
                         if (v1Tokens[1] == "") 
                             t1 = t2 = t3 = null;
