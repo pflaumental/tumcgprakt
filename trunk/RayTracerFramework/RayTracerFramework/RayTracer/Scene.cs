@@ -63,6 +63,7 @@ namespace RayTracerFramework.RayTracer {
 
         public DBox AddDBox(Matrix transformation, float width, float height, float depth, Material material) {
             DBox box = new DBox(Vec3.Zero, width, height, depth, material);
+            box.Transform(Matrix.GetTranslation(-width / 2f, -height / 2f, -depth / 2f));
             box.Transform(transformation);
             //transformedObjects.Add(box);
             kdTree.content.Add(box);
