@@ -74,15 +74,15 @@ namespace RayTracerFramework {
 
             scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
             FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
-            scene.AddDSphere(new Vec3(4.0f, 0.0f, 0.0f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.96f, 0.85f, null));
-            scene.AddDSphere(new Vec3(6.0f, 3.0f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, earthTexture));
+            scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.95f, 0.85f, null));
+            scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, earthTexture));
 
             FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
             Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
-            boxTransform *= Matrix.GetTranslation(0.5f, 0f, 1.5f);
+            boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 1.5f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
-            scene.AddDBox(Matrix.GetTranslation(0f, -2.85f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f, null));
+            scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f, null));
 
             // Do not forget:
             scene.Setup();
@@ -94,9 +94,9 @@ namespace RayTracerFramework {
             Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
             cam.aspectRatio = ((float)bitmap.Width) / bitmap.Height;
 
-            renderer.Render(scene, bitmap);
-
             cam.eyePos = Vec3.TransformNormal3(cam.eyePos, camTransform);
+
+            renderer.Render(scene, bitmap);            
 
             float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;
 
