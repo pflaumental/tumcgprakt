@@ -8,13 +8,13 @@ namespace RayTracerFramework.Geometry {
     class Triangle : IGeometricObject {
         public Vec3 p1, p2, p3;
         public Vec3 n1, n2, n3;
-        public Vec3 t1, t2, t3;
+        public Vec2 t1, t2, t3;
 
         public Triangle() { }
 
         public Triangle(Vec3 p1, Vec3 p2, Vec3 p3,
                         Vec3 n1, Vec3 n2, Vec3 n3,
-                        Vec3 t1, Vec3 t2, Vec3 t3) {
+                        Vec2 t1, Vec2 t2, Vec2 t3) {
             this.p1 = p1;
             this.p2 = p2;
             this.p3 = p3;
@@ -115,6 +115,11 @@ namespace RayTracerFramework.Geometry {
             v *= invDet;
 
             Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
+            Vec2 textureCoordinates;
+            if (t1 != null)
+                textureCoordinates = (1 - u - v) * t1 + u * t2 + v * t3;
+            else
+                textureCoordinates = null;
 
             //if (Vec3.Dot(normal, ray.direction) > 0f) {
             //    firstIntersection = null;
@@ -122,7 +127,7 @@ namespace RayTracerFramework.Geometry {
             //}
 
             firstIntersection = new RayIntersectionPoint(ray.position + t * ray.direction,
-                                                         normal, t, this, null);
+                                                         normal, t, this, textureCoordinates);
             return true;
 
 
@@ -197,9 +202,14 @@ namespace RayTracerFramework.Geometry {
 
             float t = Vec3.Dot(edge2, qVec) * invDet;
             Vec3 normal = (1 - u - v) * n1 + u * n2 + v * n3;
+            Vec2 textureCoordinates;
+            if (t1 != null)
+                textureCoordinates = (1 - u - v) * t1 + u * t2 + v * t3;
+            else
+                textureCoordinates = null;
 
             intersections.Add(t, new RayIntersectionPoint(ray.position + t * ray.direction,
-                                                          normal, t, this, null));
+                                                          normal, t, this, textureCoordinates));
             return 1;    
         }
 
