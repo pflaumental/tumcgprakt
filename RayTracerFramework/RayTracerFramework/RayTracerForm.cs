@@ -80,7 +80,7 @@ namespace RayTracerFramework {
             FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
             Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
-            boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 1.5f);
+            boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f, null));
 
