@@ -13,8 +13,9 @@ namespace RayTracerFramework.Geometry {
                 float width,
                 float height,
                 float depth,
+                bool textured,
                 Material material)
-            : base(position, width, height, depth) {
+            : base(position, width, height, depth, textured) {
             this.material = material;
         }
 
@@ -22,11 +23,12 @@ namespace RayTracerFramework.Geometry {
                 float width,
                 float height,
                 float depth,
+                bool textured,
                 Matrix transform,
                 Matrix invTransform,
                 BSphere boundingSphere,
-                Material material)
-            : base(transform, invTransform, width, height, depth, boundingSphere) {
+                Material material) 
+            : base(transform, invTransform, width, height, depth, textured, boundingSphere) {
             this.material = material;
         }
 

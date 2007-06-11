@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Geometry {
     abstract class Sphere : IGeometricObject {
@@ -10,22 +11,25 @@ namespace RayTracerFramework.Geometry {
         protected Matrix transform;
         protected Matrix invTransform;
         protected BSphere boundingSphere;
+        protected bool textured;
 
-        protected Sphere(Vec3 center, float radius) {           
+        protected Sphere(Vec3 center, float radius, bool textured) {
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = Matrix.GetTranslation(center);
             this.invTransform = Matrix.GetTranslation(-center);
             this.boundingSphere = new BSphere(center, radius, radiusSq);
+            this.textured = textured;
         }
 
-        protected Sphere(float radius, Matrix transform, Matrix invTransform, BSphere bSphere)
+        protected Sphere(float radius, bool textured, Matrix transform, Matrix invTransform, BSphere bSphere)
         {
             this.radius = radius;
             this.radiusSq = radius * radius;
             this.transform = transform;
             this.invTransform = invTransform;
             this.boundingSphere = bSphere;
+            this.textured = textured;
         }
 
         public bool Intersect(Ray ray) {
@@ -75,7 +79,12 @@ namespace RayTracerFramework.Geometry {
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
                 Vec3 normal = Vec3.TransformNormal3n(-c_iVec, transform);
                 t = Vec3.GetLength(intersectionPoint - ray.position);
-                firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t, this, null);
+                Vec2 textureCoordinates;
+                if (textured) {
+                    textureCoordinates = CalcTextureCoordinates(iPos);
+                } else
+                    textureCoordinates = null;
+                firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t, this, textureCoordinates);
                 return true;
             }
             else {
@@ -99,7 +108,12 @@ namespace RayTracerFramework.Geometry {
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
                 Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
                 t = Vec3.GetLength(intersectionPoint - ray.position);
-                firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t, this, null);
+                Vec2 textureCoordinates;
+                if (textured) {
+                    textureCoordinates = CalcTextureCoordinates(iPos);
+                } else
+                    textureCoordinates = null;
+                firstIntersection = new RayIntersectionPoint(intersectionPoint, normal, t, this, textureCoordinates);
                 return true;
             }
         }
@@ -127,7 +141,12 @@ namespace RayTracerFramework.Geometry {
                 Vec3 intersectionPoint = Vec3.TransformPosition3(iPos, transform);
                 Vec3 normal = Vec3.TransformNormal3n(c_iVec, transform);
                 t1 = Vec3.GetLength(intersectionPoint - ray.position);
-                intersections.Add(t1OS, new RayIntersectionPoint(intersectionPoint, normal, t1, this, null));
+                Vec2 textureCoordinates;
+                if (textured) {
+                    textureCoordinates = CalcTextureCoordinates(iPos);
+                } else
+                    textureCoordinates = null;
+                intersections.Add(t1OS, new RayIntersectionPoint(intersectionPoint, normal, t1, this, textureCoordinates));
                 return 1;
             }
             else {
@@ -158,10 +177,33 @@ namespace RayTracerFramework.Geometry {
                 Vec3 normal2 = Vec3.TransformNormal3n(c_i2Vec, transform);
                 t1 = Vec3.GetLength(intersectionPoint1 - ray.position);
                 t2 = Vec3.GetLength(intersectionPoint2 - ray.position);
-                intersections.Add(t1OS, new RayIntersectionPoint(intersectionPoint1, normal1, t1, this, null));
-                intersections.Add(t2OS, new RayIntersectionPoint(intersectionPoint2, normal2, t2, this, null));
+                Vec2 textureCoordinates1;
+                if (textured) {
+                    textureCoordinates1 = CalcTextureCoordinates(i1Pos);
+                } else
+                    textureCoordinates1 = null;
+                Vec2 textureCoordinates2;
+                if (textured) {
+                    textureCoordinates2 = CalcTextureCoordinates(i2Pos);
+                } else
+                    textureCoordinates2 = null;
+                intersections.Add(t1OS, new RayIntersectionPoint(intersectionPoint1, normal1, t1, this, textureCoordinates1));
+                intersections.Add(t2OS, new RayIntersectionPoint(intersectionPoint2, normal2, t2, this, textureCoordinates2));
                 return 2;
             }
+        }
+
+        private Vec2 CalcTextureCoordinates(Vec3 iPos) {
+            Vec2 result = new Vec2();
+            Vec3 iPosN = Vec3.Normalize(iPos);
+            result.y = (Vec3.Dot(iPosN, Vec3.StdYAxis) + 1f) / 2f;
+            if (iPosN.y > Trigonometric.EPSILON || iPosN.y < -Trigonometric.EPSILON) {
+                float yP = (float)Math.Sqrt(1f - iPosN.y * iPosN.y);
+                result.x = ((float)Math.Acos(Vec3.Dot(-Vec3.StdXAxis, new Vec3(iPosN.x / yP, 0f, iPosN.z / yP)))) / Trigonometric.TWO_PI;
+                if (iPosN.z > 0f)
+                    result.x += 0.5f;
+            }
+            return result;
         }
 
         public void Transform(Matrix transformation) {
