@@ -6,8 +6,9 @@ using System.Text.RegularExpressions;
 using RayTracerFramework.Shading;
 using System.Globalization;
 using RayTracerFramework.Utility;
-using System.Drawing;
 using RayTracerFramework.Geometry;
+using Microsoft.Xna.Framework.Content;
+using GameServiceContainer = Microsoft.Xna.Framework.GameServiceContainer;
 
 namespace RayTracerFramework.Loading {
 
@@ -15,8 +16,10 @@ namespace RayTracerFramework.Loading {
     // triangles are allowed.
     // Currently only positive indices are supported
     class OBJLoader : IMeshLoader {
+        public OBJLoader() {
+        }
 
-        public string standardMeshDirectory = "../../Models/";
+        public string standardMeshDirectory = "../../../Content/Models/";
 
         public DMesh LoadFromFile(string filename) {
             DMesh mesh = new DMesh();
@@ -142,7 +145,7 @@ namespace RayTracerFramework.Loading {
                         currentSubset.material.specular.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
                         break;
                     case "map_Kd":
-                        currentSubset.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
+                        //currentSubset.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
                         break;
                 }
             }

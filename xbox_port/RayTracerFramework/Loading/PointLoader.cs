@@ -10,7 +10,7 @@ using RayTracerFramework.Shading;
 namespace RayTracerFramework.Loading {
     class PointLoader : IPointLoader {
 
-        public string standardMeshDirectory = "../../Models/";
+        public string standardMeshDirectory = "../../../Models/";
         
         public List<IIntersectable> LoadFromFile(string filename) {
             List<IIntersectable> pointlist = new List<IIntersectable>();

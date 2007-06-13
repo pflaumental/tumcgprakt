@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
 using Color = RayTracerFramework.Shading.Color;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.Utility;
+using GameServiceContainer = Microsoft.Xna.Framework.GameServiceContainer;
+using ContentManager = Microsoft.Xna.Framework.Content.ContentManager;
+using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
 
 namespace RayTracerFramework.Shading {
     class CubeMap {
@@ -14,7 +16,14 @@ namespace RayTracerFramework.Shading {
         private FastBitmap yMinTexture, yMaxTexture;
         private FastBitmap zMinTexture, zMaxTexture;
 
-        public CubeMap(float width, float height, float depth, string texturesBaseName) {
+        private GameServiceContainer gameServiceContainer;
+
+        public CubeMap(
+                float width, 
+                float height, 
+                float depth, 
+                string texturesBaseName, 
+                GameServiceContainer gameServiceContainer) {
             this.xMin = -(width * 0.5f);
             this.xMax = width * 0.5f;
             this.yMin = -(height * 0.5f);
@@ -22,14 +31,16 @@ namespace RayTracerFramework.Shading {
             this.zMin = -(depth * 0.5f);
             this.zMax = depth * 0.5f;
 
-            xMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NX.png")));
-            xMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PX.png")));
+            ContentManager content = new ContentManager(gameServiceContainer);
 
-            yMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NY.png")));
-            yMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PY.png")));
+            xMinTexture = new FastBitmap(content.Load<Texture2D>("Content/Textures/" + texturesBaseName + "NX"));
+            xMaxTexture = new FastBitmap(content.Load<Texture2D>("Content/Textures/" + texturesBaseName + "PX"));
 
-            zMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NZ.png")));
-            zMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PZ.png")));
+            yMinTexture = new FastBitmap(content.Load<Texture2D>("Content/Textures/" + texturesBaseName + "NY"));
+            yMaxTexture = new FastBitmap(content.Load<Texture2D>("Content/Textures/" + texturesBaseName + "PY"));
+
+            zMinTexture = new FastBitmap(content.Load<Texture2D>("Content/Textures/" + texturesBaseName + "NZ"));
+            zMaxTexture = new FastBitmap(content.Load<Texture2D>("Content/Textures/" + texturesBaseName + "PZ"));
         }
 
   
