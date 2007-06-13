@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C# Express 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaytracerXbox", "RaytracerXbox.csproj", "{FC2A7BB9-C708-4F4E-B955-825677549F08}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Xbox 360 = Debug|Xbox 360
+		Release|Xbox 360 = Release|Xbox 360
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC2A7BB9-C708-4F4E-B955-825677549F08}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{FC2A7BB9-C708-4F4E-B955-825677549F08}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{FC2A7BB9-C708-4F4E-B955-825677549F08}.Debug|Xbox 360.Deploy.0 = Debug|Xbox 360
+		{FC2A7BB9-C708-4F4E-B955-825677549F08}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{FC2A7BB9-C708-4F4E-B955-825677549F08}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{FC2A7BB9-C708-4F4E-B955-825677549F08}.Release|Xbox 360.Deploy.0 = Release|Xbox 360
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

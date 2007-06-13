@@ -1,0 +1,441 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{FC2A7BB9-C708-4F4E-B955-825677549F08}</ProjectGuid>
+    <ProjectTypeGuids>{9F340DF3-2AED-4330-AC16-78AC2D9B4738};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Raytracer</RootNamespace>
+    <AssemblyName>GameStateManagement</AssemblyName>
+    <XnaFrameworkVersion>v1.0</XnaFrameworkVersion>
+    <XnaPlatform>Windows</XnaPlatform>
+    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <XNAGlobalContentPipelineAssemblies>Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll;Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll;Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll;Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</XNAGlobalContentPipelineAssemblies>
+    <XNAProjectContentPipelineAssemblies>
+    </XNAProjectContentPipelineAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Geometry\Box.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Box</Name>
+    </Compile>
+    <Compile Include="Geometry\BSphere.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>BSphere</Name>
+    </Compile>
+    <Compile Include="Geometry\GeoObjectKDTree.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>GeoObjectKDTree</Name>
+    </Compile>
+    <Compile Include="Geometry\IBounding.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IBounding</Name>
+    </Compile>
+    <Compile Include="Geometry\IGeometricObject.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IGeometricObject</Name>
+    </Compile>
+    <Compile Include="Geometry\IIntersectable.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IIntersectable</Name>
+    </Compile>
+    <Compile Include="Geometry\IntersectionPoint.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IntersectionPoint</Name>
+    </Compile>
+    <Compile Include="Geometry\KDTree.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>KDTree</Name>
+    </Compile>
+    <Compile Include="Geometry\Matrix.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Matrix</Name>
+    </Compile>
+    <Compile Include="Geometry\Mesh.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Mesh</Name>
+    </Compile>
+    <Compile Include="Geometry\MeshSubset.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>MeshSubset</Name>
+    </Compile>
+    <Compile Include="Geometry\Ray.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Ray</Name>
+    </Compile>
+    <Compile Include="Geometry\RayIntersectionPoint.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>RayIntersectionPoint</Name>
+    </Compile>
+    <Compile Include="Geometry\RayMeshIntersectionPoint.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>RayMeshIntersectionPoint</Name>
+    </Compile>
+    <Compile Include="Geometry\Sphere.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Sphere</Name>
+    </Compile>
+    <Compile Include="Geometry\Triangle.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Triangle</Name>
+    </Compile>
+    <Compile Include="Geometry\TriangleKDTree.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>TriangleKDTree</Name>
+    </Compile>
+    <Compile Include="Geometry\Vec2.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Vec2</Name>
+    </Compile>
+    <Compile Include="Geometry\Vec3.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Vec3</Name>
+    </Compile>
+    <Compile Include="Geometry\Vec4.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Vec4</Name>
+    </Compile>
+    <Compile Include="Loading\IMeshLoader.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IMeshLoader</Name>
+    </Compile>
+    <Compile Include="Loading\IPointLoader.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IPointLoader</Name>
+    </Compile>
+    <Compile Include="Loading\OBJLoader.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>OBJLoader</Name>
+    </Compile>
+    <Compile Include="Loading\OBJPointLoader.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>OBJPointLoader</Name>
+    </Compile>
+    <Compile Include="Loading\PointLoader.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>PointLoader</Name>
+    </Compile>
+    <Compile Include="Raytracer.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Raytracer</Name>
+    </Compile>
+    <Compile Include="RayTracer\Camera.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Camera</Name>
+    </Compile>
+    <Compile Include="RayTracer\Renderer.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Renderer</Name>
+    </Compile>
+    <Compile Include="RayTracer\Scene.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Scene</Name>
+    </Compile>
+    <Compile Include="Screens\RaytracerScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>RaytracerScreen</Name>
+    </Compile>
+    <Compile Include="Screens\LoadingScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>LoadingScreen</Name>
+    </Compile>
+    <Compile Include="Screens\MessageBoxScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>MessageBoxScreen</Name>
+    </Compile>
+    <Compile Include="ScreenManager\GameScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>GameScreen</Name>
+    </Compile>
+    <Compile Include="ScreenManager\InputState.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>InputState</Name>
+    </Compile>
+    <Compile Include="Screens\BackgroundScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>BackgroundScreen</Name>
+    </Compile>
+    <Compile Include="ScreenManager\ScreenManager.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>ScreenManager</Name>
+    </Compile>
+    <Compile Include="Screens\MainMenuScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>MainMenuScreen</Name>
+    </Compile>
+    <Compile Include="Screens\MenuScreen.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>MenuScreen</Name>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Game.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Game</Name>
+    </Compile>
+    <Compile Include="Shading\BlinnPhongLightingModel.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>BlinnPhongLightingModel</Name>
+    </Compile>
+    <Compile Include="Shading\Color.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Color</Name>
+    </Compile>
+    <Compile Include="Shading\CubeMap.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>CubeMap</Name>
+    </Compile>
+    <Compile Include="Shading\DBox.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>DBox</Name>
+    </Compile>
+    <Compile Include="Shading\DMesh.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>DMesh</Name>
+    </Compile>
+    <Compile Include="Shading\DMeshSubset.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>DMeshSubset</Name>
+    </Compile>
+    <Compile Include="Shading\DPoint.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>DPoint</Name>
+    </Compile>
+    <Compile Include="Shading\DSphere.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>DSphere</Name>
+    </Compile>
+    <Compile Include="Shading\ILightingModel.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>ILightingModel</Name>
+    </Compile>
+    <Compile Include="Shading\IObject.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IObject</Name>
+    </Compile>
+    <Compile Include="Shading\IShadable.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>IShadable</Name>
+    </Compile>
+    <Compile Include="Shading\Light.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Light</Name>
+    </Compile>
+    <Compile Include="Shading\LightManager.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>LightManager</Name>
+    </Compile>
+    <Compile Include="Shading\Material.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Material</Name>
+    </Compile>
+    <Compile Include="Shading\PointLight.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>PointLight</Name>
+    </Compile>
+    <Compile Include="Shading\StdShading.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>StdShading</Name>
+    </Compile>
+    <Compile Include="Utility\FastBitmap.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>FastBitmap</Name>
+    </Compile>
+    <Compile Include="Utility\Trigonometric.cs">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Trigonometric</Name>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Game.ico">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>Game</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\menufont.spritefont">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Name>menufont</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\background.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>background</Name>
+    </Content>
+    <Content Include="Content\blank.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>blank</Name>
+    </Content>
+    <Content Include="Content\gamefont.spritefont">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Name>gamefont</Name>
+    </Content>
+    <Content Include="Content\GameStateSample.PNG">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>GameStateSample</Name>
+    </Content>
+    <Content Include="Content\gradient.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>gradient</Name>
+    </Content>
+    <Content Include="Content\Textures\earth.jpg">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>earth</Name>
+    </Content>
+    <Content Include="Content\Textures\env2.jpg">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>env2</Name>
+    </Content>
+    <Content Include="Content\Textures\greyBricks-lighter-512x512.JPG">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>greyBricks-lighter-512x512</Name>
+    </Content>
+    <Content Include="Content\Textures\stpetersNX.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>stpetersNX</Name>
+    </Content>
+    <Content Include="Content\Textures\stpetersNY.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>stpetersNY</Name>
+    </Content>
+    <Content Include="Content\Textures\stpetersNZ.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>stpetersNZ</Name>
+    </Content>
+    <Content Include="Content\Textures\stpetersPX.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>stpetersPX</Name>
+    </Content>
+    <Content Include="Content\Textures\stpetersPY.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>stpetersPY</Name>
+    </Content>
+    <Content Include="Content\Textures\stpetersPZ.png">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>stpetersPZ</Name>
+    </Content>
+    <Content Include="Content\Textures\WarriorEye.jpg">
+      <XNAUseContentPipeline>true</XNAUseContentPipeline>
+      <Importer>TextureImporter</Importer>
+      <Processor>SpriteTextureProcessor</Processor>
+      <Name>WarriorEye</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\Models\bunny_t346.obj">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>bunny_t346</Name>
+    </None>
+    <None Include="Content\Models\bunny_t4046.obj">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>bunny_t4046</Name>
+    </None>
+    <None Include="Content\Models\hexahedron.obj">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>hexahedron</Name>
+    </None>
+    <None Include="Content\Models\mushroom_t1056.obj">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>mushroom_t1056</Name>
+    </None>
+    <None Include="Content\Models\reduced_186985.point">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>reduced_186985</Name>
+    </None>
+    <None Include="Content\Models\reduced_7474.point">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>reduced_7474</Name>
+    </None>
+    <None Include="Content\Models\sphere_t224.obj">
+      <XNAUseContentPipeline>false</XNAUseContentPipeline>
+      <Name>sphere_t224</Name>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA\Game Studio Express\v1.0\Microsoft.Xna.ContentPipeline.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA\Game Studio Express\v1.0\Microsoft.Xna.Common.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{9F340DF3-2AED-4330-AC16-78AC2D9B4738}">
+        <Thumbnail Include="Content\GameStateSample.PNG" />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
