@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Raytracer")]
-[assembly: AssemblyProduct("Raytracer")]
+[assembly: AssemblyTitle("Raytracer_HnA")]
+[assembly: AssemblyProduct("Raytracer_HnA")]
 [assembly: AssemblyDescription("Skelleton program to add your raytracer.")]
 [assembly: AssemblyCompany("tum.3D")]
 
@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("04bbb3ef-f91b-4509-879c-d7f001e37de3")]
+// generated guid {B968946D-1404-45c1-84CE-8F6C22AE7424}
 
 
 // Version information for an assembly consists of the following four values:

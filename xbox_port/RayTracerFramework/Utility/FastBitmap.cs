@@ -21,10 +21,11 @@ namespace RayTracerFramework.Utility {
         public RayTracerFramework.Shading.Color GetPixel(float x, float y) {
             int pixelX1 = (int)Math.Floor(x);
             int pixelX2 = (int)Math.Ceiling(x);
-            float xLerp = x - (float)Math.Truncate(x);
+            float xLerp = x - (int)x; // (float)Math.Truncate(x);
+            
             int pixelY1 = (int)Math.Floor(y);
             int pixelY2 = (int)Math.Ceiling(y);
-            float yLerp = y - (float)Math.Truncate(y);
+            float yLerp = y - (int)y; // (float)Math.Truncate(y);
 
             RayTracerFramework.Shading.Color c11 = GetPixel(pixelX1, pixelY1);
             RayTracerFramework.Shading.Color c12 = GetPixel(pixelX1, pixelY2);

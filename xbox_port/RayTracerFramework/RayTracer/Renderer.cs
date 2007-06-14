@@ -5,12 +5,36 @@ using RayTracerFramework.Geometry;
 using XNAColor = Microsoft.Xna.Framework.Graphics.Color;
 using RTFColor = RayTracerFramework.Shading.Color;
 using RayTracerFramework.Shading;
+using System.Threading;
 
 namespace RayTracerFramework.RayTracer {
     class Renderer {
+        // Per scene and target data
+        private Scene scene;
+        private XNAColor[] target;
+        private int targetWidth;
+        private int targetHeight;
+
+        // Per render-process data
+        private Vec3 xOffset;
+        private Vec3 yOffset;
+        private Vec3 eyePos;
+        private Vec3 topLeftPixelCenterPos;
+
+        // Synchronized:
+        private int nextLine;
+
+        public Renderer(Scene scene, ref XNAColor[] target, int targetWidth, int targetHeight) { 
+            this.scene = scene;
+            this.target = target;
+            this.targetWidth = targetWidth;
+            this.targetHeight = targetHeight;
+            this.nextLine = 0;
+        }
+
         public static readonly int MaxRecursionDepth = 10;
 
-        public static void Render(Scene scene, ref XNAColor[] target, int targetWidth, int targetHeight)
+        public void Render()
         {
             // View frustrum starts at 1.0f
             float viewPlaneWidth = scene.cam.GetViewPlaneWidth();
@@ -25,24 +49,43 @@ namespace RayTracerFramework.RayTracer {
             Vec3 camY = Vec3.Cross(camZ, camX);
             
             // Calculate pixel center offset vectors
-            Vec3 xOffset = pixelWidth * camX;
-            Vec3 yOffset = -pixelHeight * camY;
+            xOffset = pixelWidth * camX;
+            yOffset = -pixelHeight * camY;
 
             // Go to center of first line
-            Vec3 eyePos = scene.cam.eyePos;
-            Vec3 rowStartPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
-            rowStartPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
-            Vec3 pixelCenterPos = new Vec3(rowStartPos);
+            eyePos = scene.cam.eyePos;
+            topLeftPixelCenterPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
+            topLeftPixelCenterPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
 
-            Matrix inverseView = scene.cam.GetInverseViewMatrix();
-            Ray rayWS = new Ray(
-                    Vec3.TransformPosition3(Vec3.Zero, inverseView),
-                    Vec3.TransformNormal3n(pixelCenterPos, inverseView),
-                    0);
+            Thread[] freds = new Thread[6];
 
-            RayIntersectionPoint firstIntersection;
+            // Initialize threads
+            for (int i = 0; i < freds.Length; i++) {
+                freds[i] = new Thread(new ThreadStart(RenderMT));
+                freds[i].Start();
+            }
 
-            for (int y = 0; y < targetHeight; y++) { // pixel lines
+            for (int i = 0; i < freds.Length; i++) {
+                freds[i].Join();
+            }
+
+        }
+
+        private void RenderMT() {
+            while (true) {
+                int y;
+                lock (this) {
+                    if (nextLine == targetHeight)
+                        break;
+                    y = nextLine++;
+                }
+
+                // Reset next ray direction, pixelCenterPos and rowStartPos
+                Vec3 pixelCenterPos = topLeftPixelCenterPos + yOffset * nextLine;
+                Ray rayWS = new Ray(eyePos, Vec3.Normalize(pixelCenterPos - eyePos), 0);
+
+                RayIntersectionPoint firstIntersection;
+
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection and Shade pixel      
                     RTFColor color;
@@ -59,15 +102,7 @@ namespace RayTracerFramework.RayTracer {
                     pixelCenterPos += xOffset;
                     rayWS.direction = Vec3.Normalize(pixelCenterPos - eyePos);
                 }
-
-                // Reset next ray direction, pixelCenterPos and rowStartPos
-                rowStartPos += yOffset;
-                rayWS.direction = Vec3.Normalize(rowStartPos -eyePos);
-                pixelCenterPos.x = rowStartPos.x;
-                pixelCenterPos.y = rowStartPos.y;
-                pixelCenterPos.z = rowStartPos.z;
             }
-
         }
         
     }

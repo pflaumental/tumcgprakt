@@ -63,7 +63,8 @@ namespace RayTracerFramework.RayTracer
             //scene.lightManager.AddWorldSpaceLight(l4);
 
             OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
+            DMesh mesh = loader.LoadFromFile("kitchen.obj");
+            //DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
 
             scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
             FastBitmap earthTexture = new FastBitmap(content.Load<Microsoft.Xna.Framework.Graphics.Texture2D>("Content/Textures/earth"));
@@ -85,7 +86,8 @@ namespace RayTracerFramework.RayTracer
         public void GenerateImage(ref XNAColor[] resultImage, int iWidth, int iHeight)
         {
             cam.aspectRatio = ((float)iWidth) / iHeight;
-            Renderer.Render(scene, ref resultImage, iWidth, iHeight);
+            Renderer renderer = new Renderer(scene, ref resultImage, iWidth, iHeight);
+            renderer.Render();
         }
     }
 }
