@@ -48,7 +48,7 @@ namespace RayTracerFramework.RayTracer {
             
             Ray rayWS = new Ray(
                     eyePos,
-                    pixelCenterPos - eyePos,
+                    Vec3.Normalize(pixelCenterPos - eyePos),
                     0);
 
             // Setup bitmap
