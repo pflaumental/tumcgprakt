@@ -6,8 +6,9 @@ using System.Text.RegularExpressions;
 using RayTracerFramework.Shading;
 using System.Globalization;
 using RayTracerFramework.Utility;
-using System.Drawing;
 using RayTracerFramework.Geometry;
+using Microsoft.Xna.Framework.Content;
+using GameServiceContainer = Microsoft.Xna.Framework.GameServiceContainer;
 
 namespace RayTracerFramework.Loading {
 
@@ -15,8 +16,10 @@ namespace RayTracerFramework.Loading {
     // triangles are allowed.
     // Currently only positive indices are supported
     class OBJLoader : IMeshLoader {
+        public OBJLoader() {
+        }
 
-        public string standardMeshDirectory = "../../Models/";
+        public string standardMeshDirectory = "../../../Content/Models/";
 
         public DMesh LoadFromFile(string filename) {
             DMesh mesh = new DMesh();
@@ -26,6 +29,7 @@ namespace RayTracerFramework.Loading {
 
             List<Vec3> vertices = new List<Vec3>();
             List<Vec3> normals = new List<Vec3>();
+            List<Vec3> missingNormals = new List<Vec3>();
             List<Vec2> texCoords = new List<Vec2>();
 
             Dictionary<string, DMeshSubset> meshSubsets = new Dictionary<string,DMeshSubset>();
@@ -37,16 +41,16 @@ namespace RayTracerFramework.Loading {
 
                 switch (tokens[0]) {
                     case "mtllib":
-                        LoadMaterial(tokens[1], meshSubsets);
+                        //LoadMaterial(tokens[1], meshSubsets);
                         break;
                     case "usemtl":
-                        try {
-                            currentSubset = meshSubsets[tokens[1]];
-                        } 
-                        catch (KeyNotFoundException) {
-                            throw new Exception("The material \"" + tokens[1] + "\" could not be found " +
-                                                "in the material library.");
-                        }
+                        //try {
+                        //    currentSubset = meshSubsets[tokens[1]];
+                        //} 
+                        //catch (KeyNotFoundException) {
+                        //    throw new Exception("The material \"" + tokens[1] + "\" could not be found " +
+                        //                        "in the material library.");
+                        //}
                             break;
                     case "v":                        
                         vertices.Add(new Vec3(float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
@@ -72,25 +76,38 @@ namespace RayTracerFramework.Loading {
                         Vec3 p2 = vertices[Int32.Parse(v2Tokens[0]) - 1];
                         Vec3 p3 = vertices[Int32.Parse(v3Tokens[0]) - 1];
 
-                        // Extract diffuseTexture coordinates
-                        Vec2 t1, t2, t3;
-                        if (v1Tokens[1] == "") 
-                            t1 = t2 = t3 = null;
-                        else {
-                            t1 = texCoords[Int32.Parse(v1Tokens[1]) - 1];
-                            t2 = texCoords[Int32.Parse(v2Tokens[1]) - 1];
-                            t3 = texCoords[Int32.Parse(v3Tokens[1]) - 1];
-                        }
+                        Vec2 t1 = null, t2 = null, t3 = null;
+                        Vec3 n1 = null, n2 = null, n3 = null;
 
-                        // Extract normals
-                        Vec3 n1, n2, n3;
-                        if (v1Tokens[2] == "")
-                            n1 = n2 = n3 = null;
-                        else {
-                            n1 = normals[Int32.Parse(v1Tokens[2]) - 1];
-                            n2 = normals[Int32.Parse(v2Tokens[2]) - 1];
-                            n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
-                        }
+                        if (v1Tokens.Length == 3) {
+                            // Extract diffuseTexture coordinates                            
+                            if (v1Tokens[1] == "")
+                                t1 = t2 = t3 = null;
+                            else {
+                                t1 = texCoords[Int32.Parse(v1Tokens[1]) - 1];
+                                t2 = texCoords[Int32.Parse(v2Tokens[1]) - 1];
+                                t3 = texCoords[Int32.Parse(v3Tokens[1]) - 1];
+                            }
+
+                            // Extract normals                            
+                            if (v1Tokens[2] == "") {
+                                n1 = n2 = n3 = Vec3.Cross(p2 - p1, p3 - p1);
+                                missingNormals.Add(n1);
+                            } else {
+                                n1 = normals[Int32.Parse(v1Tokens[2]) - 1];
+                                n2 = normals[Int32.Parse(v2Tokens[2]) - 1];
+                                n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
+                            }
+                        } else {
+                            // Extract normals
+                            n1 = n2 = n3 = Vec3.Cross(p2 - p1, p3 - p1);
+                            missingNormals.Add(n1);
+                            if (v1Tokens.Length == 2) {
+                                t1 = texCoords[Int32.Parse(v1Tokens[1]) - 1];
+                                t2 = texCoords[Int32.Parse(v2Tokens[1]) - 1];
+                                t3 = texCoords[Int32.Parse(v3Tokens[1]) - 1];
+                            }
+                        } 
                         
                         currentSubset.kdTree.content.Add(new Triangle(p1, p2, p3, n1, n2, n3, t1, t2, t3));
                         break;
@@ -107,6 +124,7 @@ namespace RayTracerFramework.Loading {
             }            
             mesh.vertices = vertices;
             mesh.normals = normals;
+            mesh.missingNormals = missingNormals;
             return mesh;
         }
 
@@ -142,7 +160,7 @@ namespace RayTracerFramework.Loading {
                         currentSubset.material.specular.BlueFloat = float.Parse(tokens[3], CultureInfo.CreateSpecificCulture("en-us"));
                         break;
                     case "map_Kd":
-                        currentSubset.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
+                        //currentSubset.colorTexture = new FastBitmap(new Bitmap(standardMeshDirectory + tokens[1]));
                         break;
                 }
             }

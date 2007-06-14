@@ -10,7 +10,8 @@ namespace RayTracerFramework.Shading {
         public DMesh() { }
 
         private DMesh(List<MeshSubset> subsets, BSphere boungingSphere,
-                      List<Vec3> vertices, List<Vec3> normals) : base(subsets, boungingSphere, vertices, normals) { }      
+                      List<Vec3> vertices, List<Vec3> normals, List<Vec3> missingNormals)
+            : base(subsets, boungingSphere, vertices, normals, missingNormals) { }      
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution) {
             // DTriangle hitTriangle = (DTriangle)intersection.hitObject;
