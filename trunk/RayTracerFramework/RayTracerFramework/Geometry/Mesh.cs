@@ -11,20 +11,23 @@ namespace RayTracerFramework.Geometry {
 
         public List<Vec3> vertices;
         public List<Vec3> normals;
+        public List<Vec3> missingNormals;
 
         protected Mesh() {
             subsets = new List<MeshSubset>();
             boundingSphere = new BSphere(Vec3.Zero, 0f);
             vertices = new List<Vec3>();
             normals = new List<Vec3>();
+            missingNormals = new List<Vec3>();
         }
 
         protected Mesh(List<MeshSubset> subsets, BSphere boundingSphere,
-                       List<Vec3> vertices, List<Vec3> normals) {
+                       List<Vec3> vertices, List<Vec3> normals, List<Vec3> missingNormals) {
             this.subsets = subsets;
             this.boundingSphere = boundingSphere;
             this.vertices = vertices;
             this.normals = normals;
+            this.missingNormals = missingNormals;
         }
 
         public void AddSubset(MeshSubset subset) {
@@ -58,16 +61,24 @@ namespace RayTracerFramework.Geometry {
             }
         }
 
-        public void Transform(Matrix transformation) {            
+        public void Transform(Matrix transformation) {
             for (int i = 0; i < vertices.Count; i++) {
                 Vec3 v = Vec3.TransformPosition3(vertices[i], transformation);
                 vertices[i].x = v.x;
                 vertices[i].y = v.y;
                 vertices[i].z = v.z;
+            }
+            for (int i = 0; i < normals.Count; i++) {
                 Vec3 n = Vec3.TransformNormal3n(normals[i], transformation); // Fast, but right?
                 normals[i].x = n.x;
                 normals[i].y = n.y;
                 normals[i].z = n.z;
+            }
+            for (int i = 0; i < missingNormals.Count; i++) {
+                Vec3 n = Vec3.TransformNormal3n(missingNormals[i], transformation); // Fast, but right?
+                missingNormals[i].x = n.x;
+                missingNormals[i].y = n.y;
+                missingNormals[i].z = n.z;
             }
             Setup();
         }
