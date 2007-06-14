@@ -7,8 +7,8 @@ using RayTracerFramework.Shading;
 using System.Globalization;
 using RayTracerFramework.Utility;
 using RayTracerFramework.Geometry;
-using Microsoft.Xna.Framework.Content;
-using GameServiceContainer = Microsoft.Xna.Framework.GameServiceContainer;
+//using Microsoft.Xna.Framework.Content;
+//using GameServiceContainer = Microsoft.Xna.Framework.GameServiceContainer;
 
 namespace RayTracerFramework.Loading {
 
@@ -19,7 +19,7 @@ namespace RayTracerFramework.Loading {
         public OBJLoader() {
         }
 
-        public string standardMeshDirectory = "../../../Content/Models/";
+        public string standardMeshDirectory = "../../Models/";
 
         public DMesh LoadFromFile(string filename) {
             DMesh mesh = new DMesh();
