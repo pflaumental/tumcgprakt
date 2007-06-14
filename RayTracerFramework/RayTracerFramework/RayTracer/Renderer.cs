@@ -45,11 +45,10 @@ namespace RayTracerFramework.RayTracer {
             Vec3 rowStartPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
             rowStartPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
             Vec3 pixelCenterPos = new Vec3(rowStartPos);
-
-            Matrix inverseView = scene.cam.GetInverseViewMatrix();
+            
             Ray rayWS = new Ray(
-                    Vec3.TransformPosition3(Vec3.Zero, inverseView),
-                    Vec3.TransformNormal3n(pixelCenterPos, inverseView),
+                    eyePos,
+                    pixelCenterPos - eyePos,
                     0);
 
             // Setup bitmap
