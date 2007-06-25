@@ -61,7 +61,7 @@ namespace RayTracerFramework {
             l4.diffuse = new Color(0.2f, 0.3f, 0.2f);
             l4.specular = new Color(0.5f, 0.5f, 0.3f);
 
-            scene.useCubeMap = true;
+            scene.useCubeMap = false;
 
             scene.lightManager.AddWorldSpaceLight(l);
             scene.lightManager.AddWorldSpaceLight(l2);
@@ -83,6 +83,7 @@ namespace RayTracerFramework {
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f, null));
+            scene.AddDBox(Matrix.Identity, 30f, 30f, 30f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, false , false, 0f, 0f, null));
 
             // Do not forget:
             scene.Setup();

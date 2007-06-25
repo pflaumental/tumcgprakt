@@ -51,6 +51,9 @@
     <Compile Include="Loading\OBJLoader.cs" />
     <Compile Include="Loading\OBJPointLoader.cs" />
     <Compile Include="Loading\PointLoader.cs" />
+    <Compile Include="PhotonMapping\Photon.cs" />
+    <Compile Include="PhotonMapping\PhotonMap.cs" />
+    <Compile Include="PhotonMapping\PhotonTracer.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
     </Compile>
