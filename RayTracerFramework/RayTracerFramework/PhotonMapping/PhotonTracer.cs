@@ -26,11 +26,11 @@ namespace RayTracerFramework.PhotonMapping {
             return null;
         }
 
-        private void TracePhotons(Ray ray, Color power) {
+        private int TracePhotons(Ray ray, Color power) {
             RayIntersectionPoint intersection;
             scene.Intersect(ray, out intersection);
             if (intersection == null)
-                return;
+                return 0;
             IObject obj = (IObject) intersection.hitObject;
             Material mat = obj.Material;            
             Color tmp;
@@ -63,10 +63,12 @@ namespace RayTracerFramework.PhotonMapping {
             Ray newRay = null;
             Color newPower = power;
             float border = pDiffuse;
+            int storedPhotons = 0;
             if (rndVal <= border) {
                 // calculate diffuse ray
                 // calculate newPower
                 // store photon
+                storedPhotons = 1;
             } else if (rndVal <= (border += pGlossy)) {
                 // calculate glossy ray
             } else if (rndVal <= (border += pMirror)) {
@@ -76,9 +78,9 @@ namespace RayTracerFramework.PhotonMapping {
             } else {
                 // absorption
                 // store photon (possibility for rndVal == 0 is low, therefore skip check for diffuse surface)
-                return;
+                return 1;
             }
-            TracePhotons(newRay, newPower);
+            return storedPhotons + TracePhotons(newRay, newPower);
         }
     }
 }
