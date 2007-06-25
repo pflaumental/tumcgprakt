@@ -21,11 +21,13 @@ namespace RayTracerFramework.Loading {
             //List<Vec3> vertices = new List<Vec3>();
             //List<Vec3> normals = new List<Vec3>();
 
+            
+
             while (!reader.EndOfStream) {
                 string[] tokens = regex.Split(reader.ReadLine());
                 pointlist.Add(new DPoint(1f/100000f * new Vec3(float.Parse(tokens[0], CultureInfo.CreateSpecificCulture("en-us")),
                         float.Parse(tokens[1], CultureInfo.CreateSpecificCulture("en-us")),
-                        float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us")))));
+                        -float.Parse(tokens[2], CultureInfo.CreateSpecificCulture("en-us")))));
 
             }
             reader.Close();

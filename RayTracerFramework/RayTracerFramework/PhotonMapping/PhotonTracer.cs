@@ -1,29 +1,83 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using RayTracerFramework.RayTracer;
+using RayTracerFramework.Utility;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.Shading;
-using RayTracerFramework.Utility;
+
 
 namespace RayTracerFramework.PhotonMapping {
-    class PhotonTracer {
-        private Scene scene;
+
+    class PhotonTracer {        
         private Photon[] photons;
+        private int desiredStoredPhotons;
+        private Scene scene;
+        private int recursionDepth;
+
         private Random rnd;
 
-        public PhotonTracer(Scene scene, Photon[] photons) {
+
+        public PhotonTracer(Scene scene, int desiredStoredPhotons, int recursionDepth) {
             this.scene = scene;
-            this.photons = photons;
-            this.rnd = new Random(0);
+            this.desiredStoredPhotons = desiredStoredPhotons;
+            this.photons = new Photon[desiredStoredPhotons];
+            this.recursionDepth = recursionDepth;
+            rnd = new Random(0);
         }
 
-        public PhotonMap EmitPhotons(int mapSize, int recursionDepth) {
-            photons = new Photon[mapSize];
+
+     
+        public PhotonMap EmitPhotons() {
+            if (scene.lightManager.PhotonLightsWorldSpace.Count < 1)
+                throw new Exception("No photon emitting lights in the scene.");
+            
+            int storedPhotons = 0;
+
+            List<PhotonMapping.Light> lights = scene.lightManager.PhotonLightsWorldSpace;
+            float totalPower = scene.GetTotalPhotonLightPower();
+            float[] intervals = new float[lights.Count];
+            intervals[0] = lights[0].power;
+
+            for (int i = 1; i < lights.Count; i++)
+                intervals[i] = lights[i].power / totalPower + intervals[i-1];
+            
+            PhotonMapping.Light light;
+            float random;
+            Vec3 position, direction;
+            Ray ray;
+
+            // Emit photons
+            do {
+                random = Rnd.RandomFloat();
+                light = lights[0];
+                for (int i = 0; i < intervals.Length; i++) {
+                    if (random <= intervals[i])
+                        light = scene.lightManager.PhotonLightsWorldSpace[i];
+                }
+
+                switch (light.lightType) {
+                    case LightType.Point:
+                        PhotonMapping.PointLight pointLight = (PointLight)light;
+                       
+                        pointLight.GetRandomSample(out direction);
+                        ray = new Ray(pointLight.position, direction, 1);
+                        //storedPhotons += TracePhotons(ray, pointLight.diffuse);
+                        break;
+                    case LightType.Area:
+                        PhotonMapping.AreaLight areaLight = (AreaLight)light;
+                        areaLight.GetRandomSample(out position, out direction);
+                        ray = new Ray(position, direction, 1);
+                        //storedPhotons += TracePhotons(ray, areaLight.diffuse);
+                        break;
+                }
+                
+            } while (storedPhotons < desiredStoredPhotons);
 
 
+            return null; // new PhotonMap(photons);
 
-            return null;
         }
 
         private int TracePhotons(Ray ray, Color power) {

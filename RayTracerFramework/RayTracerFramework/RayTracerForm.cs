@@ -63,8 +63,8 @@ namespace RayTracerFramework {
 
             scene.useCubeMap = false;
 
-            scene.lightManager.AddWorldSpaceLight(l);
-            scene.lightManager.AddWorldSpaceLight(l2);
+            scene.lightManager.AddBlinnWorldSpaceLight(l);
+            scene.lightManager.AddBlinnWorldSpaceLight(l2);
 
             //scene.lightManager.AddWorldSpaceLight(l3);
             //scene.lightManager.AddWorldSpaceLight(l4);
@@ -87,6 +87,7 @@ namespace RayTracerFramework {
 
             // Do not forget:
             scene.Setup();
+
         }
 
         private void Render() {

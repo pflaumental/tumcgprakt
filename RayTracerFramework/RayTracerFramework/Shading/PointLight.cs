@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using RayTracerFramework.Geometry;
+using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Shading {
     class PointLight : Light {
@@ -13,7 +14,6 @@ namespace RayTracerFramework.Shading {
             this.position = new Vec3(position);
            
         }
-
         
 
     }

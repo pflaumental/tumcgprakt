@@ -90,14 +90,14 @@ namespace RayTracerFramework.Loading {
                             }
 
                             // Extract normals                            
-                            if (v1Tokens[2] == "") {
-                                n1 = n2 = n3 = Vec3.Cross(p2 - p1, p3 - p1);
+                            //if (v1Tokens[2] == "") {
+                            n1 = n2 = n3 = Vec3.Cross(p2 - p1, p3 - p1);
                                 missingNormals.Add(n1);
-                            } else {
-                                n1 = normals[Int32.Parse(v1Tokens[2]) - 1];
-                                n2 = normals[Int32.Parse(v2Tokens[2]) - 1];
-                                n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
-                            }
+                            //} else {
+                            //    n1 = normals[Int32.Parse(v1Tokens[2]) - 1];
+                            //    n2 = normals[Int32.Parse(v2Tokens[2]) - 1];
+                            //    n3 = normals[Int32.Parse(v3Tokens[2]) - 1];
+                            //}
                         } else {
                             // Extract normals
                             n1 = n2 = n3 = Vec3.Cross(p2 - p1, p3 - p1);
