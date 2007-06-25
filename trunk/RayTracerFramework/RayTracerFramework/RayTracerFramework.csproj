@@ -117,6 +117,7 @@
     <Compile Include="Shading\PointLight.cs" />
     <Compile Include="Shading\StdShading.cs" />
     <Compile Include="Utility\FastBitmap.cs" />
+    <Compile Include="Utility\LightHelper.cs" />
     <Compile Include="Utility\Trigonometric.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
