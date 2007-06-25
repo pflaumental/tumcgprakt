@@ -8,6 +8,8 @@ using System.Drawing;
 using Color = RayTracerFramework.Shading.Color;
 
 namespace RayTracerFramework.RayTracer {
+
+
     class Scene : IIntersectable {
         //public List<IObject> transformedObjects;
         public GeoObjectKDTree kdTree;
@@ -18,8 +20,9 @@ namespace RayTracerFramework.RayTracer {
         public CubeMap cubeMap;
         public Color backgroundColor;
         public bool useCubeMap;
-        
-        public float refractionIndex = 1.0f;
+      
+        public float refractionIndex;
+
 
         public Scene(Camera cam) { 
             this.cam = cam;
@@ -31,9 +34,16 @@ namespace RayTracerFramework.RayTracer {
 
             backgroundColor = Color.LightSlateGray;
             cubeMap = new CubeMap(100, 100, 100, "stpeters");
-            useCubeMap = true;
+            useCubeMap = true;          
 
-            //refractionIndex = 1.0f;         
+            refractionIndex = 1.0f;         
+        }
+
+        public float GetTotalPhotonLightPower() {
+            float totalPhotonLightPower = 0;
+            foreach (PhotonMapping.Light light in this.lightManager.PhotonLightsWorldSpace)
+                totalPhotonLightPower += light.power;
+            return totalPhotonLightPower;
         }
 
         public DPoint AddDPoint(Vec3 position) { 

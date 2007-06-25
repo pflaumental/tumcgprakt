@@ -7,7 +7,7 @@ namespace RayTracerFramework.Shading {
     class DPoint : IObject {
         public Vec3 position;
 
-        public static float EPSILON = 0.1f;
+        public static float EPSILON = 0.2f;
         public static float EPSILON_SQ = EPSILON * EPSILON;
 
         public DPoint(Vec3 position) {

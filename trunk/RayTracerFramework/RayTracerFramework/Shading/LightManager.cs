@@ -1,23 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Shading {
     
     class LightManager {
-        private List<Light> lightsWorldSpace;
+        private List<Shading.Light> blinnlightsWorldSpace;
+        private List<PhotonMapping.Light> photonlightsWorldSpace;
 
         public LightManager() {
-            this.lightsWorldSpace = new List<Light>();
+            this.blinnlightsWorldSpace = new List<Shading.Light>();
+            this.photonlightsWorldSpace = new List<PhotonMapping.Light>();
         }
 
-        public void AddWorldSpaceLight(Light lightWorldSpace) {
-            this.lightsWorldSpace.Add(lightWorldSpace);
+        public void AddBlinnWorldSpaceLight(Shading.Light lightWorldSpace) {
+            this.blinnlightsWorldSpace.Add(lightWorldSpace);
         }
 
-        public List<Light> LightsWorldSpace {
-            get { return lightsWorldSpace; }
+        public void AddPhotonWorldSpaceLight(PhotonMapping.Light lightWorldSpace) {
+            this.photonlightsWorldSpace.Add(lightWorldSpace);
+        }
+
+        public List<Light> BlinnLightsWorldSpace {
+            get { return blinnlightsWorldSpace; }
+        }
+
+        public List<PhotonMapping.Light> PhotonLightsWorldSpace {
+            get { return photonlightsWorldSpace; }
         }
     }
 }

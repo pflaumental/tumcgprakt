@@ -14,7 +14,7 @@ namespace RayTracerFramework.Shading {
             Color iTotal = new Color();
             //bool lighting = true;
             
-            foreach (Light light in scene.lightManager.LightsWorldSpace) {
+            foreach (Light light in scene.lightManager.BlinnLightsWorldSpace) {
           
                 switch (light.lightType) {
                     case LightType.Point:
@@ -25,19 +25,20 @@ namespace RayTracerFramework.Shading {
                         float distanceToLight = posToLight.Length;
 
                         // Points normal away from light?
-                        float diffuse = Vec3.Dot(L, N);
+                        float diffuse = Vec3.Dot(L, N);                        
                         if (diffuse < 0) {
-                            iTotal = iTotal + material.ambient * pointLight.ambient;
-                            continue;
+                            diffuse = -diffuse;
+                            //iTotal = iTotal + material.ambient * pointLight.ambient;
+                            //continue;
                         }
                         // Is light in shadow?
-                        Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
-                        Ray toLightRay = new Ray(toLightRayPos, L, 0);
-                        RayIntersectionPoint firstIntersection;
-                        if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
-                            iTotal = iTotal + material.ambient * pointLight.ambient;
-                            continue;
-                        }
+                        //Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
+                        //Ray toLightRay = new Ray(toLightRayPos, L, 0);
+                        //RayIntersectionPoint firstIntersection;
+                        //if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
+                        //    iTotal = iTotal + material.ambient * pointLight.ambient;
+                        //    continue;
+                        //}
  
                         // Light is seen
                         //Vec3 V = -ray.direction;

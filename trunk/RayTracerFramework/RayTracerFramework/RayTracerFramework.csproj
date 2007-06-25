@@ -51,9 +51,12 @@
     <Compile Include="Loading\OBJLoader.cs" />
     <Compile Include="Loading\OBJPointLoader.cs" />
     <Compile Include="Loading\PointLoader.cs" />
+    <Compile Include="PhotonMapping\AreaLight.cs" />
+    <Compile Include="PhotonMapping\Light.cs" />
     <Compile Include="PhotonMapping\Photon.cs" />
     <Compile Include="PhotonMapping\PhotonMap.cs" />
     <Compile Include="PhotonMapping\PhotonTracer.cs" />
+    <Compile Include="PhotonMapping\PointLight.cs" />
     <Compile Include="RayTracerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +120,7 @@
     <Compile Include="Shading\PointLight.cs" />
     <Compile Include="Shading\StdShading.cs" />
     <Compile Include="Utility\FastBitmap.cs" />
+    <Compile Include="Utility\Rnd.cs" />
     <Compile Include="Utility\LightHelper.cs" />
     <Compile Include="Utility\Trigonometric.cs" />
   </ItemGroup>
