@@ -6,6 +6,7 @@ using RayTracerFramework.Utility;
 using RayTracerFramework.Shading;
 using System.Drawing;
 using Color = RayTracerFramework.Shading.Color;
+using RayTracerFramework.PhotonMapping;
 
 namespace RayTracerFramework.RayTracer {
 
@@ -15,6 +16,8 @@ namespace RayTracerFramework.RayTracer {
         public GeoObjectKDTree kdTree;
         public ILightingModel lightingModel;
         public LightManager lightManager;
+        public PhotonMap photonMap;
+        public PhotonTracer photonTracer;
         public Camera cam;
 
         public CubeMap cubeMap;
@@ -24,7 +27,9 @@ namespace RayTracerFramework.RayTracer {
         public float refractionIndex;
 
 
-        public Scene(Camera cam) { 
+        public Scene(Camera cam) {
+            photonTracer = null;
+            photonMap = null;
             this.cam = cam;
             //transformedObjects = new List<IObject>();
             kdTree = new GeoObjectKDTree();
@@ -44,6 +49,10 @@ namespace RayTracerFramework.RayTracer {
             foreach (PhotonMapping.Light light in this.lightManager.PhotonLightsWorldSpace)
                 totalPhotonLightPower += light.power;
             return totalPhotonLightPower;
+        }
+
+        public void ActivatePhotonMapping(int photonMapSize) {
+            photonTracer = new PhotonTracer(this, photonMapSize, 3);
         }
 
         public DPoint AddDPoint(Vec3 position) { 
@@ -86,8 +95,11 @@ namespace RayTracerFramework.RayTracer {
             return box;
         }
 
-        public void Setup() {
+        public void Setup() {            
             kdTree.Optimize();
+            if (photonTracer != null) {
+                photonMap = photonTracer.EmitPhotons();
+            }
         }
 
         public Color GetBackgroundColor(Ray ray) {

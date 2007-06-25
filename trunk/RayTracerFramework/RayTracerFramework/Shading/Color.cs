@@ -53,6 +53,10 @@ namespace RayTracerFramework.Shading {
             return new Color(c1.red + c2.red, c1.green + c2.green, c1.blue + c2.blue);    
         }
 
+        public static Color operator -(Color c1, Color c2) {
+            return new Color(c1.red - c2.red, c1.green - c2.green, c1.blue - c2.blue);
+        }
+
         public byte RedInt {
             get { return (byte)(red * 255); }
             set { red = value / 255f; }
