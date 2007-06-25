@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.RayTracer;
+using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Shading {
     // Standard recursive raytracing
@@ -26,7 +27,7 @@ namespace RayTracerFramework.Shading {
                 // Approximation from nvidia paper for fresnel term:
                 // R(theta) ~~ R_a(theta) = R(0) + (1 - R(0)) * (1 - cos(theta))^5
                 // with R(0) = (1 - refractionRatio)^2 / (1 + refreactionRatio)^2
-                fresnelReflectionPart = material.r0 + material.oneMinusR0 * (float)Math.Pow(1f - Vec3.Dot(-ray.direction, intersection.normal), 5f);
+                fresnelReflectionPart = LightHelper.Fresnel(material, ray.direction, intersection.normal);
                 if (material.refractive) {
                     refractionPart = (1f - fresnelReflectionPart) * material.refractionRate;
                     localPart = (1f - fresnelReflectionPart) * (1f - material.refractionRate);
