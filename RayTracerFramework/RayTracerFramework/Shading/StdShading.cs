@@ -4,6 +4,7 @@ using System.Text;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.RayTracer;
 using RayTracerFramework.Utility;
+using RayTracerFramework.PhotonMapping;
 
 namespace RayTracerFramework.Shading {
     // Standard recursive raytracing
@@ -47,14 +48,19 @@ namespace RayTracerFramework.Shading {
             }
 
             // Local color
-            if (localPart > localThreshold) {
-                Color localColor = scene.lightingModel.calculateColor(
-                        ray,
-                        intersection,
-                        material,
-                        scene);
-                resultColor += (localColor * localPart);
-            }
+            //if (localPart > localThreshold) {
+            //    Color localColor = scene.lightingModel.calculateColor(
+            //            ray,
+            //            intersection,
+            //            material,
+            //            scene);
+            //    resultColor += (localColor * localPart);
+            //}
+            Photon photon = scene.photonMap.FindNearestPhoton(intersection.position);
+            float lenSq = Vec3.GetLengthSq(photon.position - intersection.position);
+            resultColor += (Color.Blue * (localPart / (100 * lenSq)));
+            resultColor.Saturate();
+            return resultColor;
 
             bool continueRecursion = ray.recursionDepth + 1 <= Renderer.MaxRecursionDepth;
             float reflectionPartSum = fresnelReflectionPart;            
