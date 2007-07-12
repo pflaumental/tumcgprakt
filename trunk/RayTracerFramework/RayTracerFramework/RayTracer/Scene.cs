@@ -54,7 +54,7 @@ namespace RayTracerFramework.RayTracer {
 
         public void ActivatePhotonMapping(int photonMapSize) {
             usePhotonMapping = true;
-            photonTracer = new PhotonTracer(this, photonMapSize, 3);
+            photonTracer = new PhotonTracer(this, photonMapSize, 4);
         }
 
         public DPoint AddDPoint(Vec3 position) { 

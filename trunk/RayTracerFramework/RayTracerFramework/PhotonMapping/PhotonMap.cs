@@ -19,8 +19,8 @@ namespace RayTracerFramework.PhotonMapping {
             }
         }
 
-        public static readonly float powerLevel = 8f;
-        public static readonly float sphereRadius = 0.55f;
+        public static readonly float powerLevel = 5f;
+        public static readonly float sphereRadius = 0.8f;
         public static readonly float sphereRadiusSq = sphereRadius * sphereRadius;
 
         public PhotonMap(Photon[] photons) {

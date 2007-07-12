@@ -41,23 +41,23 @@ namespace RayTracerFramework {
 
             scene = new Scene(cam);
 
-            PointLight l = new PointLight(new Vec3(1, 6, -1));
+            PointLight l = new PointLight(new Vec3(1, 4, -4));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l.diffuse = new Color(0.6f, 0.6f, 0.6f);
-            l.specular = new Color(0.8f, 0.5f, 0.5f);
+            l.diffuse = new Color(0.7f, 0.7f, 0.7f);
+            l.specular = new Color(0.5f, 0.5f, 0.5f);
 
             PhotonMapping.Light pl = new PhotonMapping.PointLight(l.position);
             pl.diffuse = l.diffuse;
             pl.power = 100;
 
-            PointLight l2 = new PointLight(new Vec3(4, 4, 4));
-            l2.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l2.diffuse = new Color(0.3f, 0.3f, 0.5f);
-            l2.specular = new Color(0.5f, 0.5f, 0.6f);
+            PointLight l2 = new PointLight(new Vec3(4.0f, 6.0f, -0.5f));
+            l2.ambient = l.ambient;
+            l2.diffuse = l.diffuse;
+            l2.specular = l.specular;
 
             PhotonMapping.Light pl2 = new PhotonMapping.PointLight(l2.position);
             pl2.diffuse = l2.diffuse;
-            pl2.power = 100;
+            pl2.power = 50;
 
             PointLight l3 = new PointLight(new Vec3(2, -2, -2));
             l3.ambient = new Color(0.05f, 0.05f, 0.05f);
@@ -74,8 +74,8 @@ namespace RayTracerFramework {
             scene.lightManager.AddBlinnWorldSpaceLight(l);
             scene.lightManager.AddPhotonWorldSpaceLight(pl);
 
-            //scene.lightManager.AddBlinnWorldSpaceLight(l2);            
-            //scene.lightManager.AddPhotonWorldSpaceLight(pl2);
+            scene.lightManager.AddBlinnWorldSpaceLight(l2);
+            scene.lightManager.AddPhotonWorldSpaceLight(pl2);
 
             OBJLoader loader = new OBJLoader();
             DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
@@ -91,9 +91,9 @@ namespace RayTracerFramework {
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.9f, 0.1f, 0.1f), Color.White, 30, false, false, 0.1f, 0f, null));
-            scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, false , false, 0f, 0f, null));
+            scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.0f, 0.0f, 0.3f), Color.White, 30, false, false, 0f, 0f, null));
 
-            scene.ActivatePhotonMapping(150000);
+            scene.ActivatePhotonMapping(200000);
             // Do not forget:
             scene.Setup();
 
