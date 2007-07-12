@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.RayTracer;
+using RayTracerFramework.PhotonMapping;
 
 namespace RayTracerFramework.Shading {
 
@@ -12,8 +13,17 @@ namespace RayTracerFramework.Shading {
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
             Color iTotal = new Color();
-            //bool lighting = true;
-            
+
+            if (scene.usePhotonMapping) {
+                List<PhotonDistanceSqPair> photons = scene.photonMap.FindPhotonsInSphere(intersection.position);
+                Color photonDiffuseColor = new Color();
+                foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
+                    photonDiffuseColor = photonDiffuseColor + (photonDistanceSqPair.photon.power
+                             * (1f / (1 + /*(float)Math.Sqrt(*/photonDistanceSqPair.distanceSq/*)*/)));
+                }
+                iTotal = iTotal + photonDiffuseColor * material.GetDiffuse(intersection.textureCoordinates);
+            }
+
             foreach (Light light in scene.lightManager.BlinnLightsWorldSpace) {
           
                 switch (light.lightType) {
@@ -22,23 +32,22 @@ namespace RayTracerFramework.Shading {
                         Vec3 N = intersection.normal;
                         Vec3 posToLight = pointLight.position - intersection.position;
                         Vec3 L = Vec3.Normalize(posToLight);
+                        // Points normal away from light?
+                        float diffuse = Vec3.Dot(L, N);
+                        if (diffuse < 0)
+                            continue;
                         float distanceToLight = posToLight.Length;
 
-                        // Points normal away from light?
-                        float diffuse = Vec3.Dot(L, N);                        
-                        if (diffuse < 0) {
-                            diffuse = -diffuse;
-                            //iTotal = iTotal + material.ambient * pointLight.ambient;
-                            //continue;
-                        }
+                        iTotal = iTotal + material.ambient * pointLight.ambient;
+                        
                         // Is light in shadow?
-                        //Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
-                        //Ray toLightRay = new Ray(toLightRayPos, L, 0);
-                        //RayIntersectionPoint firstIntersection;
-                        //if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
-                        //    iTotal = iTotal + material.ambient * pointLight.ambient;
-                        //    continue;
-                        //}
+                        Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
+                        Ray toLightRay = new Ray(toLightRayPos, L, 0);
+                        RayIntersectionPoint firstIntersection;
+                        if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
+                            iTotal = iTotal + material.ambient * pointLight.ambient;
+                            continue;
+                        }
  
                         // Light is seen
                         //Vec3 V = -ray.direction;
@@ -47,9 +56,9 @@ namespace RayTracerFramework.Shading {
                        
                         float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
                         // assert if (material.diffuseTexture != null && (intersection.textureCoordinates.x < 0f || intersection.textureCoordinates.x > 1f || intersection.textureCoordinates.y < 0f || intersection.textureCoordinates.y > 1f)) throw new Exception("Texture coordinates out of bounds");
-                        iTotal = iTotal + (material.ambient * pointLight.ambient) +
-                                          (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse) +
-                                          (material.specular * pointLight.specular * specular);
+                        if (!scene.usePhotonMapping)
+                            iTotal = iTotal + (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse);
+                        iTotal = iTotal + (material.specular * pointLight.specular * specular);
                           
                         break;
                     case LightType.Directional:
@@ -57,23 +66,10 @@ namespace RayTracerFramework.Shading {
                         break;
                 } // end switch
                 
-
             }
 
             iTotal.Saturate();
-            return iTotal;
-            
-            //Light l = lightManager.lights[0];
-            //if (l.lightType == LightType.Point) {
-            //    PointLight pointLight = (PointLight)l;
-               
-            //   // return Color.FromArgb((int)(((float)material.diffuse.R) * factor), (int)(((float)material.diffuse.G) * factor), (int)(((float)material.diffuse.B) * factor));
-            //} else {
-            //    Console.WriteLine("Kein Punktlicht!");
-            //    return Color.Blue;
-            //}
-            //float factor = Vec3.Dot(-Vec3.StdZAxis, intersection.normal);
-            //return Color.FromArgb((int)(((float)emissive.R) * factor), (int)(((float)emissive.G) * factor), (int)(((float)emissive.B) * factor));
+            return iTotal;            
         }
     }
 }

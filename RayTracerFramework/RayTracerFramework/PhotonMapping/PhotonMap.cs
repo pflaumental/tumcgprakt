@@ -19,6 +19,9 @@ namespace RayTracerFramework.PhotonMapping {
             }
         }
 
+        public static readonly float powerLevel = 5f;
+        public static readonly float sphereRadiusSq = 0.4f;
+
         public PhotonMap(Photon[] photons) {
             root = MakeTree(new List<Photon>(photons));
         }
@@ -166,5 +169,48 @@ namespace RayTracerFramework.PhotonMapping {
 
             return result;
         }
+
+        public List<PhotonDistanceSqPair> FindPhotonsInSphere(Vec3 center) {
+            List<PhotonDistanceSqPair> result = new List<PhotonDistanceSqPair>();
+            FindPhotonsInSphere(root, center, result);
+            return result;
+        }
+
+        private void FindPhotonsInSphere(
+                PhotonMap.Node node, 
+                Vec3 center, 
+                List<PhotonDistanceSqPair> result) {
+            if (node == null)
+                return;
+
+            float distToNodeSq = Vec3.GetLengthSq(center - node.photon.position);
+            if (distToNodeSq < sphereRadiusSq) {
+                result.Add(new PhotonDistanceSqPair(node.photon, distToNodeSq));
+            }
+            float toPlane = 0f;
+            switch (node.photon.flag) {
+                case 0: // x
+                    toPlane = node.photon.position.x - center.x;
+                    break;
+                case 1: // y
+                    toPlane = node.photon.position.y - center.y;
+                    break;
+                case 2: // z
+                    toPlane = node.photon.position.z - center.z;
+                    break;
+            }
+
+            float toPlaneSq = toPlane * toPlane;
+            if (toPlane > 0) { // center in left half space
+                FindPhotonsInSphere(node.left, center, result);
+                if (toPlaneSq < sphereRadiusSq)
+                    FindPhotonsInSphere(node.right, center, result);
+            } else { // center in right half space
+                FindPhotonsInSphere(node.right, center, result);
+                if (toPlaneSq < sphereRadiusSq)
+                    FindPhotonsInSphere(node.left, center, result);
+            }
+        }
+
     }
 }

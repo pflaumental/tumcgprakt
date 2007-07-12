@@ -34,11 +34,12 @@ namespace RayTracerFramework.PhotonMapping {
                 throw new Exception("No photon emitting lights in the scene.");
             
             int storedPhotons = 0;
+            int emittedPhotons = 0;
 
             List<PhotonMapping.Light> lights = scene.lightManager.PhotonLightsWorldSpace;
             float totalPower = scene.GetTotalPhotonLightPower();
             float[] intervals = new float[lights.Count];
-            intervals[0] = lights[0].power;
+            intervals[0] = lights[0].power / totalPower;
 
             for (int i = 1; i < lights.Count; i++)
                 intervals[i] = lights[i].power / totalPower + intervals[i-1];
@@ -47,9 +48,9 @@ namespace RayTracerFramework.PhotonMapping {
             float random;
             Vec3 position, direction;
             Ray ray;
-
             // Emit photons
             do {
+                emittedPhotons++;
                 random = Rnd.RandomFloat();
                 light = lights[0];
                 for (int i = 0; i < intervals.Length; i++) {
@@ -74,6 +75,12 @@ namespace RayTracerFramework.PhotonMapping {
                 }
                 
             } while (storedPhotons < desiredStoredPhotons);
+
+            float powerScale = (PhotonMap.powerLevel * totalPower) / emittedPhotons;
+
+            foreach (Photon photon in photons) {
+                photon.power *= powerScale;
+            }
 
             return new PhotonMap(photons);
 
@@ -126,7 +133,7 @@ namespace RayTracerFramework.PhotonMapping {
             if (rndVal <= border) {
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXdiffuse * (1f / pDiffuse);
-                photons[arrayIndex] = new Photon(power - newPower, intersection.position, ray.direction, 0);
+                photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
                 storedPhotonCnt = 1;
             } else if (rndVal <= (border += pGlossy)) {
                 // TODO: calculate GLOSSY direction instead

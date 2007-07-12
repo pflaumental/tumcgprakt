@@ -41,18 +41,18 @@ namespace RayTracerFramework {
 
             scene = new Scene(cam);
 
-            PointLight l = new PointLight(new Vec3(2, 8, -12));
+            PointLight l = new PointLight(new Vec3(2, 5, -12));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l.diffuse = new Color(0.6f, 0.4f, 0.4f);
+            l.diffuse = new Color(0.3f, 0.2f, 0.2f);
             l.specular = new Color(0.8f, 0.5f, 0.5f);
 
             PhotonMapping.Light pl = new PhotonMapping.PointLight(l.position);
             pl.diffuse = l.diffuse;
             pl.power = 100;
 
-            PointLight l2 = new PointLight(new Vec3(4, 6, -6));
+            PointLight l2 = new PointLight(new Vec3(4, 4, -6));
             l2.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l2.diffuse = new Color(0.3f, 0.4f, 0.5f);
+            l2.diffuse = new Color(0.3f, 0.3f, 0.5f);
             l2.specular = new Color(0.5f, 0.5f, 0.6f);
 
             PhotonMapping.Light pl2 = new PhotonMapping.PointLight(l2.position);
@@ -76,24 +76,21 @@ namespace RayTracerFramework {
             scene.lightManager.AddPhotonWorldSpaceLight(pl);
             scene.lightManager.AddPhotonWorldSpaceLight(pl2);
 
-            //scene.lightManager.AddWorldSpaceLight(l3);
-            //scene.lightManager.AddWorldSpaceLight(l4);
+            //OBJLoader loader = new OBJLoader();
+            //DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
 
-            OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
+            //scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
+            //FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
+            //scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.95f, 0.85f, null));
+            //scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, earthTexture));
 
-            scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
-            FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
-            scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.95f, 0.85f, null));
-            scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, earthTexture));
-
-            FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
+            //FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
             Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
-            scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
-            scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, true, false, 0.1f, 0f, null));
-            scene.AddDBox(Matrix.Identity, 30f, 30f, 30f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, false , false, 0f, 0f, null));
+            //scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
+            scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.5f, 0.5f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
+            scene.AddDBox(Matrix.Identity, 15f, 15f, 15f, false, new Material(Color.White, Color.White, Color.White, Color.White, 30, false , false, 0f, 0f, null));
 
             scene.ActivatePhotonMapping(100000);
             // Do not forget:
