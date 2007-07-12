@@ -39,7 +39,7 @@ namespace RayTracerFramework {
         }
 
         private void Setup() {
-            renderer = new Renderer(progressBar, statusBar);
+            renderer = new Renderer(progressBar, statusBar, pictureBox);
 
             //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
             //                        new Vec3(0, 0, 0f),
