@@ -125,62 +125,46 @@ namespace RayTracerFramework.PhotonMapping {
             }
         }
 
-        public Photon FindNearestPhoton(Vec3 position) {
-            List<Photon> path = new List<Photon>();
-            Dive(root, position, path);
-            float result_positionSq = float.PositiveInfinity;
+        public Photon FindNearestPhoton(Vec3 position, out float distToNNSq) {
+            distToNNSq = float.PositiveInfinity;
+            return FindNearestPhoton(root, position, ref distToNNSq);
+        }
+
+        private Photon FindNearestPhoton(PhotonMap.Node node, Vec3 position, ref float distToNNSq) {
+            if (node == null)
+                return null;
+
             Photon result = null;
-            foreach (Photon photon in path) {
-                float photon_positionSq = Vec3.GetLengthSq(photon.position - position);
-                if (photon_positionSq < result_positionSq) {
-                    result_positionSq = photon_positionSq;
-                    result = photon;
-                }
+            float distToNodeSq = Vec3.GetLengthSq(position - node.photon.position);
+            if (distToNodeSq < distToNNSq) {
+                distToNNSq = distToNodeSq;
+                result = node.photon;
             }
+            float toPlane = 0f;
+            switch (node.photon.flag) {
+                case 0: // x
+                    toPlane = node.photon.position.x - position.x;
+                    break;
+                case 1: // y
+                    toPlane = node.photon.position.y - position.y;
+                    break;
+                case 2: // z
+                    toPlane = node.photon.position.z - position.z;
+                    break;
+            }
+
+            float toPlaneSq = toPlane * toPlane;
+            if (toPlane > 0) { // position in left half space
+                result = FindNearestPhoton(node.left, position, ref distToNNSq);
+                if(toPlaneSq < distToNNSq)
+                    result = FindNearestPhoton(node.right, position, ref distToNNSq);
+            } else { // position in right half space
+                result = FindNearestPhoton(node.right, position, ref distToNNSq);
+                if(toPlaneSq < distToNNSq)
+                    result = FindNearestPhoton(node.left, position, ref distToNNSq);
+            }
+
             return result;
         }
-
-        private void Dive(PhotonMap.Node node, Vec3 position, List<Photon> path) {
-            path.Add(node.photon);
-            switch (node.photon.flag) {
-                case 0:
-                    if (position.x <= node.photon.position.x && node.left != null)
-                        Dive(node.left, position, path);
-                    else if (node.right != null)
-                        Dive(node.right, position, path);
-                    break;
-                case 1:
-                    if (position.y <= node.photon.position.y && node.left != null)
-                        Dive(node.left, position, path);
-                    else if (node.right != null)
-                        Dive(node.right, position, path);
-                    break;
-                case 2:
-                    if (position.z <= node.photon.position.z && node.left != null)
-                        Dive(node.left, position, path);
-                    else if (node.right != null)
-                        Dive(node.right, position, path);
-                    break;
-            }
-        }
-
-        //private Photon FindNearestPhoton(PhotonMap.Node node, Vec3 position) { 
-        //    float node_positionSq = Vec3.GetLengthSq(node.photon.position - position);
-        //    float left_positionSq = float.PositiveInfinity;
-        //    if(node.left != null)
-        //        left_positionSq = Vec3.GetLengthSq(node.left.photon.position - position);
-        //    float right_positionSq = float.PositiveInfinity;
-        //    if (node.right != null)
-        //        right_positionSq = Vec3.GetLengthSq(node.right.photon.position - position);
-        //    if (node_positionSq < left_positionSq)
-        //        if (node_positionSq < right_positionSq)
-        //            return node.photon;
-        //        else
-        //            return FindNearestPhoton(node.right, position);
-        //    else if (left_positionSq < right_positionSq)
-        //        return FindNearestPhoton(node.left, position);
-        //    else
-        //        return FindNearestPhoton(node.right, position);
-        //}
     }
 }

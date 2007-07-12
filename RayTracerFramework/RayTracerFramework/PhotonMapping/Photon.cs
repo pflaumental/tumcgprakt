@@ -9,7 +9,7 @@ namespace RayTracerFramework.PhotonMapping {
         public Color power;
         public Vec3 position;
         public Vec3 direction;
-        public byte flag;
+        public byte flag; // 0=x; 1=y; 2=z;
 
         public Photon(Color power, Vec3 position, Vec3 direction, byte flag) {
             this.power = power;

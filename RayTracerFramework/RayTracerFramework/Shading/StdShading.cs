@@ -56,8 +56,8 @@ namespace RayTracerFramework.Shading {
             //            scene);
             //    resultColor += (localColor * localPart);
             //}
-            Photon photon = scene.photonMap.FindNearestPhoton(intersection.position);
-            float lenSq = Vec3.GetLengthSq(photon.position - intersection.position);
+            float lenSq;
+            Photon photon = scene.photonMap.FindNearestPhoton(intersection.position, out lenSq);
             resultColor += (Color.Blue * (localPart / (100 * lenSq)));
             resultColor.Saturate();
             return resultColor;
