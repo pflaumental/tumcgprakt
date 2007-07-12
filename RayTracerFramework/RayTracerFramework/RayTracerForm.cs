@@ -19,12 +19,23 @@ namespace RayTracerFramework {
         private Renderer renderer;
         private Camera cam;
 
-        private int pos = 0;
         private Matrix camTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
+
+        private Vec3 camPos;
+        private Vec3 camLookAt;
+
+        private bool sceneReady = false;
 
         public RayTracerForm() {
             InitializeComponent();
-            Setup();
+            camPos = new Vec3(0, 0, -5);
+            camLookAt = Vec3.Zero;
+            tbCamPosX.Text = camPos.x.ToString();
+            tbCamPosY.Text = camPos.y.ToString();
+            tbCamPosZ.Text = camPos.z.ToString();
+            tbCamLookAtX.Text = camLookAt.x.ToString();
+            tbCamLookAtY.Text = camLookAt.y.ToString();
+            tbCamLookAtZ.Text = camLookAt.z.ToString();
         }
 
         private void Setup() {
@@ -34,8 +45,6 @@ namespace RayTracerFramework {
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
 
-            Vec3 camPos = new Vec3(0, 0, -5);
-            Vec3 camLookAt = Vec3.Zero;
             cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Trigonometric.PI_QUARTER, 4f / 3f);
             //cam.aspectRatio = aspectRatio;
 
@@ -93,21 +102,35 @@ namespace RayTracerFramework {
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.9f, 0.1f, 0.1f), Color.White, 30, false, false, 0.1f, 0f, null));
             scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.0f, 0.0f, 0.3f), Color.White, 30, false, false, 0f, 0f, null));
 
-            scene.ActivatePhotonMapping(200000);
+            scene.ActivatePhotonMapping(150000, progressBar, statusBar);
             // Do not forget:
             scene.Setup();
-
         }
 
         private void Render() {
             float startMillis = Environment.TickCount;
 
-            Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);
+            Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);            
+
+            // Parse CamPos and CamLookAt
+            cam.eyePos.x = float.Parse(tbCamPosX.Text);
+            cam.eyePos.y = float.Parse(tbCamPosY.Text);
+            cam.eyePos.z = float.Parse(tbCamPosZ.Text);
+            cam.lookAtPos.x = float.Parse(tbCamLookAtX.Text);
+            cam.lookAtPos.y = float.Parse(tbCamLookAtY.Text);
+            cam.lookAtPos.z = float.Parse(tbCamLookAtZ.Text);
+            
             cam.aspectRatio = ((float)bitmap.Width) / bitmap.Height;
 
-            cam.eyePos = Vec3.TransformNormal3(cam.eyePos, camTransform);
+            renderer.Render(scene, bitmap);
 
-            renderer.Render(scene, bitmap);            
+            cam.eyePos = Vec3.TransformNormal3(cam.eyePos, camTransform);
+            camPos = cam.eyePos;
+
+            // Update Cam User Controls
+            tbCamPosX.Text = camPos.x.ToString();
+            tbCamPosY.Text = camPos.y.ToString();
+            tbCamPosZ.Text = camPos.z.ToString();
 
             float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;
 
@@ -122,7 +145,26 @@ namespace RayTracerFramework {
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
+            if (!sceneReady) {
+                statusBar.Items.Clear();
+                statusBar.Items.Add("Setting up scene. This may take some time...");
+                btnRender.Text = "Render";
+                this.Update();
+                Setup();                
+                sceneReady = true;
+            }
             Render();
+        }
+
+        private void btnSetup_Click(object sender, EventArgs e) {            
+            if (!sceneReady) {
+                statusBar.Items.Clear();
+                statusBar.Items.Add("Setting up scene. This may take some time...");
+                btnRender.Text = "Render";
+                this.Update();
+                sceneReady = true;
+            }
+            Setup();
         }
     }
 }
