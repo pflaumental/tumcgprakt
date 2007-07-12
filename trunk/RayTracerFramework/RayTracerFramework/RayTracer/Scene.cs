@@ -52,9 +52,17 @@ namespace RayTracerFramework.RayTracer {
             return totalPhotonLightPower;
         }
 
-        public void ActivatePhotonMapping(int photonMapSize) {
+        public void ActivatePhotonMapping(
+                int photonMapSize, 
+                System.Windows.Forms.ProgressBar progressBar,
+                System.Windows.Forms.StatusStrip statusBar) {
             usePhotonMapping = true;
-            photonTracer = new PhotonTracer(this, photonMapSize, 4);
+            photonTracer = new PhotonTracer(
+                    this, 
+                    photonMapSize, 
+                    4, 
+                    progressBar,
+                    statusBar);
         }
 
         public DPoint AddDPoint(Vec3 position) { 

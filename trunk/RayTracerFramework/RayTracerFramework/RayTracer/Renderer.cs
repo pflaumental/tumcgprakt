@@ -106,7 +106,7 @@ namespace RayTracerFramework.RayTracer {
                     stepTimeSum = 0f;
                     int remainingSeconds = (int)(((resolution - computedPixels) * elapsedTime) / (computedPixels * 1000f));
                     statusBar.Items.Clear();
-                    statusBar.Items.Add("Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
+                    statusBar.Items.Add("Rendering... Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
                     statusBar.Refresh();
                 }
                 
@@ -123,6 +123,7 @@ namespace RayTracerFramework.RayTracer {
                 rgbValuesPos += waste;
 
                 progressBar.Value = y;
+                progressBar.Parent.Update();
             }
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
             target.UnlockBits(bitmapData);            

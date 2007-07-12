@@ -18,12 +18,21 @@ namespace RayTracerFramework.PhotonMapping {
 
         private Random rnd;
 
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.StatusStrip statusBar;
 
-        public PhotonTracer(Scene scene, int desiredStoredPhotons, int recursionDepth) {
+        public PhotonTracer(
+                Scene scene, 
+                int desiredStoredPhotons,
+                int recursionDepth,
+                System.Windows.Forms.ProgressBar progressBar,
+                System.Windows.Forms.StatusStrip statusBar) {
             this.scene = scene;
             this.desiredStoredPhotons = desiredStoredPhotons;
             this.photons = new Photon[desiredStoredPhotons];
             this.recursionDepth = recursionDepth;
+            this.progressBar = progressBar;
+            this.statusBar = statusBar;
             rnd = new Random(0);
         }
 
@@ -35,6 +44,7 @@ namespace RayTracerFramework.PhotonMapping {
             
             int storedPhotons = 0;
             int emittedPhotons = 0;
+            int lastStoredPhotons = 0;
 
             List<PhotonMapping.Light> lights = scene.lightManager.PhotonLightsWorldSpace;
             float totalPower = scene.GetTotalPhotonLightPower();
@@ -48,9 +58,22 @@ namespace RayTracerFramework.PhotonMapping {
             float random;
             Vec3 position, direction;
             Ray ray;
+
+            progressBar.Minimum = 0;
+            progressBar.Maximum = desiredStoredPhotons;
+
             // Emit photons
             do {
                 emittedPhotons++;
+                if((storedPhotons - lastStoredPhotons) > 1000) {
+                    lastStoredPhotons = storedPhotons;
+                    statusBar.Items.Clear();
+                    statusBar.Items.Add("Emitting photons... Photons stored: " + storedPhotons + " / " + desiredStoredPhotons);
+                    statusBar.Refresh();
+                    progressBar.Value = storedPhotons;
+                    progressBar.Parent.Update();
+                }
+                
                 random = Rnd.RandomFloat();
                 light = lights[0];
                 for (int i = 0; i < intervals.Length; i++) {
@@ -81,7 +104,9 @@ namespace RayTracerFramework.PhotonMapping {
             foreach (Photon photon in photons) {
                 photon.power *= powerScale;
             }
-
+            statusBar.Items.Clear();
+            statusBar.Items.Add("Building photon kd-tree. This may take some time...");
+            statusBar.Refresh();
             return new PhotonMap(photons);
 
         }

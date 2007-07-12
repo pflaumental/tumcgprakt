@@ -8,7 +8,7 @@ using RayTracerFramework.PhotonMapping;
 namespace RayTracerFramework.Shading {
 
     class BlinnPhongLightingModel : ILightingModel {
-        public static readonly float coneFilterConstantK = 1.6f;
+        public static readonly float coneFilterConstantK = 1.5f;//1.6
 
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
