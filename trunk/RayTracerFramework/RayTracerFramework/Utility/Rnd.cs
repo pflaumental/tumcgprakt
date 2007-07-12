@@ -8,10 +8,27 @@ namespace RayTracerFramework.Utility {
         private static Random random = new Random(1);
 
         public static Vec3 RandomVec3() {
-            float f1 = (float)(random.NextDouble() * 2 -1);
+            /*float f1 = (float)(random.NextDouble() * 2 -1);
             float f2 = (float)(random.NextDouble() * 2 - 1);
             float f3 = (float)(random.NextDouble() * 2 -1);
-            return Vec3.Normalize(new Vec3(f1, f2, f3));
+            return Vec3.Normalize(new Vec3(f1, f2, f3));*/
+            /*
+            double phi = random.NextDouble() * Trigonometric.TWO_PI;
+            double theta = random.NextDouble() * Trigonometric.PI;
+
+            float x = (float)(Math.Cos(phi) * Math.Sin(theta));
+            float y = (float)(Math.Sin(phi) * Math.Cos(theta));
+            float z = (float)Math.Cos(theta);
+            return new Vec3(x, y, z);*/
+
+            float r1 = (float)Rnd.RandomFloat();
+            float r2 = (float)Rnd.RandomFloat();
+            float twoPIr1 = 2 * Trigonometric.PI * r1;
+            float oneMinusR2 = 1 - r2;
+            float x = (float)(2 * Math.Cos(twoPIr1) * Math.Sqrt(r2 * oneMinusR2));
+            float y = (float)(2 * Math.Sin(twoPIr1) * Math.Sqrt(r2 * oneMinusR2));
+            float z = 1 - 2 * r2;
+            return new Vec3(x, y, z);
         }
 
         public static float RandomFloat() {
