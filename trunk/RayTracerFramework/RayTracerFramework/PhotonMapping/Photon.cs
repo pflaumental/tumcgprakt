@@ -18,4 +18,14 @@ namespace RayTracerFramework.PhotonMapping {
             this.flag = flag;
         }
     }
+
+    class PhotonDistanceSqPair {
+        public Photon photon;
+        public float distanceSq;
+
+        public PhotonDistanceSqPair(Photon photon, float distanceSq) {
+            this.photon = photon;
+            this.distanceSq = distanceSq;
+        }
+    }
 }

@@ -35,7 +35,7 @@ namespace RayTracerFramework.Geometry {
         public bool Intersect(Ray ray) {
             // o: (ray-)origin
             // c: center
-            // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
+            // x: point on ray-line for which o_x (= distanceSq center-ray) has a right angle to ray
             // i: intersection point
 
             // Transform ray to object space
@@ -61,7 +61,7 @@ namespace RayTracerFramework.Geometry {
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {
             // o: (ray-)origin
             // c: center
-            // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
+            // x: point on ray-line for which o_x (= distanceSq center-ray) has a right angle to ray
             // i: intersection point
             
             // Transform ray to object space
@@ -123,7 +123,7 @@ namespace RayTracerFramework.Geometry {
         public int Intersect(Ray ray, ref SortedList<float, RayIntersectionPoint> intersections) {
             // o: (ray-)origin
             // c: center
-            // x: point on ray-line for which o_x (= distance center-ray) has a right angle to ray
+            // x: point on ray-line for which o_x (= distanceSq center-ray) has a right angle to ray
             // i: intersection point
 
             // Transform ray to object space

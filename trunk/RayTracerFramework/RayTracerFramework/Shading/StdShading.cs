@@ -47,20 +47,15 @@ namespace RayTracerFramework.Shading {
                 }
             }
 
-            // Local color
-            //if (localPart > localThreshold) {
-            //    Color localColor = scene.lightingModel.calculateColor(
-            //            ray,
-            //            intersection,
-            //            material,
-            //            scene);
-            //    resultColor += (localColor * localPart);
-            //}
-            float lenSq;
-            Photon photon = scene.photonMap.FindNearestPhoton(intersection.position, out lenSq);
-            resultColor += (Color.Blue * (localPart / (100 * lenSq)));
-            resultColor.Saturate();
-            return resultColor;
+            // "Local" color;
+            if (localPart > localThreshold) {
+                Color localColor = scene.lightingModel.calculateColor(
+                        ray,
+                        intersection,
+                        material,
+                        scene);
+                resultColor += (localColor * localPart);
+            }
 
             bool continueRecursion = ray.recursionDepth + 1 <= Renderer.MaxRecursionDepth;
             float reflectionPartSum = fresnelReflectionPart;            

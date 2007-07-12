@@ -23,6 +23,7 @@ namespace RayTracerFramework.RayTracer {
         public CubeMap cubeMap;
         public Color backgroundColor;
         public bool useCubeMap;
+        public bool usePhotonMapping;
       
         public float refractionIndex;
 
@@ -52,6 +53,7 @@ namespace RayTracerFramework.RayTracer {
         }
 
         public void ActivatePhotonMapping(int photonMapSize) {
+            usePhotonMapping = true;
             photonTracer = new PhotonTracer(this, photonMapSize, 3);
         }
 
