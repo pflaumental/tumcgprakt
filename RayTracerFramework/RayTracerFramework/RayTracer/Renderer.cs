@@ -12,12 +12,16 @@ namespace RayTracerFramework.RayTracer {
     class Renderer {
         public static readonly int MaxRecursionDepth = 10;
 
-        ProgressBar progressBar;
-        StatusStrip statusBar;
+        private ProgressBar progressBar;
+        private StatusStrip statusBar;
+        private PictureBox pictureBox;
+        public bool cancelRendering;
 
-        public Renderer(ProgressBar progressBar, StatusStrip statusBar) {
+        public Renderer(ProgressBar progressBar, StatusStrip statusBar, PictureBox pictureBox) {
             this.progressBar = progressBar;
             this.statusBar = statusBar;
+            this.pictureBox = pictureBox;
+            cancelRendering = false;
         }
 
         public void Render(Scene scene, Bitmap target) {            
@@ -107,7 +111,17 @@ namespace RayTracerFramework.RayTracer {
                     int remainingSeconds = (int)(((resolution - computedPixels) * elapsedTime) / (computedPixels * 1000f));
                     statusBar.Items.Clear();
                     statusBar.Items.Add("Rendering... Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
-                    statusBar.Refresh();
+                    statusBar.Update();
+                    progressBar.Value = y;                   
+                    System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
+                    target.UnlockBits(bitmapData);
+                    pictureBox.Image = target;
+                    pictureBox.Update();
+                    if (cancelRendering)
+                        break;
+                    bitmapData = target.LockBits(new Rectangle(0, 0, targetWidth, targetHeight),
+                                        ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                    bitmapDataAddress = bitmapData.Scan0;
                 }
                 
                 lastMillis = currentMillis;
@@ -121,12 +135,10 @@ namespace RayTracerFramework.RayTracer {
                 pixelCenterPos.z = rowStartPos.z;
 
                 rgbValuesPos += waste;
-
-                progressBar.Value = y;
-                progressBar.Parent.Update();
             }
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
-            target.UnlockBits(bitmapData);            
+            target.UnlockBits(bitmapData);
+            progressBar.Value = targetHeight;
         }
         
     }
