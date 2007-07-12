@@ -8,7 +8,7 @@ using RayTracerFramework.PhotonMapping;
 namespace RayTracerFramework.Shading {
 
     class BlinnPhongLightingModel : ILightingModel {
-
+        public static readonly float coneFilterConstantK = 1.1f;
 
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
@@ -18,8 +18,9 @@ namespace RayTracerFramework.Shading {
                 List<PhotonDistanceSqPair> photons = scene.photonMap.FindPhotonsInSphere(intersection.position);
                 Color photonDiffuseColor = new Color();
                 foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
-                    photonDiffuseColor = photonDiffuseColor + (photonDistanceSqPair.photon.power
-                             * (1f / (1 + /*(float)Math.Sqrt(*/photonDistanceSqPair.distanceSq/*)*/)));
+                    photonDiffuseColor = photonDiffuseColor + photonDistanceSqPair.photon.power
+                             * (1f - ((float)Math.Sqrt(photonDistanceSqPair.distanceSq)) / (coneFilterConstantK * PhotonMap.sphereRadius));
+                    //* (1f / (1 + /*(float)Math.Sqrt(*/photonDistanceSqPair.distanceSq/*)*/)));
                 }
                 iTotal = iTotal + photonDiffuseColor * material.GetDiffuse(intersection.textureCoordinates);
             }
@@ -41,13 +42,13 @@ namespace RayTracerFramework.Shading {
                         iTotal = iTotal + material.ambient * pointLight.ambient;
                         
                         // Is light in shadow?
-                        Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
-                        Ray toLightRay = new Ray(toLightRayPos, L, 0);
-                        RayIntersectionPoint firstIntersection;
-                        if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
-                            iTotal = iTotal + material.ambient * pointLight.ambient;
-                            continue;
-                        }
+                        //Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
+                        //Ray toLightRay = new Ray(toLightRayPos, L, 0);
+                        //RayIntersectionPoint firstIntersection;
+                        //if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
+                        //    iTotal = iTotal + material.ambient * pointLight.ambient;
+                        //    continue;
+                        //}
  
                         // Light is seen
                         //Vec3 V = -ray.direction;
