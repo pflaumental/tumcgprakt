@@ -126,24 +126,30 @@ namespace RayTracerFramework.PhotonMapping {
                     : 0f;
             float rndVal = (float) rnd.NextDouble();
 
+            float pMirrorOrRefraction = (1f - pMirror - pRefraction);
+            pDiffuse *= pMirrorOrRefraction;
+            pGlossy *= pMirrorOrRefraction;
+
+            Vec3 newRayPosition = intersection.position;
             Vec3 newRayDirection;
             Color newPower = power;
-            float border = pDiffuse;
+            float border = pDiffuse * (1f - pMirror - pRefraction);
             int storedPhotonCnt = 0;
             if (rndVal <= border) {
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXdiffuse * (1f / pDiffuse);
-                //if (ray.recursionDepth > 1) {
-                    photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
-                    storedPhotonCnt = 1;
-                //}
+                photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
+                storedPhotonCnt = 1;
+                newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
             } else if (rndVal <= (border += pGlossy)) {
                 // TODO: calculate GLOSSY direction instead
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXglossy * (1f / pGlossy);
+                newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
             } else if (rndVal <= (border += pMirror)) {
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 newRayDirection = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
+                newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
             } else if (rndVal <= (border += pRefraction)) {
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 float cosThetaR = (float)Math.Sqrt(1f - mat.refractionRatio * mat.refractionRatio * (1f - NV * NV));
@@ -152,6 +158,22 @@ namespace RayTracerFramework.PhotonMapping {
                     return 0;
                 float beforeNTerm = (float)(mat.refractionRatio * NV - cosThetaR);
                 newRayDirection = beforeNTerm * intersection.normal + mat.refractionRatio * ray.direction;
+                newRayPosition = intersection.position - intersection.normal * Ray.positionEpsilon;
+                Ray innerRay = new Ray(intersection.position, newRayDirection, ray.recursionDepth + 1);
+                RayIntersectionPoint outgoingIntersection;
+                scene.Intersect(ray, out outgoingIntersection);
+                if (outgoingIntersection != null) {
+                    newRayPosition = outgoingIntersection.position - outgoingIntersection.normal * Ray.positionEpsilon;
+                    NV = Vec3.Dot(outgoingIntersection.normal, -innerRay.direction);
+                    float invRefractionRatio = 1f - mat.refractionRatio;
+                    float invRefractionRatioSq = invRefractionRatio * invRefractionRatio;
+                    cosThetaR = (float)Math.Sqrt(1f - invRefractionRatioSq * (1f - NV * NV));
+                    // Do nothing if formula can not be hold
+                    if (float.IsNaN(cosThetaR))
+                        return 0;
+                    beforeNTerm = (float)(invRefractionRatio * NV - cosThetaR);
+                    newRayDirection = beforeNTerm * outgoingIntersection.normal + invRefractionRatio * innerRay.direction;
+                }
             } else {
                 // absorption
                 //if (ray.recursionDepth > 1) {
@@ -160,7 +182,7 @@ namespace RayTracerFramework.PhotonMapping {
                 //} else
                 //    return 0;
             }
-            Ray newRay = new Ray(intersection.position, newRayDirection, ray.recursionDepth + 1);
+            Ray newRay = new Ray(newRayPosition, newRayDirection, ray.recursionDepth + 1);
             return storedPhotonCnt + TracePhotons(newRay, newPower, arrayIndex + storedPhotonCnt);
         }
     }
