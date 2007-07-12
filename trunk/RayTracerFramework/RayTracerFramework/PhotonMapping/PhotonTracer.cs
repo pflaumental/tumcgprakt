@@ -133,8 +133,10 @@ namespace RayTracerFramework.PhotonMapping {
             if (rndVal <= border) {
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXdiffuse * (1f / pDiffuse);
-                photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
-                storedPhotonCnt = 1;
+                //if (ray.recursionDepth > 1) {
+                    photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
+                    storedPhotonCnt = 1;
+                //}
             } else if (rndVal <= (border += pGlossy)) {
                 // TODO: calculate GLOSSY direction instead
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
@@ -152,8 +154,11 @@ namespace RayTracerFramework.PhotonMapping {
                 newRayDirection = beforeNTerm * intersection.normal + mat.refractionRatio * ray.direction;
             } else {
                 // absorption
-                photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
-                return 1;
+                //if (ray.recursionDepth > 1) {
+                    photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
+                    return 1;
+                //} else
+                //    return 0;
             }
             Ray newRay = new Ray(intersection.position, newRayDirection, ray.recursionDepth + 1);
             return storedPhotonCnt + TracePhotons(newRay, newPower, arrayIndex + storedPhotonCnt);
