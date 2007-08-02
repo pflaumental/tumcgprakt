@@ -9,6 +9,7 @@ namespace RayTracerFramework.Shading {
 
     class BlinnPhongLightingModel : ILightingModel {
         public static float coneFilterConstantK = 1.5f;//1.6
+        public static float mediumConeFilterConstantK = 1.5f;
 
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
@@ -19,16 +20,27 @@ namespace RayTracerFramework.Shading {
                 Color photonDiffuseColor = new Color();
                 //float minDistSq = float.PositiveInfinity;
                 foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
-                    //// Use this code if you want to "see" the globalPhotons
+                    //// Use this code if you want to "see" the photons
                     //if (photonDistanceSqPair.distanceSq < minDistSq) {
                     //    minDistSq = photonDistanceSqPair.distanceSq;
                     //    photonDiffuseColor = Color.Blue * (0.0006f / photonDistanceSqPair.distanceSq);
                     //}
                     float photonDistance = (float)Math.Sqrt(photonDistanceSqPair.distanceSq);
                     photonDiffuseColor = photonDiffuseColor + photonDistanceSqPair.photon.power
-                             * (1f - photonDistance / (coneFilterConstantK * PhotonMap.sphereRadius));                    
+                             * (1f - photonDistance / (coneFilterConstantK * PhotonMap.sphereRadius));
                 }
                 iTotal = iTotal + photonDiffuseColor * material.GetDiffuse(intersection.textureCoordinates);
+
+                if (PhotonMap.mediumIsParticipating && ray.recursionDepth == 0) {
+                    photonDiffuseColor = new Color();
+                    photons = scene.photonMap.FindPhotonsAlongRay(ray, intersection.t);
+                    foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
+                        float photonDistance = (float)Math.Sqrt(photonDistanceSqPair.distanceSq);
+                        photonDiffuseColor = photonDiffuseColor + photonDistanceSqPair.photon.power
+                                * (1f - photonDistance / (mediumConeFilterConstantK * PhotonMap.capsuleRadius));
+                    }
+                    iTotal = iTotal + photonDiffuseColor * scene.mediumColor;
+                }
             }
 
             foreach (Light light in scene.lightManager.BlinnLightsWorldSpace) {

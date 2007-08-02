@@ -22,10 +22,12 @@ namespace RayTracerFramework.PhotonMapping {
         public static float diffuseScaleDown = 0.4f;
         public static float powerLevel = 6f;
         public static float sphereRadius = 0.8f;
+        public static float capsuleRadius = 0.3f;
+        public static float capsuleRadiusSq = capsuleRadius * capsuleRadius;
         public static float sphereRadiusSq = sphereRadius * sphereRadius;
 
-        public static bool mediumIsParticipating = false;
-        public static float dustLevel = 5f;        
+        public static bool mediumIsParticipating = true;
+        public static float dustLevel = 0.1f;   // estimated number of photons stored on a each ray on each unit length
 
         public static int storedPhotonsCount = 75000;
 
@@ -219,5 +221,81 @@ namespace RayTracerFramework.PhotonMapping {
             }
         }
 
+        public List<PhotonDistanceSqPair> FindPhotonsAlongRay(Ray ray, float length) {
+            List<PhotonDistanceSqPair> result = new List<PhotonDistanceSqPair>();
+            if(length >= 2 * capsuleRadius)
+                FindPhotonsInCapsule(
+                        root, 
+                        ray.position + ray.direction * capsuleRadius, 
+                        ray.direction, 
+                        length - 2 * capsuleRadius, 
+                        ray.position + ray.direction * (length - capsuleRadius), 
+                        result);
+            return result;
+        }
+
+        private void FindPhotonsInCapsule(
+                PhotonMap.Node node,
+                Vec3 lineStart,
+                Vec3 direction,
+                float length,
+                Vec3 lineEnd,
+                List<PhotonDistanceSqPair> result) {
+            if (node == null)
+                return;
+            Vec3 StN = node.photon.position - lineStart;
+            float StNonRay = Vec3.Dot(direction, StN);
+            Vec3 nearestPoint;
+            if (StNonRay < 0f)
+                nearestPoint = lineStart;
+            else if (StNonRay > length)
+                nearestPoint = lineEnd;
+            else
+                nearestPoint = lineStart + direction * StNonRay;
+            float distToNodeSq = Vec3.GetLengthSq(nearestPoint - node.photon.position);
+            if (distToNodeSq < capsuleRadiusSq) {
+                result.Add(new PhotonDistanceSqPair(node.photon, distToNodeSq));
+                FindPhotonsInCapsule(node.left, lineStart, direction, length, lineEnd, result);
+                FindPhotonsInCapsule(node.right, lineStart, direction, length, lineEnd, result);
+                return;
+            }
+
+            float toPlane = 0f;
+            float lineStartToPlane = 0f;
+            float lineEndToPlane = 0f;
+            switch (node.photon.flag) {
+                case 0: // x
+                    lineStartToPlane = lineStart.x - node.photon.position.x;
+                    lineEndToPlane = lineEnd.x - node.photon.position.x;
+                    break;
+                case 1: // y
+                    lineStartToPlane = lineStart.y - node.photon.position.y;
+                    lineEndToPlane = lineEnd.y - node.photon.position.y;
+                    break;
+                case 2: // z
+                    lineStartToPlane = lineStart.z - node.photon.position.z;
+                    lineEndToPlane = lineEnd.z - node.photon.position.z;
+                    break;
+            }
+            if ((lineStartToPlane > 0 && lineEndToPlane < 0) // different signs
+                    || (lineStartToPlane < 0 && lineEndToPlane > 0))
+                toPlane = 0f; // => line intersects plane
+            else { // same signs
+                if(lineStartToPlane > 0)
+                    toPlane = Math.Min(lineStartToPlane, lineEndToPlane);
+                else
+                    toPlane = Math.Max(lineStartToPlane, lineEndToPlane);
+            }
+
+            if (toPlane > 0) {
+                FindPhotonsInCapsule(node.right, lineStart, direction, length, lineEnd, result);
+                if (toPlane < capsuleRadius)
+                    FindPhotonsInCapsule(node.left, lineStart, direction, length, lineEnd, result);
+            } else {
+                FindPhotonsInCapsule(node.left, lineStart, direction, length, lineEnd, result);
+                if(toPlane > -capsuleRadius)
+                    FindPhotonsInCapsule(node.right, lineStart, direction, length, lineEnd, result);
+            }
+        }
     }
 }
