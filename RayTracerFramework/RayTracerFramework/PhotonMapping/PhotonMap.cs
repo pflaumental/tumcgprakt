@@ -19,10 +19,15 @@ namespace RayTracerFramework.PhotonMapping {
             }
         }
 
-        public static readonly float diffuseScaleDown = 0.4f;
-        public static readonly float powerLevel = 6f;
-        public static readonly float sphereRadius = 0.8f;
-        public static readonly float sphereRadiusSq = sphereRadius * sphereRadius;
+        public static float diffuseScaleDown = 0.4f;
+        public static float powerLevel = 6f;
+        public static float sphereRadius = 0.8f;
+        public static float sphereRadiusSq = sphereRadius * sphereRadius;
+
+        public static bool mediumIsParticipating = false;
+        public static float dustLevel = 5f;        
+
+        public static int storedPhotonsCount = 75000;
 
         public PhotonMap(Photon[] photons) {
             root = MakeTree(new List<Photon>(photons));

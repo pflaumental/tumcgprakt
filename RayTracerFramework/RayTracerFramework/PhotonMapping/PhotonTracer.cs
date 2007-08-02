@@ -11,8 +11,11 @@ using RayTracerFramework.Shading;
 namespace RayTracerFramework.PhotonMapping {
 
     class PhotonTracer {        
-        private Photon[] photons;
-        private int desiredStoredPhotons;
+        private Photon[] globalPhotons;
+        private int storedGlobalPhotons;
+        private Photon[] mediumPhotons;
+        private int storedMediumPhotons;
+
         private Scene scene;
         private int recursionDepth;
 
@@ -23,20 +26,18 @@ namespace RayTracerFramework.PhotonMapping {
 
         public PhotonTracer(
                 Scene scene, 
-                int desiredStoredPhotons,
+                int storedGlobalPhotons,
                 int recursionDepth,
                 System.Windows.Forms.ProgressBar progressBar,
                 System.Windows.Forms.StatusStrip statusBar) {
             this.scene = scene;
-            this.desiredStoredPhotons = desiredStoredPhotons;
-            this.photons = new Photon[desiredStoredPhotons];
+            this.storedGlobalPhotons = storedGlobalPhotons;
+            this.globalPhotons = new Photon[storedGlobalPhotons];
             this.recursionDepth = recursionDepth;
             this.progressBar = progressBar;
             this.statusBar = statusBar;
             rnd = new Random(0);
         }
-
-
      
         public PhotonMap EmitPhotons() {
             if (scene.lightManager.PhotonLightsWorldSpace.Count < 1)
@@ -60,15 +61,15 @@ namespace RayTracerFramework.PhotonMapping {
             Ray ray;
 
             progressBar.Minimum = 0;
-            progressBar.Maximum = desiredStoredPhotons;
+            progressBar.Maximum = storedGlobalPhotons;
 
-            // Emit photons
+            // Emit globalPhotons
             do {
                 emittedPhotons++;
                 if((storedPhotons - lastStoredPhotons) > 1000) {
                     lastStoredPhotons = storedPhotons;
                     statusBar.Items.Clear();
-                    statusBar.Items.Add("Emitting photons... Photons stored: " + storedPhotons + " / " + desiredStoredPhotons);
+                    statusBar.Items.Add("Emitting photons... Photons stored: " + storedPhotons + " / " + storedGlobalPhotons);
                     statusBar.Refresh();
                     progressBar.Value = storedPhotons;
                     progressBar.Parent.Update();
@@ -97,27 +98,34 @@ namespace RayTracerFramework.PhotonMapping {
                         break;
                 }
                 
-            } while (storedPhotons < desiredStoredPhotons);
+            } while (storedPhotons < storedGlobalPhotons);
 
             float powerScale = (PhotonMap.powerLevel * totalPower) / emittedPhotons;
 
-            foreach (Photon photon in photons) {
+            foreach (Photon photon in globalPhotons) {
                 photon.power *= powerScale;
             }
             statusBar.Items.Clear();
             statusBar.Items.Add("Building photon kd-tree. This may take some time...");
             statusBar.Refresh();
-            return new PhotonMap(photons);
+            return new PhotonMap(globalPhotons);
 
         }
 
         private int TracePhotons(Ray ray, Color power, int arrayIndex) {
-            if (arrayIndex >= photons.Length || ray.recursionDepth >= recursionDepth)
+            if (arrayIndex >= globalPhotons.Length || ray.recursionDepth >= recursionDepth)
                 return 0;
             RayIntersectionPoint intersection;
             scene.Intersect(ray, out intersection);
             if (intersection == null)
                 return 0;
+
+            if (PhotonMap.mediumIsParticipating) { 
+                int inMediumStoredPhotons = StorePhotonsInMedium(ray, power, intersection, arrayIndex);
+                if ((arrayIndex += inMediumStoredPhotons) >= globalPhotons.Length)
+                    return inMediumStoredPhotons;
+            }
+
             IObject obj = (IObject) intersection.hitObject;
             Material mat;
             if (obj is DMesh) {
@@ -164,7 +172,7 @@ namespace RayTracerFramework.PhotonMapping {
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXdiffuse * (1f / pDiffuse);
                 if (ray.recursionDepth > 1) {
-                    photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
+                    globalPhotons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
                     storedPhotonCnt = 1;
                 }
                 newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
@@ -206,13 +214,28 @@ namespace RayTracerFramework.PhotonMapping {
             } else {
                 // absorption
                 if (ray.recursionDepth > 1) {
-                    photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
+                    globalPhotons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
                     return 1;
                 } else
                     return 0;
             }
             Ray newRay = new Ray(newRayPosition, newRayDirection, ray.recursionDepth + 1);
             return storedPhotonCnt + TracePhotons(newRay, newPower, arrayIndex + storedPhotonCnt);
+        }
+
+        private int StorePhotonsInMedium(Ray ray, Color power, RayIntersectionPoint intersection, int arrayIndex) {
+            float distFromOrigin = 0f;
+            int result = 0;
+            while (true){
+                float rndVal = 0.5f + (float)rnd.NextDouble();
+                distFromOrigin += rndVal / PhotonMap.dustLevel;
+                if (distFromOrigin > intersection.t || arrayIndex >= globalPhotons.Length )
+                    break;
+                Vec3 photonPos = intersection.position + intersection.normal * distFromOrigin;
+                globalPhotons[arrayIndex++] = new Photon(power, photonPos, intersection.normal, 0);
+                result++;
+            }
+            return result;
         }
     }
 }

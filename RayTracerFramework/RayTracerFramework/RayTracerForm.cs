@@ -27,10 +27,17 @@ namespace RayTracerFramework {
         private Vec3 camLookAt;
 
         private bool sceneReady = false;
+        private bool enablePhotonMapping = true;
 
         public RayTracerForm() {
             InitializeComponent();
-            settingsDialog = new SettingsDialog();
+            settingsDialog = new SettingsDialog(
+                    enablePhotonMapping, 
+                    PhotonMapping.PhotonMap.storedPhotonsCount, 
+                    PhotonMapping.PhotonMap.diffuseScaleDown, 
+                    PhotonMapping.PhotonMap.powerLevel, 
+                    PhotonMapping.PhotonMap.sphereRadius, 
+                    BlinnPhongLightingModel.coneFilterConstantK);
             camPos = new Vec3(0, 0, -5);
             camLookAt = Vec3.Zero;
             tbCamPosX.Text = camPos.x.ToString();
@@ -103,9 +110,13 @@ namespace RayTracerFramework {
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.8f, 0.8f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
-            scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.0f, 0.0f, 0.3f), Color.White, 30, false, false, 0f, 0f, null));
+            scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.3f, 0.5f, 0.1f), Color.White, 30, false, false, 0f, 0f, null));
 
-            scene.ActivatePhotonMapping(150000, progressBar, statusBar);
+            if(enablePhotonMapping)
+                scene.ActivatePhotonMapping(
+                        PhotonMapping.PhotonMap.storedPhotonsCount,
+                        progressBar,
+                        statusBar);
             // Do not forget:
             scene.Setup();
         }
@@ -113,7 +124,7 @@ namespace RayTracerFramework {
         private void Render() {
             float startMillis = Environment.TickCount;
 
-            Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);// new Bitmap(100, 100);            
+            Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);
 
             // Parse CamPos and CamLookAt
             cam.eyePos.x = float.Parse(tbCamPosX.Text);
@@ -160,14 +171,14 @@ namespace RayTracerFramework {
         }
 
         private void btnSetup_Click(object sender, EventArgs e) {            
-            if (!sceneReady) {
-                statusBar.Items.Clear();
-                statusBar.Items.Add("Setting up scene. This may take some time...");
-                btnRender.Text = "Render";
-                this.Update();
-                sceneReady = true;
-            }
+            statusBar.Items.Clear();
+            statusBar.Items.Add("Setting up scene. This may take some time...");
+            btnRender.Text = "Render";
+            this.Update();
+            sceneReady = true;
             Setup();
+            statusBar.Items.Clear();
+            statusBar.Items.Add("Setup done.");
         }
 
         private void loadMenuItem_Click(object sender, EventArgs e) {
@@ -175,7 +186,18 @@ namespace RayTracerFramework {
         }
 
         private void settingsMenuItem_Click(object sender, EventArgs e) {
-            settingsDialog.ShowDialog();
+            DialogResult dialogResult = settingsDialog.ShowDialog();
+            if (dialogResult == DialogResult.OK) {
+                enablePhotonMapping = settingsDialog.enablePhotonMapping;
+                if(scene != null)
+                    scene.usePhotonMapping = enablePhotonMapping;
+                PhotonMapping.PhotonMap.storedPhotonsCount = settingsDialog.storedPhotonsCount;
+                PhotonMapping.PhotonMap.diffuseScaleDown = settingsDialog.diffuseScaleDown;
+                PhotonMapping.PhotonMap.powerLevel = settingsDialog.photonPowerLevel;
+                BlinnPhongLightingModel.coneFilterConstantK = settingsDialog.coneFilterConstantK;
+                PhotonMapping.PhotonMap.sphereRadius = settingsDialog.photonCollectionRadius;
+                PhotonMapping.PhotonMap.sphereRadiusSq = PhotonMapping.PhotonMap.sphereRadius * PhotonMapping.PhotonMap.sphereRadius;
+            }
         }
     }
 }
