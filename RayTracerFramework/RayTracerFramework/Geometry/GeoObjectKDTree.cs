@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class GeoObjectKDTree : KDTree {
+    public class GeoObjectKDTree : KDTree {
         protected readonly static int DefaultMaxDesiredGEOMETRICObjectsPerLeafCount = 2;
 
         public GeoObjectKDTree() : base() {

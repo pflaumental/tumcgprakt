@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace RayTracerFramework.Loading {
-    class OBJPointLoader : IPointLoader {
+    public class OBJPointLoader : IPointLoader {
 
         public string standardMeshDirectory = "../../Models/";
 
@@ -25,16 +25,13 @@ namespace RayTracerFramework.Loading {
             char[] buffer = new char[count];
             string prefix = "";
             StringBuilder sb = new StringBuilder();
-            string s;
+           
             float z = float.PositiveInfinity;
             float currentZ;
-            int ii = 0;
 
             while (!reader.EndOfStream) {
                 reader.ReadBlock(buffer, 0, count);
-                
-                
-               
+                            
                 string[] tokens = new String(buffer).Insert(0, prefix).Split('\n');
                 prefix = tokens[tokens.Length - 1];
                 for (int i = 0; i < tokens.Length - 1; i++) {

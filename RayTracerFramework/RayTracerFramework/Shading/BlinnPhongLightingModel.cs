@@ -5,9 +5,11 @@ using RayTracerFramework.Geometry;
 using RayTracerFramework.RayTracer;
 using RayTracerFramework.PhotonMapping;
 
+using System.Xml.Serialization;
+
 namespace RayTracerFramework.Shading {
 
-    class BlinnPhongLightingModel : ILightingModel {
+    public class BlinnPhongLightingModel : ILightingModel {
         public static float coneFilterConstantK = 1.5f;//1.6
         public static float mediumConeFilterConstantK = 1.5f;
 
@@ -43,6 +45,9 @@ namespace RayTracerFramework.Shading {
                 }
             }
 
+            iTotal.Saturate();
+            // return iTotal;
+
             foreach (Light light in scene.lightManager.BlinnLightsWorldSpace) {
           
                 switch (light.lightType) {
@@ -77,7 +82,7 @@ namespace RayTracerFramework.Shading {
                         float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
                         // assert if (material.diffuseTexture != null && (intersection.textureCoordinates.x < 0f || intersection.textureCoordinates.x > 1f || intersection.textureCoordinates.y < 0f || intersection.textureCoordinates.y > 1f)) throw new Exception("Texture coordinates out of bounds");
                         Color diffuseContribution = (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse);
-                        if (scene.usePhotonMapping)
+                        if (scene.usePhotonMapping) 
                             diffuseContribution = diffuseContribution * PhotonMap.diffuseScaleDown;
                         iTotal = iTotal + diffuseContribution;
                         iTotal = iTotal + (material.specular * pointLight.specular * specular);

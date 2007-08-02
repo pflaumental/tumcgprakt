@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class IntersectionPoint {
+    public class IntersectionPoint {
         public Vec3 position;
         public Vec3 normal;
 

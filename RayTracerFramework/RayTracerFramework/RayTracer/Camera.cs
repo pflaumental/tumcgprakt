@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.Utility;
+using System.Xml.Serialization;
 
 namespace RayTracerFramework.RayTracer {
-    class Camera {
+    public class Camera {
+
+        [XmlElement("EyePos")]
         public Vec3 eyePos;
+
+        [XmlElement("LookAtPos")]
         public Vec3 lookAtPos;
+
+        [XmlElement("UpDir")]
         public Vec3 upDir; // must be normalized
+
+        [XmlElement("HalfHorizontalFOV")]
         public float hFov; // half horizontal view frustrum angle
+
+        [XmlElement("AspectRatio")]
         public float aspectRatio;
         //public float vFov; // half vertical view frustrum angle
 

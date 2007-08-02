@@ -10,7 +10,7 @@ using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.PhotonMapping {
 
-    class PhotonTracer {        
+    public class PhotonTracer {        
         private Photon[] photons;
         private int maxStoredPhotons;
 
@@ -44,6 +44,8 @@ namespace RayTracerFramework.PhotonMapping {
             int storedPhotons = 0;
             int emittedPhotons = 0;
             int lastStoredPhotons = 0;
+
+            
 
             List<PhotonMapping.Light> lights = scene.lightManager.PhotonLightsWorldSpace;
             float totalPower = scene.GetTotalPhotonLightPower();
@@ -87,7 +89,7 @@ namespace RayTracerFramework.PhotonMapping {
                         pointLight.GetRandomSample(out direction);
                         ray = new Ray(pointLight.position, direction, 1);
                         storedPhotons += TracePhotons(ray, pointLight.diffuse, storedPhotons);
-                        break;
+                        break; 
                     case LightType.Area:
                         PhotonMapping.AreaLight areaLight = (AreaLight)light;
                         areaLight.GetRandomSample(out position, out direction);

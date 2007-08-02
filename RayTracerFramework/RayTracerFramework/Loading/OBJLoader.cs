@@ -12,17 +12,16 @@ using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Loading {
 
-    // This class loads meshes stored in obj files. Only twodimensional diffuseTexture coordinates and
+    // This public class loads meshes stored in obj files. Only twodimensional diffuseTexture coordinates and
     // triangles are allowed.
     // Currently only positive indices are supported
-    class OBJLoader : IMeshLoader {
-        public OBJLoader() {
-        }
+    public class OBJLoader : IMeshLoader {
+        public OBJLoader() { }
 
         public string standardMeshDirectory = "../../Models/";
 
         public DMesh LoadFromFile(string filename) {
-            DMesh mesh = new DMesh();
+            DMesh mesh = new DMesh(filename);
 
             StreamReader reader = new StreamReader(standardMeshDirectory + filename);
             Regex regex = new Regex(@"\s+");

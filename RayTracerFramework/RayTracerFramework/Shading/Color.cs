@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace RayTracerFramework.Shading {
     
-    class Color {
+    public class Color {
         private float red, green, blue;  // float color channel values in range [0,1]
 
         public static readonly Color Red = new Color(255, 0, 0);
@@ -57,31 +58,37 @@ namespace RayTracerFramework.Shading {
             return new Color(c1.red - c2.red, c1.green - c2.green, c1.blue - c2.blue);
         }
 
+        [XmlIgnore()]
         public byte RedInt {
             get { return (byte)(red * 255); }
             set { red = value / 255f; }
         }
 
+        [XmlIgnore()]
         public byte GreenInt {
             get { return (byte)(green * 255); }
             set { green = value / 255f; }
         }
 
+        [XmlIgnore()]
         public byte BlueInt {
             get { return (byte)(blue * 255); }
             set { blue = value / 255f; }
         }
 
+        [XmlElement("Red")]
         public float RedFloat {
             get { return red; }
             set { red = value; }
         }
 
+        [XmlElement("Green")]        
         public float GreenFloat {
             get { return green; }
             set { green = value; }
         }
 
+        [XmlElement("Blue")]
         public float BlueFloat {
             get { return blue; }
             set { blue = value; }

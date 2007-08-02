@@ -6,7 +6,7 @@ namespace RayTracerFramework.Geometry {
     
 
     // 4x4 row-major Matrix
-    class Matrix {
+    public class Matrix {
         public float m11, m12, m13, m14;
         public float m21, m22, m23, m24;
         public float m31, m32, m33, m34;

@@ -7,7 +7,7 @@ using RayTracerFramework.Geometry;
 using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Shading {
-    class CubeMap {
+    public class CubeMap {
         public float xMin, xMax, yMin, yMax, zMin, zMax;
 
         private FastBitmap xMinTexture, xMaxTexture;

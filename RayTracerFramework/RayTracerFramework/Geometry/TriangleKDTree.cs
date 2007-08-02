@@ -4,7 +4,7 @@ using System.Text;
 using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Geometry {
-    class TriangleKDTree : KDTree {        
+    public class TriangleKDTree : KDTree {        
 
         public TriangleKDTree() : base() {
         }

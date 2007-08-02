@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RayTracerFramework.Shading {
     
-    class LightManager {
+    public class LightManager {
         private List<Shading.Light> blinnlightsWorldSpace;
         private List<PhotonMapping.Light> photonlightsWorldSpace;
 

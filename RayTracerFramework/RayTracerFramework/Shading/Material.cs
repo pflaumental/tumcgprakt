@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using RayTracerFramework.Utility;
 using RayTracerFramework.Geometry;
+using System.Xml.Serialization;
+using System.Drawing;
 
 namespace RayTracerFramework.Shading {
-    class Material {
+    public class Material {
         public Color emissive;
         public Color ambient;
         public Color diffuse;
@@ -18,12 +20,21 @@ namespace RayTracerFramework.Shading {
 
         public float refractionRatio; // world_refractionIndex / material_refractionIndex
                                       // between 0 and 1
+
+        [XmlIgnore()]
         public float r0; // fresnel term for rays which hit the surface in right angle
+
+        [XmlIgnore()]
         public float oneMinusR0; // 1 - r0
+
         public float refractionRate; // amount of non-reflected light that becomes refracted
                                      // between 0 and 1
 
+        [XmlIgnore()]
         public FastBitmap diffuseTexture;
+
+        public string textureName;
+        public static string TexturesBaseDirectory = "../../Textures/";
 
         public string name = "default";
 
@@ -46,6 +57,7 @@ namespace RayTracerFramework.Shading {
             this.refractionRatio = other.refractionRatio;
             this.refractive = other.refractive;
             this.diffuseTexture = other.diffuseTexture;
+            this.textureName = other.textureName;
         }
 
         public Material(Color emissive, Color ambient, Color diffuse,
@@ -53,7 +65,7 @@ namespace RayTracerFramework.Shading {
                         bool reflective, bool refractive,
                         float refractionRatio,
                         float refractionRate,
-                        FastBitmap diffuseTexture) {
+                        string textureName) {
             this.emissive = emissive;
             this.ambient = ambient;
             this.diffuse = diffuse;
@@ -68,7 +80,11 @@ namespace RayTracerFramework.Shading {
                     / (onePlusRefractionRatio * onePlusRefractionRatio);
             this.oneMinusR0 = 1f - r0;
             this.refractionRate = refractionRate;
-            this.diffuseTexture = diffuseTexture;
+            this.textureName = textureName;
+            if (textureName == null)
+                this.diffuseTexture = null;
+            else
+                this.diffuseTexture = new FastBitmap(new Bitmap(Image.FromFile(TexturesBaseDirectory + textureName)));
         }
 
         public Color GetDiffuse(Vec2 textureCoordinates) {

@@ -8,7 +8,7 @@ using RayTracerFramework.PhotonMapping;
 
 namespace RayTracerFramework.Shading {
     // Standard recursive raytracing
-    class StdShading {
+    public class StdShading {
         private readonly static float localThreshold = 0.02f;
         private readonly static float contributionThreshold = 0.005f;
 

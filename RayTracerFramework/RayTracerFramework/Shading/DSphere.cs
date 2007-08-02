@@ -4,10 +4,13 @@ using System.Text;
 using System.Drawing;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.RayTracer;
+using System.Xml.Serialization;
 
 namespace RayTracerFramework.Shading {
-    class DSphere : Sphere, IObject {
+    public class DSphere : Sphere, IObject {
         private Material material;
+
+        public DSphere() : this(Vec3.Zero, 2, false, Material.WhiteMaterial) { }
 
         public DSphere(Vec3 center, float radius, bool textured, Material material) : base(center, radius, textured) {
             this.material = material;

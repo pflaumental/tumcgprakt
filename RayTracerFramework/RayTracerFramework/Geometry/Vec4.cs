@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class Vec4 {
+    public class Vec4 {
         public float x, y, z, w;
 
         public Vec4() : this(0, 0, 0, 0) { }
