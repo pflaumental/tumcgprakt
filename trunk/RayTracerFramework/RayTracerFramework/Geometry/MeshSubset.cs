@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class MeshSubset {
+    public class MeshSubset {
         public TriangleKDTree kdTree;
         //public List<Triangle> triangles;
 

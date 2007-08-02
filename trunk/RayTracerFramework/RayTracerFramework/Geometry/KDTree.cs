@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
 
-    abstract class KDTree : IIntersectable {
+    abstract public class KDTree : IIntersectable {
 
         // Variables
         public List<IIntersectable> content;
@@ -52,7 +52,7 @@ namespace RayTracerFramework.Geometry {
         // Enums
         public enum Axis { X = 0, Y, Z }
 
-        // Inner classes
+        // Inner public classes
         public abstract class Node {
             public readonly bool isLeaf;
 
@@ -90,7 +90,7 @@ namespace RayTracerFramework.Geometry {
         }
 
         // Constructors
-        protected KDTree() {
+        public KDTree() {
             content = new List<IIntersectable>();
             root = new KDTree.Leaf(content);
             MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredObjectsPerLeafCount;
@@ -101,7 +101,7 @@ namespace RayTracerFramework.Geometry {
             //LeafesCount = 1;
         }
 
-        protected KDTree(List<IIntersectable> content) {
+        public KDTree(List<IIntersectable> content) {
             root = new KDTree.Leaf(content);
             this.content = content;
             MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredObjectsPerLeafCount;

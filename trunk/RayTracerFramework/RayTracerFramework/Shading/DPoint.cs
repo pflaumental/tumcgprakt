@@ -4,7 +4,7 @@ using System.Text;
 using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Shading {
-    class DPoint : IObject {
+    public class DPoint : IObject {
         public Vec3 position;
 
         public static float EPSILON = 0.2f;

@@ -6,7 +6,7 @@ using RayTracerFramework.Shading;
 using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.PhotonMapping {
-    class AreaLight : Light {
+    public class AreaLight : Light {
         public Vec3 topLeftPos;
         public Vec3 normal;
         public Vec3 tangent;
@@ -35,7 +35,7 @@ namespace RayTracerFramework.PhotonMapping {
 
             Vec3 tangentRandom = Rnd.RandomFloat() * tangent;
             Vec3 binormalRandom = Rnd.RandomFloat() * binormal;
-            position = tangentRandom + binormalRandom;
+            position = topLeftPos + tangentRandom + binormalRandom;
 
         }
     }

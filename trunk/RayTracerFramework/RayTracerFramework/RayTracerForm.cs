@@ -18,6 +18,7 @@ namespace RayTracerFramework {
         private SettingsDialog settingsDialog; 
 
         private Scene scene;
+        private SceneManager sceneManager;
         private Renderer renderer;
         private Camera cam;
 
@@ -31,6 +32,8 @@ namespace RayTracerFramework {
 
         public RayTracerForm() {
             InitializeComponent();
+            sceneManager = new SceneManager();
+
             settingsDialog = new SettingsDialog(
                     enablePhotonMapping, 
                     PhotonMapping.PhotonMap.storedPhotonsCount, 
@@ -51,6 +54,7 @@ namespace RayTracerFramework {
         private void Setup() {
             renderer = new Renderer(progressBar, statusBar, pictureBox);
 
+            /*
             //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
@@ -60,7 +64,7 @@ namespace RayTracerFramework {
 
             scene = new Scene(cam);
 
-            PointLight l = new PointLight(new Vec3(1, 4, -4));
+            PointLight l = new PointLight(new Vec3(1, 4, -3));
             l.ambient = new Color(0.05f, 0.05f, 0.05f);
             l.diffuse = new Color(0.7f, 0.7f, 0.7f);
             l.specular = new Color(0.5f, 0.5f, 0.5f);
@@ -90,27 +94,38 @@ namespace RayTracerFramework {
 
             scene.useCubeMap = false;
 
+            DirectionalLight l5 = new DirectionalLight(new Vec3(2, 3, 5));
+            l5.ambient = new Color(0.3f, 0.2f, 0.11f);
+            l5.diffuse = Color.Red;
+            l5.specular = Color.Black;
+
             scene.lightManager.AddBlinnWorldSpaceLight(l);
             scene.lightManager.AddPhotonWorldSpaceLight(pl);
 
             scene.lightManager.AddBlinnWorldSpaceLight(l2);
             scene.lightManager.AddPhotonWorldSpaceLight(pl2);
 
+            scene.lightManager.AddBlinnWorldSpaceLight(l5);
+
             OBJLoader loader = new OBJLoader();
             DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
 
             scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
-            FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
+            //FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
             scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.95f, 0.85f, null));
-            scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, earthTexture));
+            scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, "earth.jpg"));
 
-            FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
+            //FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
             Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
-            scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
+            scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, "env2.jpg"));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.8f, 0.8f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
             scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.3f, 0.5f, 0.1f), Color.White, 30, false, false, 0f, 0f, null));
+
+            // SceneManager sm2 = new SceneManager();
+            // sm2.SaveScene("scene.xml", scene, new Vec2(pictureBox.Size.Width, pictureBox.Size.Height));
+            */
 
             if(enablePhotonMapping)
                 scene.ActivatePhotonMapping(
@@ -118,7 +133,7 @@ namespace RayTracerFramework {
                         progressBar,
                         statusBar);
             // Do not forget:
-            scene.Setup();
+            scene.Setup();  
         }
 
         private void Render() {
@@ -182,7 +197,12 @@ namespace RayTracerFramework {
         }
 
         private void loadMenuItem_Click(object sender, EventArgs e) {
-            MessageBox.Show("Not implemented yet");
+            scene = sceneManager.LoadScene("standardscene.xml");
+            scene.mediumColor = new Color(0.5f, 0.3f, 0.3f);
+            cam = scene.cam;
+
+            statusBar.Items.Clear();
+            statusBar.Items.Add("Scene has been loaded from \"standardscene.xml\".");
         }
 
         private void settingsMenuItem_Click(object sender, EventArgs e) {

@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace RayTracerFramework.Geometry {
 
     // A box with lower left corner centered at the object space origin (0,0,0) and
     // the upper right back corner at (dx, dy, dz)
-    abstract class Box : IGeometricObject {        
-        protected float dx, dy, dz;
+    public abstract class Box : IGeometricObject {        
+        public float dx, dy, dz;
 
         //   (0,dy,dz)_____________(dx,dy,dz)
         //           /|           /|
@@ -19,34 +20,45 @@ namespace RayTracerFramework.Geometry {
         //         | /     6    |/
         // (0,0,0) |/___________/(dx,0,0)
 
-        protected bool textured;
+        public bool textured;
+        [XmlIgnore()]
         public Vec2 tex1_00 = Vec2.Vec00,     // ( 0,  0,  0)
                 tex1_01 = Vec2.Vec01,         // (dx,  0,  0)
                 tex1_10 = Vec2.Vec10,         // ( 0, dy,  0)
                 tex1_11 = Vec2.Vec11;         // (dx, dy,  0)
+
+        [XmlIgnore()]
         public Vec2 tex2_00 = Vec2.Vec00,     // (dx,  0,  0)
                 tex2_01 = Vec2.Vec01,         // (dx,  0, dz)
                 tex2_10 = Vec2.Vec10,         // (dx, dy,  0)
                 tex2_11 = Vec2.Vec11;         // (dx, dy, dz)
+
+        [XmlIgnore()]
         public Vec2 tex3_00 = Vec2.Vec00,     // (dx,  0, dz)
                 tex3_01 = Vec2.Vec01,         // ( 0,  0, dz)
                 tex3_10 = Vec2.Vec10,         // (dx, dy, dz)
                 tex3_11 = Vec2.Vec11;         // ( 0, dy, dz)
+
+        [XmlIgnore()]
         public Vec2 tex4_00 = Vec2.Vec00,     // ( 0,  0, dz)
                 tex4_01 = Vec2.Vec01,         // ( 0,  0,  0)
                 tex4_10 = Vec2.Vec10,         // ( 0, dy, dz)
                 tex4_11 = Vec2.Vec11;         // ( 0, dy,  0)
+
+        [XmlIgnore()]
         public Vec2 tex5_00 = Vec2.Vec00,     // ( 0, dy,  0)
                 tex5_01 = Vec2.Vec01,         // (dx, dy,  0)
                 tex5_10 = Vec2.Vec10,         // ( 0, dy, dz)
                 tex5_11 = Vec2.Vec11;         // (dx, dy, dz)
+
+        [XmlIgnore()]
         public Vec2 tex6_00 = Vec2.Vec00,     // ( 0,  0, dz)
                 tex6_01 = Vec2.Vec01,         // (dx,  0, dz)
                 tex6_10 = Vec2.Vec10,         // ( 0,  0,  0)
                 tex6_11 = Vec2.Vec11;         // (dx,  0,  0)
 
-        protected Matrix transform;
-        protected Matrix invTransform;
+        public Matrix transform;
+        public Matrix invTransform;
 
         protected BSphere boundingSphere;
 

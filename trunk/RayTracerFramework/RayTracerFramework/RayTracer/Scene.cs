@@ -11,7 +11,7 @@ using RayTracerFramework.PhotonMapping;
 namespace RayTracerFramework.RayTracer {
 
 
-    class Scene : IIntersectable {
+    public class Scene : IIntersectable {
         //public List<IObject> transformedObjects;
         public GeoObjectKDTree kdTree;
         public ILightingModel lightingModel;
@@ -27,6 +27,8 @@ namespace RayTracerFramework.RayTracer {
       
         public float mediumRefractionIndex;
         public Color mediumColor;
+
+        public Scene() { }
 
         public Scene(Camera cam) {
             photonTracer = null;

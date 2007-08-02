@@ -5,7 +5,9 @@ using System.Text;
 namespace RayTracerFramework.Geometry {
     
     
-    class Mesh : IGeometricObject {
+    public class Mesh : IGeometricObject {
+        public string meshFilename;
+
         protected List<MeshSubset> subsets;
         protected BSphere boundingSphere;
 
@@ -13,7 +15,8 @@ namespace RayTracerFramework.Geometry {
         public List<Vec3> normals;
         public List<Vec3> missingNormals;
 
-        protected Mesh() {
+        protected Mesh(string meshFilename) {
+            this.meshFilename = meshFilename;
             subsets = new List<MeshSubset>();
             boundingSphere = new BSphere(Vec3.Zero, 0f);
             vertices = new List<Vec3>();
@@ -21,8 +24,9 @@ namespace RayTracerFramework.Geometry {
             missingNormals = new List<Vec3>();
         }
 
-        protected Mesh(List<MeshSubset> subsets, BSphere boundingSphere,
+        protected Mesh(string meshFilename, List<MeshSubset> subsets, BSphere boundingSphere,
                        List<Vec3> vertices, List<Vec3> normals, List<Vec3> missingNormals) {
+            this.meshFilename = meshFilename;
             this.subsets = subsets;
             this.boundingSphere = boundingSphere;
             this.vertices = vertices;

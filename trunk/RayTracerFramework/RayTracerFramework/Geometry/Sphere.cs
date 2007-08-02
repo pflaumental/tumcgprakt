@@ -4,14 +4,14 @@ using System.Text;
 using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Geometry {
-    abstract class Sphere : IGeometricObject {
+    public abstract class Sphere : IGeometricObject {
         //protected Vec3 center;
-        // Center is implicitly at (0,0,0)
-        protected float radius, radiusSq;
-        protected Matrix transform;
+        // Center is implicitly at (0, 0, 0)
+        public float radius, radiusSq;
+        public Matrix transform;
         protected Matrix invTransform;
         protected BSphere boundingSphere;
-        protected bool textured;
+        public bool textured;
 
         protected Sphere(Vec3 center, float radius, bool textured) {
             this.radius = radius;

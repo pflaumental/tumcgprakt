@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class RayIntersectionPoint : IntersectionPoint {
+    public class RayIntersectionPoint : IntersectionPoint {
         public float t;
         public IIntersectable hitObject;
         public Vec2 textureCoordinates;

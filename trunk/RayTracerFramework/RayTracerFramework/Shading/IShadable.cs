@@ -5,7 +5,7 @@ using RayTracerFramework.Shading;
 using RayTracerFramework.RayTracer;
 
 namespace RayTracerFramework.Geometry {
-    interface IShadable {
+    public interface IShadable {
         Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution);
         Material Material { get; set; }
     }

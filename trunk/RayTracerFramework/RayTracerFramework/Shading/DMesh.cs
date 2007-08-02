@@ -5,13 +5,13 @@ using RayTracerFramework.Geometry;
 using RayTracerFramework.RayTracer;
 
 namespace RayTracerFramework.Shading {
-    class DMesh : Mesh, IObject {
+    public class DMesh : Mesh, IObject {
 
-        public DMesh() { }
+        public DMesh(string meshFilename) : base(meshFilename) { }
 
-        private DMesh(List<MeshSubset> subsets, BSphere boungingSphere,
+        private DMesh(string meshFilename, List<MeshSubset> subsets, BSphere boungingSphere,
                       List<Vec3> vertices, List<Vec3> normals, List<Vec3> missingNormals)
-            : base(subsets, boungingSphere, vertices, normals, missingNormals) { }      
+            : base(meshFilename, subsets, boungingSphere, vertices, normals, missingNormals) { }      
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, Scene scene, float contribution) {
             // DTriangle hitTriangle = (DTriangle)intersection.hitObject;

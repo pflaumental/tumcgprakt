@@ -4,7 +4,7 @@ using System.Text;
 using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.Geometry {
-    class RayMeshIntersectionPoint : RayIntersectionPoint {
+    public class RayMeshIntersectionPoint : RayIntersectionPoint {
         public MeshSubset hitSubset;
 
         public RayMeshIntersectionPoint(

@@ -5,7 +5,9 @@ using RayTracerFramework.Shading;
 using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.PhotonMapping {
-    class Photon {
+
+    
+    public class Photon {
         public Color power;
         public Vec3 position;
         public Vec3 direction;
@@ -19,7 +21,7 @@ namespace RayTracerFramework.PhotonMapping {
         }
     }
 
-    class PhotonDistanceSqPair {
+    public class PhotonDistanceSqPair {
         public Photon photon;
         public float distanceSq;
 

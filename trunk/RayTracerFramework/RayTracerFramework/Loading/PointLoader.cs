@@ -8,7 +8,7 @@ using System.Globalization;
 using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.Loading {
-    class PointLoader : IPointLoader {
+    public class PointLoader : IPointLoader {
 
         public string standardMeshDirectory = "../../Models/";
         

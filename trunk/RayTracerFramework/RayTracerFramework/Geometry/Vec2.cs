@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RayTracerFramework.Geometry {
 
-    class Vec2 {
+    public class Vec2 {
         public float x, y;
         public static readonly Vec2 StdXAxis = new Vec2(1, 0);
         public static readonly Vec2 StdYAxis = new Vec2(0, 1);

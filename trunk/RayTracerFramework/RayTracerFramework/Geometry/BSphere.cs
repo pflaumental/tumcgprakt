@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    class BSphere : IIntersectable {
+    public class BSphere : IIntersectable {
         public Vec3 center;
         public float radius, radiusSq;
 

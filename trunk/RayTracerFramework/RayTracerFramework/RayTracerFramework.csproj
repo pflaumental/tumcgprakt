@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -51,6 +51,14 @@
     <Compile Include="Loading\OBJLoader.cs" />
     <Compile Include="Loading\OBJPointLoader.cs" />
     <Compile Include="Loading\PointLoader.cs" />
+    <Compile Include="Loading\SceneManager.cs" />
+    <Compile Include="Loading\SceneXML.cs" />
+    <Compile Include="LoadSceneForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadSceneForm.Designer.cs">
+      <DependentUpon>LoadSceneForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PhotonMapping\AreaLight.cs" />
     <Compile Include="PhotonMapping\Light.cs" />
     <Compile Include="PhotonMapping\Photon.cs" />
@@ -77,6 +85,7 @@
     <Compile Include="Shading\DBox.cs" />
     <Compile Include="Geometry\IGeometricObject.cs" />
     <Compile Include="Geometry\Vec2.cs" />
+    <Compile Include="Shading\DirectionalLight.cs" />
     <Compile Include="Shading\DMesh.cs" />
     <Compile Include="Shading\DMeshSubset.cs" />
     <Compile Include="Shading\DPoint.cs" />
@@ -93,6 +102,10 @@
     <Compile Include="Geometry\Vec4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="LoadSceneForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LoadSceneForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RayTracerForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RayTracerForm.cs</DependentUpon>
@@ -142,4 +155,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -4,7 +4,7 @@ using System.Text;
 using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.PhotonMapping {
-    class PhotonMap {
+    public class PhotonMap {
         private Node root;
 
         private class Node {
@@ -26,7 +26,7 @@ namespace RayTracerFramework.PhotonMapping {
         public static float capsuleRadiusSq = capsuleRadius * capsuleRadius;
         public static float sphereRadiusSq = sphereRadius * sphereRadius;
 
-        public static bool mediumIsParticipating = true;
+        public static bool mediumIsParticipating = false;
         public static float dustLevel = 0.1f;   // estimated number of photons stored on a each ray on each unit length
 
         public static int storedPhotonsCount = 75000;
