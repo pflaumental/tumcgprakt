@@ -65,6 +65,12 @@
     </Compile>
     <Compile Include="Geometry\Box.cs" />
     <Compile Include="Geometry\RayIntersectionPoint.cs" />
+    <Compile Include="SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Shading\BlinnPhongLightingModel.cs" />
     <Compile Include="Shading\Color.cs" />
     <Compile Include="Shading\CubeMap.cs" />

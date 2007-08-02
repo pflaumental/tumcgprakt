@@ -17,10 +17,15 @@ namespace RayTracerFramework.Shading {
             if (scene.usePhotonMapping) {
                 List<PhotonDistanceSqPair> photons = scene.photonMap.FindPhotonsInSphere(intersection.position);
                 Color photonDiffuseColor = new Color();
+                //float minDistSq = float.PositiveInfinity;
                 foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
+                    //// Use this code if you want to "see" the photons
+                    //if (photonDistanceSqPair.distanceSq < minDistSq) {
+                    //    minDistSq = photonDistanceSqPair.distanceSq;
+                    //    photonDiffuseColor = Color.Blue * (0.0006f / photonDistanceSqPair.distanceSq);
+                    //}
                     photonDiffuseColor = photonDiffuseColor + photonDistanceSqPair.photon.power
-                             * (1f - ((float)Math.Sqrt(photonDistanceSqPair.distanceSq)) / (coneFilterConstantK * PhotonMap.sphereRadius));
-                    //* (1f / (1 + /*(float)Math.Sqrt(*/photonDistanceSqPair.distanceSq/*)*/)));
+                             * (1f - ((float)Math.Sqrt(photonDistanceSqPair.distanceSq)) / (coneFilterConstantK * PhotonMap.sphereRadius));                    
                 }
                 iTotal = iTotal + photonDiffuseColor * material.GetDiffuse(intersection.textureCoordinates);
             }
@@ -39,16 +44,17 @@ namespace RayTracerFramework.Shading {
                             continue;
                         float distanceToLight = posToLight.Length;
 
-                        iTotal = iTotal + material.ambient * pointLight.ambient;
+                        if(!scene.usePhotonMapping)
+                            iTotal = iTotal + material.ambient * pointLight.ambient;
                         
                         // Is light in shadow?
-                        //Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
-                        //Ray toLightRay = new Ray(toLightRayPos, L, 0);
-                        //RayIntersectionPoint firstIntersection;
-                        //if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
-                        //    iTotal = iTotal + material.ambient * pointLight.ambient;
-                        //    continue;
-                        //}
+                        Vec3 toLightRayPos = new Vec3(intersection.position + Ray.positionEpsilon * intersection.normal);
+                        Ray toLightRay = new Ray(toLightRayPos, L, 0);
+                        RayIntersectionPoint firstIntersection;
+                        if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {
+                            iTotal = iTotal + material.ambient * pointLight.ambient;
+                            continue;
+                        }
  
                         // Light is seen
                         //Vec3 V = -ray.direction;
@@ -57,8 +63,10 @@ namespace RayTracerFramework.Shading {
                        
                         float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
                         // assert if (material.diffuseTexture != null && (intersection.textureCoordinates.x < 0f || intersection.textureCoordinates.x > 1f || intersection.textureCoordinates.y < 0f || intersection.textureCoordinates.y > 1f)) throw new Exception("Texture coordinates out of bounds");
-                        if (!scene.usePhotonMapping)
-                            iTotal = iTotal + (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse);
+                        Color diffuseContribution = (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse);
+                        if (scene.usePhotonMapping)
+                            diffuseContribution = diffuseContribution * PhotonMap.diffuseScaleDown;
+                        iTotal = iTotal + diffuseContribution;
                         iTotal = iTotal + (material.specular * pointLight.specular * specular);
                           
                         break;
