@@ -61,7 +61,7 @@
             this.btnRender.Location = new System.Drawing.Point(359, 335);
             this.btnRender.Name = "btnRender";
             this.btnRender.Size = new System.Drawing.Size(75, 23);
-            this.btnRender.TabIndex = 1;
+            this.btnRender.TabIndex = 0;
             this.btnRender.Text = "Setup + R.";
             this.btnRender.UseVisualStyleBackColor = true;
             this.btnRender.Click += new System.EventHandler(this.btnRender_Click);
@@ -100,7 +100,7 @@
             this.btnSetup.Location = new System.Drawing.Point(360, 310);
             this.btnSetup.Name = "btnSetup";
             this.btnSetup.Size = new System.Drawing.Size(75, 23);
-            this.btnSetup.TabIndex = 5;
+            this.btnSetup.TabIndex = 1;
             this.btnSetup.Text = "Setup";
             this.btnSetup.UseVisualStyleBackColor = true;
             this.btnSetup.Click += new System.EventHandler(this.btnSetup_Click);
@@ -111,7 +111,7 @@
             this.tbCamPosX.Location = new System.Drawing.Point(67, 313);
             this.tbCamPosX.Name = "tbCamPosX";
             this.tbCamPosX.Size = new System.Drawing.Size(32, 20);
-            this.tbCamPosX.TabIndex = 6;
+            this.tbCamPosX.TabIndex = 3;
             // 
             // tbCamPosY
             // 
@@ -119,7 +119,7 @@
             this.tbCamPosY.Location = new System.Drawing.Point(105, 313);
             this.tbCamPosY.Name = "tbCamPosY";
             this.tbCamPosY.Size = new System.Drawing.Size(32, 20);
-            this.tbCamPosY.TabIndex = 6;
+            this.tbCamPosY.TabIndex = 4;
             // 
             // tbCamPosZ
             // 
@@ -127,7 +127,7 @@
             this.tbCamPosZ.Location = new System.Drawing.Point(143, 313);
             this.tbCamPosZ.Name = "tbCamPosZ";
             this.tbCamPosZ.Size = new System.Drawing.Size(32, 20);
-            this.tbCamPosZ.TabIndex = 6;
+            this.tbCamPosZ.TabIndex = 5;
             // 
             // tbCamLookAtX
             // 
@@ -143,7 +143,7 @@
             this.tbCamLookAtY.Location = new System.Drawing.Point(282, 313);
             this.tbCamLookAtY.Name = "tbCamLookAtY";
             this.tbCamLookAtY.Size = new System.Drawing.Size(32, 20);
-            this.tbCamLookAtY.TabIndex = 6;
+            this.tbCamLookAtY.TabIndex = 7;
             // 
             // tbCamLookAtZ
             // 
@@ -151,7 +151,7 @@
             this.tbCamLookAtZ.Location = new System.Drawing.Point(320, 313);
             this.tbCamLookAtZ.Name = "tbCamLookAtZ";
             this.tbCamLookAtZ.Size = new System.Drawing.Size(32, 20);
-            this.tbCamLookAtZ.TabIndex = 6;
+            this.tbCamLookAtZ.TabIndex = 8;
             // 
             // label1
             // 
@@ -181,7 +181,7 @@
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
             this.mainMenu.Size = new System.Drawing.Size(446, 24);
-            this.mainMenu.TabIndex = 8;
+            this.mainMenu.TabIndex = 2;
             this.mainMenu.Text = "Main menu";
             // 
             // loadMenuItem
@@ -200,6 +200,7 @@
             // 
             // RayTracerForm
             // 
+            this.AcceptButton = this.btnRender;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(446, 387);

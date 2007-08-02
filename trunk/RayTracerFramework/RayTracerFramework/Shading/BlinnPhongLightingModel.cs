@@ -8,7 +8,7 @@ using RayTracerFramework.PhotonMapping;
 namespace RayTracerFramework.Shading {
 
     class BlinnPhongLightingModel : ILightingModel {
-        public static readonly float coneFilterConstantK = 1.5f;//1.6
+        public static float coneFilterConstantK = 1.5f;//1.6
 
         public Color calculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
@@ -19,13 +19,14 @@ namespace RayTracerFramework.Shading {
                 Color photonDiffuseColor = new Color();
                 //float minDistSq = float.PositiveInfinity;
                 foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
-                    //// Use this code if you want to "see" the photons
+                    //// Use this code if you want to "see" the globalPhotons
                     //if (photonDistanceSqPair.distanceSq < minDistSq) {
                     //    minDistSq = photonDistanceSqPair.distanceSq;
                     //    photonDiffuseColor = Color.Blue * (0.0006f / photonDistanceSqPair.distanceSq);
                     //}
+                    float photonDistance = (float)Math.Sqrt(photonDistanceSqPair.distanceSq);
                     photonDiffuseColor = photonDiffuseColor + photonDistanceSqPair.photon.power
-                             * (1f - ((float)Math.Sqrt(photonDistanceSqPair.distanceSq)) / (coneFilterConstantK * PhotonMap.sphereRadius));                    
+                             * (1f - photonDistance / (coneFilterConstantK * PhotonMap.sphereRadius));                    
                 }
                 iTotal = iTotal + photonDiffuseColor * material.GetDiffuse(intersection.textureCoordinates);
             }
