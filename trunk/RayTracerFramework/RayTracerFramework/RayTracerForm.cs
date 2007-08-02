@@ -15,6 +15,8 @@ using RayTracerFramework.Loading;
 
 namespace RayTracerFramework {
     public partial class RayTracerForm : Form {
+        private SettingsDialog settingsDialog; 
+
         private Scene scene;
         private Renderer renderer;
         private Camera cam;
@@ -28,6 +30,7 @@ namespace RayTracerFramework {
 
         public RayTracerForm() {
             InitializeComponent();
+            settingsDialog = new SettingsDialog();
             camPos = new Vec3(0, 0, -5);
             camLookAt = Vec3.Zero;
             tbCamPosX.Text = camPos.x.ToString();
@@ -99,7 +102,7 @@ namespace RayTracerFramework {
             boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, wallTexture));
-            scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.9f, 0.1f, 0.1f), Color.White, 30, false, false, 0.1f, 0f, null));
+            scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.8f, 0.8f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
             scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.0f, 0.0f, 0.3f), Color.White, 30, false, false, 0f, 0f, null));
 
             scene.ActivatePhotonMapping(150000, progressBar, statusBar);
@@ -165,6 +168,14 @@ namespace RayTracerFramework {
                 sceneReady = true;
             }
             Setup();
+        }
+
+        private void loadMenuItem_Click(object sender, EventArgs e) {
+            MessageBox.Show("Not implemented yet");
+        }
+
+        private void settingsMenuItem_Click(object sender, EventArgs e) {
+            settingsDialog.ShowDialog();
         }
     }
 }

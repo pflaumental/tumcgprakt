@@ -163,8 +163,10 @@ namespace RayTracerFramework.PhotonMapping {
             if (rndVal <= border) {
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXdiffuse * (1f / pDiffuse);
-                photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
-                storedPhotonCnt = 1;
+                if (ray.recursionDepth > 1) {
+                    photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
+                    storedPhotonCnt = 1;
+                }
                 newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
             } else if (rndVal <= (border += pGlossy)) {
                 // TODO: calculate GLOSSY direction instead
@@ -187,25 +189,27 @@ namespace RayTracerFramework.PhotonMapping {
                 Ray innerRay = new Ray(intersection.position, newRayDirection, ray.recursionDepth + 1);
                 RayIntersectionPoint outgoingIntersection;
                 scene.Intersect(ray, out outgoingIntersection);
-                if (outgoingIntersection != null) {
-                    newRayPosition = outgoingIntersection.position - outgoingIntersection.normal * Ray.positionEpsilon;
-                    NV = Vec3.Dot(outgoingIntersection.normal, -innerRay.direction);
-                    float invRefractionRatio = 1f - mat.refractionRatio;
-                    float invRefractionRatioSq = invRefractionRatio * invRefractionRatio;
-                    cosThetaR = (float)Math.Sqrt(1f - invRefractionRatioSq * (1f - NV * NV));
-                    // Do nothing if formula can not be hold
-                    if (float.IsNaN(cosThetaR))
-                        return 0;
-                    beforeNTerm = (float)(invRefractionRatio * NV - cosThetaR);
-                    newRayDirection = beforeNTerm * outgoingIntersection.normal + invRefractionRatio * innerRay.direction;
-                }
+
+                if (outgoingIntersection == null)
+                    return 0;
+
+                newRayPosition = outgoingIntersection.position - outgoingIntersection.normal * Ray.positionEpsilon;
+                NV = Vec3.Dot(outgoingIntersection.normal, -innerRay.direction);
+                float invRefractionRatio = 1f - mat.refractionRatio;
+                float invRefractionRatioSq = invRefractionRatio * invRefractionRatio;
+                cosThetaR = (float)Math.Sqrt(1f - invRefractionRatioSq * (1f - NV * NV));
+                // Do nothing if formula can not be hold
+                if (float.IsNaN(cosThetaR))
+                    return 0;
+                beforeNTerm = (float)(invRefractionRatio * NV - cosThetaR);
+                newRayDirection = beforeNTerm * outgoingIntersection.normal + invRefractionRatio * innerRay.direction;                
             } else {
                 // absorption
-                //if (ray.recursionDepth > 1) {
+                if (ray.recursionDepth > 1) {
                     photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
                     return 1;
-                //} else
-                //    return 0;
+                } else
+                    return 0;
             }
             Ray newRay = new Ray(newRayPosition, newRayDirection, ray.recursionDepth + 1);
             return storedPhotonCnt + TracePhotons(newRay, newPower, arrayIndex + storedPhotonCnt);
