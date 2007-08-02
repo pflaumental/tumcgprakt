@@ -25,8 +25,8 @@ namespace RayTracerFramework.RayTracer {
         public bool useCubeMap;
         public bool usePhotonMapping;
       
-        public float refractionIndex;
-
+        public float mediumRefractionIndex;
+        public Color mediumColor;
 
         public Scene(Camera cam) {
             photonTracer = null;
@@ -42,7 +42,8 @@ namespace RayTracerFramework.RayTracer {
             cubeMap = new CubeMap(100, 100, 100, "stpeters");
             useCubeMap = true;          
 
-            refractionIndex = 1.0f;         
+            mediumRefractionIndex = 1.0f;
+            mediumColor = new Color(1f, 0.5f, 0.5f);
         }
 
         public float GetTotalPhotonLightPower() {
