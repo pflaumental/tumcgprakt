@@ -19,6 +19,9 @@ namespace RayTracerFramework.Loading {
         public string meshBaseDirectory = "../../Models/";
         public string textureBaseDirectory = "../../Textures/";
 
+        public int resolutionX, resolutionY;
+        public int globalPhotonCount;
+
         public SceneManager() { }
 
         public Scene LoadScene(string sceneFile) {
@@ -34,6 +37,16 @@ namespace RayTracerFramework.Loading {
             Scene scene = new Scene();
             scene.photonTracer = null;
             scene.photonMap = null;
+            resolutionX = (int)sceneXML.targetResolution.x;
+            resolutionY = (int)sceneXML.targetResolution.y;
+            globalPhotonCount = sceneXML.globalPhotonCount;
+
+            scene.backgroundColor = sceneXML.backgroundColor;
+            scene.cubeMap = new CubeMap(sceneXML.cubeMapScene.width,
+                                        sceneXML.cubeMapScene.height,
+                                        sceneXML.cubeMapScene.depth,
+                                        sceneXML.cubeMapScene.cubeMapFilename);
+            scene.useCubeMap = sceneXML.cubeMapScene.useCubeMap;
             PhotonMap.storedPhotonsCount = sceneXML.globalPhotonCount;
             scene.cam = sceneXML.camera;          
      
@@ -92,6 +105,12 @@ namespace RayTracerFramework.Loading {
             SceneXML sceneXML = new SceneXML();
             sceneXML.camera = scene.cam;
             sceneXML.targetResolution = targetResolution;
+            sceneXML.backgroundColor = scene.backgroundColor;
+            sceneXML.cubeMapScene = new CubeMapScene(scene.cubeMap.cubeMapFilename,
+                scene.cubeMap.xMax - scene.cubeMap.xMin,
+                scene.cubeMap.yMax - scene.cubeMap.yMin,
+                scene.cubeMap.zMax - scene.cubeMap.zMin, scene.useCubeMap);
+
             sceneXML.globalPhotonCount = PhotonMap.storedPhotonsCount;
 
             foreach (BlinnLight light in scene.lightManager.BlinnLightsWorldSpace) 

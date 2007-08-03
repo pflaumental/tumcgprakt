@@ -21,6 +21,12 @@ namespace RayTracerFramework.Loading {
         [XmlElement("TargetResolution")]
         public Vec2 targetResolution;
 
+        [XmlElement("BackgroundColor")]
+        public Color backgroundColor;
+
+        [XmlElement("CubeMap")]
+        public CubeMapScene cubeMapScene;
+
         [XmlElement("GlobalPhotonCount")]
         public int globalPhotonCount;
 
@@ -33,6 +39,35 @@ namespace RayTracerFramework.Loading {
         [XmlArray(ElementName = "SceneObjects"), XmlArrayItem(ElementName = "SceneObject", Type = typeof(SceneObject))]
         public List<SceneObject> sceneObjects = new List<SceneObject>();
 
+    }
+
+    public class CubeMapScene {
+        [XmlElement("CubeMapFilename")]
+        public string cubeMapFilename;
+
+        [XmlElement("Width")]
+        public float width;
+
+        [XmlElement("Height")]
+        public float height;
+
+        [XmlElement("Depth")]
+        public float depth;
+
+        [XmlElement("UseCubeMap")]
+        public bool useCubeMap;
+
+        public CubeMapScene() { }
+
+        public CubeMapScene(string cubeMapFilename, 
+            float width, float height, float depth,
+            bool useCubeMap) {
+            this.cubeMapFilename = cubeMapFilename;
+            this.width = width;
+            this.height = height;
+            this.depth = depth;
+            this.useCubeMap = useCubeMap;
+        }
     }
 
     [XmlInclude(typeof(SceneBox))]
