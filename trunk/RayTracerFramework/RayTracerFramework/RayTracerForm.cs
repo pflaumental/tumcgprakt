@@ -34,6 +34,9 @@ namespace RayTracerFramework {
             InitializeComponent();
             sceneManager = new SceneManager();
 
+            //scene = sceneManager.LoadScene("standardscene.xml");
+            //cam = scene.cam;
+
             settingsDialog = new SettingsDialog(
                     enablePhotonMapping, 
                     PhotonMapping.PhotonMap.storedPhotonsCount, 
@@ -54,7 +57,7 @@ namespace RayTracerFramework {
         private void Setup() {
             renderer = new Renderer(progressBar, statusBar, pictureBox);
 
-            /*
+            
             //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
@@ -122,10 +125,10 @@ namespace RayTracerFramework {
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, "env2.jpg"));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.8f, 0.8f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
             scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.3f, 0.5f, 0.1f), Color.White, 30, false, false, 0f, 0f, null));
-
+            
             // SceneManager sm2 = new SceneManager();
             // sm2.SaveScene("scene.xml", scene, new Vec2(pictureBox.Size.Width, pictureBox.Size.Height));
-            */
+            
 
             if(enablePhotonMapping)
                 scene.ActivatePhotonMapping(
@@ -197,8 +200,10 @@ namespace RayTracerFramework {
         }
 
         private void loadMenuItem_Click(object sender, EventArgs e) {
-            //LoadSceneForm loadForm = new LoadSceneForm();
-            //loadForm.ShowDialog();
+            
+
+            LoadSceneForm loadForm = new LoadSceneForm();
+            loadForm.ShowDialog();
 
             scene = sceneManager.LoadScene("standardscene.xml");
             scene.mediumColor = new Color(0.5f, 0.3f, 0.3f);

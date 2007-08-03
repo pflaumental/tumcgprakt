@@ -14,7 +14,11 @@ namespace RayTracerFramework.Shading {
         private FastBitmap yMinTexture, yMaxTexture;
         private FastBitmap zMinTexture, zMaxTexture;
 
+        public string cubeMapFilename;
+
         public CubeMap(float width, float height, float depth, string texturesBaseName) {
+            cubeMapFilename = texturesBaseName;
+
             this.xMin = -(width * 0.5f);
             this.xMax = width * 0.5f;
             this.yMin = -(height * 0.5f);
