@@ -95,7 +95,7 @@ namespace RayTracerFramework {
         }
 
         private void UpdateControls() {
-            enablePMcheckBox.Enabled = enablePhotonMapping;
+       
             storedPhotonsComboBox.Text = storedPhotonsCount.ToString();
             diffuseScaleDownTrackBar.Value = (int) (diffuseScaleDown * 10f);
             labelDiffuseScaledownValue.Text = diffuseScaleDown.ToString();

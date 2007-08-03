@@ -197,6 +197,9 @@ namespace RayTracerFramework {
         }
 
         private void loadMenuItem_Click(object sender, EventArgs e) {
+            //LoadSceneForm loadForm = new LoadSceneForm();
+            //loadForm.ShowDialog();
+
             scene = sceneManager.LoadScene("standardscene.xml");
             scene.mediumColor = new Color(0.5f, 0.3f, 0.3f);
             cam = scene.cam;
