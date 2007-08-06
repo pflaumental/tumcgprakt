@@ -100,7 +100,7 @@ namespace RayTracerFramework.PhotonMapping {
                 
             } while (storedPhotons < maxStoredPhotons);
 
-            float powerScale = (PhotonMap.powerLevel * totalPower) / emittedPhotons;
+            float powerScale = (Settings.Setup.PhotonMapping.PowerLevel * totalPower) / emittedPhotons;
 
             foreach (Photon photon in photons) {
                 photon.power *= powerScale;
@@ -120,7 +120,7 @@ namespace RayTracerFramework.PhotonMapping {
             if (intersection == null)
                 return 0;
 
-            if (PhotonMap.mediumIsParticipating) { 
+            if (Settings.Setup.PhotonMapping.MediumIsParticipating) { 
                 int inMediumStoredPhotons = StorePhotonsInMedium(ray, power, intersection, arrayIndex);
                 if ((arrayIndex += inMediumStoredPhotons) >= photons.Length)
                     return inMediumStoredPhotons;
@@ -175,16 +175,16 @@ namespace RayTracerFramework.PhotonMapping {
                     photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
                     storedPhotonCnt = 1;
                 }
-                newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
+                newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pGlossy)) {
                 // TODO: calculate GLOSSY direction instead
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXglossy * (1f / pGlossy);
-                newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
+                newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pMirror)) {
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 newRayDirection = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
-                newRayPosition = intersection.position + intersection.normal * Ray.positionEpsilon;
+                newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pRefraction)) {
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 float cosThetaR = (float)Math.Sqrt(1f - mat.refractionRatio * mat.refractionRatio * (1f - NV * NV));
@@ -193,7 +193,7 @@ namespace RayTracerFramework.PhotonMapping {
                     return 0;
                 float beforeNTerm = (float)(mat.refractionRatio * NV - cosThetaR);
                 newRayDirection = beforeNTerm * intersection.normal + mat.refractionRatio * ray.direction;
-                newRayPosition = intersection.position - intersection.normal * Ray.positionEpsilon;
+                newRayPosition = intersection.position - intersection.normal * Settings.Render.Ray.PositionEpsilon;
                 Ray innerRay = new Ray(intersection.position, newRayDirection, ray.recursionDepth + 1);
                 RayIntersectionPoint outgoingIntersection;
                 scene.Intersect(ray, out outgoingIntersection);
@@ -201,7 +201,7 @@ namespace RayTracerFramework.PhotonMapping {
                 if (outgoingIntersection == null)
                     return 0;
 
-                newRayPosition = outgoingIntersection.position - outgoingIntersection.normal * Ray.positionEpsilon;
+                newRayPosition = outgoingIntersection.position - outgoingIntersection.normal * Settings.Render.Ray.PositionEpsilon;
                 NV = Vec3.Dot(outgoingIntersection.normal, -innerRay.direction);
                 float invRefractionRatio = 1f - mat.refractionRatio;
                 float invRefractionRatioSq = invRefractionRatio * invRefractionRatio;
@@ -228,7 +228,7 @@ namespace RayTracerFramework.PhotonMapping {
             int result = 0;
             while (true){
                 float rndVal = 0.5f + (float)rnd.NextDouble();
-                distFromOrigin += rndVal / PhotonMap.dustLevel;
+                distFromOrigin += rndVal / Settings.Setup.PhotonMapping.MediumLightingDensity;
                 if (distFromOrigin > intersection.t || arrayIndex >= photons.Length )
                     break;
                 Vec3 photonPos = intersection.position + intersection.normal * distFromOrigin;

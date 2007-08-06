@@ -26,7 +26,7 @@ namespace RayTracerFramework.RayTracer {
 
         public Camera()
             : this(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis,
-                   Trigonometric.PI_QUARTER, 1) { }
+                   Settings.Render.Trigonometric.PiQuarter, 1) { }
 
         public Camera(Vec3 eyePos, Vec3 lookAtPos, Vec3 upDir, float hFov, float aspectRatio) {
             this.eyePos = eyePos;

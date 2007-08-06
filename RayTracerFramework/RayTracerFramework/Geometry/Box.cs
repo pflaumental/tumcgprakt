@@ -469,6 +469,5 @@ namespace RayTracerFramework.Geometry {
         public BSphere BSphere {
             get { return boundingSphere; }
         }
-
     }
 }

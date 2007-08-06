@@ -9,8 +9,7 @@ using Color = RayTracerFramework.Shading.Color;
 using System.Windows.Forms;
 
 namespace RayTracerFramework.RayTracer {
-    public class Renderer {
-        public static readonly int MaxRecursionDepth = 10;
+    public class Renderer {        
 
         private ProgressBar progressBar;
         private StatusStrip statusBar;

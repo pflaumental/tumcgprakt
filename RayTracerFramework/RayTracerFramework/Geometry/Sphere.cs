@@ -197,12 +197,12 @@ namespace RayTracerFramework.Geometry {
             Vec2 result = new Vec2();
             Vec3 iPosN = Vec3.Normalize(iPos);
             result.y = (Vec3.Dot(iPosN, Vec3.StdYAxis) + 1f) / 2f;
-            if (iPosN.y > Trigonometric.EPSILON || iPosN.y < -Trigonometric.EPSILON) {
+            if (iPosN.y > Settings.Render.Trigonometric.Epsilon || iPosN.y < -Settings.Render.Trigonometric.Epsilon) {
                 float yP = (float)Math.Sqrt(1f - iPosN.y * iPosN.y);
                 float cosine = Vec3.Dot(-Vec3.StdXAxis, new Vec3(iPosN.x / yP, 0f, iPosN.z / yP));
                 if (cosine < 0f) cosine = 0f;
                 if (cosine > 1f) cosine = 1f;
-                result.x = ((float)Math.Acos(cosine)) / Trigonometric.TWO_PI;
+                result.x = ((float)Math.Acos(cosine)) / Settings.Render.Trigonometric.TwoPi;
                 if (iPosN.z > 0f)
                     result.x += 0.5f;
             }            

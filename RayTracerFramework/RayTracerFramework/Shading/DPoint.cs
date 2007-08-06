@@ -5,10 +5,7 @@ using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.Shading {
     public class DPoint : IObject {
-        public Vec3 position;
-
-        public static float EPSILON = 0.2f;
-        public static float EPSILON_SQ = EPSILON * EPSILON;
+        public Vec3 position;        
 
         public DPoint(Vec3 position) {
             this.position = position;
@@ -29,7 +26,7 @@ namespace RayTracerFramework.Shading {
                 return false;
             //   |                p_xSq                |
             //   |       o_pSq          |
-            if ((Vec3.GetLengthSq(o_pVec) - (o_x * o_x)) < EPSILON_SQ)
+            if ((Vec3.GetLengthSq(o_pVec) - (o_x * o_x)) < Settings.Render.DPoint.EpsilonSq)
                 return true;
             else
                 return false;
@@ -44,7 +41,7 @@ namespace RayTracerFramework.Shading {
             }
             float o_pSq = Vec3.GetLengthSq(o_pVec);
             //   |       p_xSq      |            
-            if ((o_pSq - (o_x * o_x)) < EPSILON_SQ) {
+            if ((o_pSq - (o_x * o_x)) < Settings.Render.DPoint.EpsilonSq) {
                 firstIntersection = new RayIntersectionPoint(position, -ray.direction, (float)Math.Sqrt(o_pSq), this, null);
                 return true;
             } else {
@@ -60,7 +57,7 @@ namespace RayTracerFramework.Shading {
                 return 0;
             float o_pSq = Vec3.GetLengthSq(o_pVec);
             //   |       p_xSq      |            
-            if ((o_pSq - (o_x * o_x)) < EPSILON_SQ) {
+            if ((o_pSq - (o_x * o_x)) < Settings.Render.DPoint.EpsilonSq) {
                 float t = (float)Math.Sqrt(o_pSq);
                 intersections.Add(t, new RayIntersectionPoint(position, -ray.direction, t, this, null));
                 return 1;
@@ -69,7 +66,7 @@ namespace RayTracerFramework.Shading {
         }
 
         public BSphere BSphere {
-            get { return new BSphere(position, EPSILON); }
+            get { return new BSphere(position, Settings.Render.DPoint.Epsilon); }
         }
 
         public Color Shade(Ray ray, RayIntersectionPoint intersection, RayTracerFramework.RayTracer.Scene scene, float contribution) {

@@ -16,8 +16,8 @@ using RayTracerFramework.Utility;
 namespace RayTracerFramework.Loading {
     public class SceneManager {
 
-        public string meshBaseDirectory = "../../Models/";
-        public string textureBaseDirectory = "../../Textures/";
+        public string meshBaseDirectory = Settings.Setup.Loading.DefaultStandardMeshDirectory;
+        public string textureBaseDirectory = Settings.Setup.Loading.DefaultStandardTextureDirectory;
 
         public int resolutionX, resolutionY;
         public int globalPhotonCount;
@@ -47,10 +47,10 @@ namespace RayTracerFramework.Loading {
                                         sceneXML.cubeMapScene.depth,
                                         sceneXML.cubeMapScene.cubeMapFilename);
             scene.useCubeMap = sceneXML.cubeMapScene.useCubeMap;
-            PhotonMap.storedPhotonsCount = sceneXML.globalPhotonCount;
+            Settings.Setup.PhotonMapping.StoredPhotonsCount = sceneXML.globalPhotonCount;
             scene.cam = sceneXML.camera;          
      
-            // Place objects in the scene
+            // Place objects in the scenez
             scene.kdTree = new GeoObjectKDTree();
             foreach (SceneObject obj in sceneXML.sceneObjects) {
                 if (obj is SceneBox) {
@@ -92,7 +92,7 @@ namespace RayTracerFramework.Loading {
             scene.lightingModel = new BlinnPhongLightingModel();
 
             scene.backgroundColor = Color.LightSlateGray;
-            scene.cubeMap = new CubeMap(100, 100, 100, "stpeters");
+            scene.cubeMap = new CubeMap(100, 100, 100, Settings.Setup.Loading.DefaultCubeMapName);
             scene.useCubeMap = true;
 
             // scene.refractionIndex = 1.0f;
@@ -111,7 +111,7 @@ namespace RayTracerFramework.Loading {
                 scene.cubeMap.yMax - scene.cubeMap.yMin,
                 scene.cubeMap.zMax - scene.cubeMap.zMin, scene.useCubeMap);
 
-            sceneXML.globalPhotonCount = PhotonMap.storedPhotonsCount;
+            sceneXML.globalPhotonCount = Settings.Setup.PhotonMapping.StoredPhotonsCount;
 
             foreach (BlinnLight light in scene.lightManager.BlinnLightsWorldSpace) 
                 sceneXML.blinnLights.Add(light);

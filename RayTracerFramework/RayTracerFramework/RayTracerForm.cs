@@ -22,13 +22,12 @@ namespace RayTracerFramework {
         private Renderer renderer;
         private Camera cam;
 
-        private Matrix camTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
+        //private Matrix camTransform = Matrix.GetRotationY(Settings.Render.Trigonometric.PiQuarter);
 
         private Vec3 camPos;
         private Vec3 camLookAt;
 
         private bool sceneReady = false;
-        private bool enablePhotonMapping = true;
 
         public RayTracerForm() {
             InitializeComponent();
@@ -37,13 +36,7 @@ namespace RayTracerFramework {
             //scene = sceneManager.LoadScene("standardscene.xml");
             //cam = scene.cam;
 
-            settingsDialog = new SettingsDialog(
-                    enablePhotonMapping, 
-                    PhotonMapping.PhotonMap.storedPhotonsCount, 
-                    PhotonMapping.PhotonMap.diffuseScaleDown, 
-                    PhotonMapping.PhotonMap.powerLevel, 
-                    PhotonMapping.PhotonMap.sphereRadius, 
-                    BlinnPhongLightingModel.coneFilterConstantK);
+            settingsDialog = new SettingsDialog();
             camPos = new Vec3(0, 0, -5);
             camLookAt = Vec3.Zero;
             tbCamPosX.Text = camPos.x.ToString();
@@ -57,12 +50,12 @@ namespace RayTracerFramework {
         private void Setup() {
             renderer = new Renderer(progressBar, statusBar, pictureBox);
 
-            
-            //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Trigonometric.PI * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Trigonometric.PI * 0.1f)),
-            //                        new Vec3(0, 0, 0f),
-            //                        Vec3.StdYAxis, Trigonometric.PI_QUARTER, aspectRatio);
 
-            cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Trigonometric.PI_QUARTER, 4f / 3f);
+            //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Settings.Render.Trigonometric.Pi * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Settings.Render.Trigonometric.Pi * 0.1f)),
+            //                        new Vec3(0, 0, 0f),
+            //                        Vec3.StdYAxis, Settings.Render.Trigonometric.PiQuarter, aspectRatio);
+
+            cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Settings.Render.Trigonometric.PiQuarter, 4f / 3f);
             //cam.aspectRatio = aspectRatio;
 
             scene = new Scene(cam);
@@ -115,12 +108,12 @@ namespace RayTracerFramework {
 
             scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
             //FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
-            scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.95f, 0.85f, null));
+            scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.70f, 0.85f, null));
             scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, "earth.jpg"));
 
             //FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
-            Matrix boxTransform = Matrix.GetRotationY(Trigonometric.PI_QUARTER);
-            boxTransform *= Matrix.GetRotationX(Trigonometric.PI_QUARTER);
+            Matrix boxTransform = Matrix.GetRotationY(Settings.Render.Trigonometric.PiQuarter);
+            boxTransform *= Matrix.GetRotationX(Settings.Render.Trigonometric.PiQuarter);
             boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
             scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, "env2.jpg"));
             scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.8f, 0.8f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
@@ -128,11 +121,11 @@ namespace RayTracerFramework {
             
             // SceneManager sm2 = new SceneManager();
             // sm2.SaveScene("scene.xml", scene, new Vec2(pictureBox.Size.Width, pictureBox.Size.Height));
-            
 
-            if(enablePhotonMapping)
+            
+            if (Settings.Setup.PhotonMapping.EmitPhotons)
                 scene.ActivatePhotonMapping(
-                        PhotonMapping.PhotonMap.storedPhotonsCount,
+                        Settings.Setup.PhotonMapping.StoredPhotonsCount,
                         progressBar,
                         statusBar);
             // Do not forget:
@@ -156,7 +149,7 @@ namespace RayTracerFramework {
 
             renderer.Render(scene, bitmap);
 
-            cam.eyePos = Vec3.TransformNormal3(cam.eyePos, camTransform);
+            //cam.eyePos = Vec3.TransformNormal3(cam.eyePos, camTransform);
             camPos = cam.eyePos;
 
             // Update Cam User Controls
@@ -216,15 +209,11 @@ namespace RayTracerFramework {
         private void settingsMenuItem_Click(object sender, EventArgs e) {
             DialogResult dialogResult = settingsDialog.ShowDialog();
             if (dialogResult == DialogResult.OK) {
-                enablePhotonMapping = settingsDialog.enablePhotonMapping;
-                if(scene != null)
-                    scene.usePhotonMapping = enablePhotonMapping;
-                PhotonMapping.PhotonMap.storedPhotonsCount = settingsDialog.storedPhotonsCount;
-                PhotonMapping.PhotonMap.diffuseScaleDown = settingsDialog.diffuseScaleDown;
-                PhotonMapping.PhotonMap.powerLevel = settingsDialog.photonPowerLevel;
-                BlinnPhongLightingModel.coneFilterConstantK = settingsDialog.coneFilterConstantK;
-                PhotonMapping.PhotonMap.sphereRadius = settingsDialog.photonCollectionRadius;
-                PhotonMapping.PhotonMap.sphereRadiusSq = PhotonMapping.PhotonMap.sphereRadius * PhotonMapping.PhotonMap.sphereRadius;
+                if (sceneReady == true && settingsDialog.setupSettingsChanged) {
+                    settingsDialog.setupSettingsChanged = false;
+                    sceneReady = false;
+                    btnRender.Text = "Setup + R.";
+                }
             }
         }
     }

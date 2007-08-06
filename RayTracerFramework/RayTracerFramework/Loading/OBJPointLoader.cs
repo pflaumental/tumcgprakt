@@ -10,7 +10,7 @@ using System.Globalization;
 namespace RayTracerFramework.Loading {
     public class OBJPointLoader : IPointLoader {
 
-        public string standardMeshDirectory = "../../Models/";
+        public string standardMeshDirectory = Settings.Setup.Loading.DefaultStandardMeshDirectory;
 
         public List<IIntersectable> LoadFromFile(string filename) {
             List<IIntersectable> pointlist = new List<IIntersectable>();

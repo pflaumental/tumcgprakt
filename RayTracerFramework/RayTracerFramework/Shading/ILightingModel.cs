@@ -8,7 +8,7 @@ using RayTracerFramework.RayTracer;
 namespace RayTracerFramework.Shading {
     public interface ILightingModel {
 
-        Color calculateColor(Ray ray, RayIntersectionPoint intersection,
+        Color CalculateColor(Ray ray, RayIntersectionPoint intersection,
                              Material material, Scene scene);
 
     }

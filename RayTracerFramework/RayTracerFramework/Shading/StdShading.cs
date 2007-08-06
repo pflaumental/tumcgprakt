@@ -9,8 +9,6 @@ using RayTracerFramework.PhotonMapping;
 namespace RayTracerFramework.Shading {
     // Standard recursive raytracing
     public class StdShading {
-        private readonly static float localThreshold = 0.02f;
-        private readonly static float contributionThreshold = 0.005f;
 
         // Refraction does not support intersecting objects and objects
         // that do not support rays starting inside of them
@@ -48,8 +46,8 @@ namespace RayTracerFramework.Shading {
             }
 
             // "Local" color;
-            if (localPart > localThreshold) {
-                Color localColor = scene.lightingModel.calculateColor(
+            if (localPart > Settings.Render.StdShading.LocalThreshold) {
+                Color localColor = scene.lightingModel.CalculateColor(
                         ray,
                         intersection,
                         material,
@@ -57,7 +55,9 @@ namespace RayTracerFramework.Shading {
                 resultColor += (localColor * localPart);
             }
 
-            bool continueRecursion = ray.recursionDepth + 1 <= Renderer.MaxRecursionDepth;
+            // TODO insert fogging here
+
+            bool continueRecursion = ray.recursionDepth + 1 <= Settings.Render.Renderer.MaxRecursionDepth;
             float reflectionPartSum = fresnelReflectionPart;            
 
             // Refraction color
@@ -65,7 +65,7 @@ namespace RayTracerFramework.Shading {
             // support rays that start inside of them
             float refractionContribution = refractionPart * contribution;
             if (material.refractive
-                        && refractionContribution > contributionThreshold
+                        && refractionContribution > Settings.Render.StdShading.ContributionThreshold
                         && continueRecursion) {
                 // Calculate refraction ray
                 // sinThetaR = (ni/nr) * sinThetaI
@@ -85,7 +85,7 @@ namespace RayTracerFramework.Shading {
                 // assert if(Vec3.Dot(refractionDir, intersection.normal) > 0) throw new Exception("Vec3.Dot(refractionDir, intersection.normal) > 0");
                 // assert if (Vec3.Dot(refractionDir, ray.direction) < 0) throw new Exception("Vec3.Dot(refractionDir, ray.direction) < 0");
 
-                Vec3 refractionPos = intersection.position - Ray.positionEpsilon * intersection.normal;//refractionDir;
+                Vec3 refractionPos = intersection.position - Settings.Render.Ray.PositionEpsilon * intersection.normal;//refractionDir;
                 // assert if (Vec3.Dot(refractionPos - intersection.position, intersection.normal) > 0) throw new Exception("Vec3.Dot(refractionPos - intersection.position, intersection.normal) < 0");                    
                 Ray refractionRay = new Ray(refractionPos, refractionDir, ray.recursionDepth + 1);
 
@@ -109,7 +109,7 @@ namespace RayTracerFramework.Shading {
                 beforeNTerm = (float)(refractionRatio * NV - cosThetaR);
                 refractionDir = beforeNTerm * refractionIntersection.normal + refractionRatio * refractionDir;
                 // assert if (float.IsNaN(refractionDir.x)) throw new Exception("refraction dir is NaN");
-                refractionPos = refractionIntersection.position - Ray.positionEpsilon * refractionIntersection.normal;
+                refractionPos = refractionIntersection.position - Settings.Render.Ray.PositionEpsilon * refractionIntersection.normal;
                 refractionRay = new Ray(refractionPos, refractionDir, ray.recursionDepth + 2);
 
                 // Test refracted ray against scene and calculate color
@@ -129,7 +129,7 @@ namespace RayTracerFramework.Shading {
             // Reflection color
             float reflectionContribution = reflectionPartSum * contribution;
             if (material.reflective
-                    && reflectionContribution > contributionThreshold
+                    && reflectionContribution > Settings.Render.StdShading.ContributionThreshold
                     && continueRecursion) { 
                 // Calculate reflection ray
                 // R = 2N(N*V)-V   (V = -ray.direction)
@@ -137,7 +137,7 @@ namespace RayTracerFramework.Shading {
                 // assert if(NV < 0) throw new Exception("NV < 0");
 
                 Vec3 reflectionDir = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
-                Vec3 reflectionPos = intersection.position + Ray.positionEpsilon * reflectionDir;
+                Vec3 reflectionPos = intersection.position + Settings.Render.Ray.PositionEpsilon * reflectionDir;
                 Ray reflectionRay = new Ray(reflectionPos, reflectionDir, ray.recursionDepth + 1);
 
                 // Find nearest object intersection and shade reflection  
@@ -152,6 +152,28 @@ namespace RayTracerFramework.Shading {
                 }
                 // Add reflection color to resultColor
                 resultColor += (reflectionColor * reflectionPartSum);
+            }
+
+            // Fog
+            if (Settings.Render.StdShading.enableFog) {
+                // Medium illumination
+                float surfaceCoefficient = 1f / (1f + intersection.t * Settings.Render.StdShading.FogLevel);
+                float mediumCoefficient = 1f - surfaceCoefficient;
+                if (Settings.Render.PhotonMapping.RenderMediumPhotons) {
+                    Color mediumLightColor = new Color();
+                    List<PhotonDistanceSqPair> photons = scene.photonMap.FindPhotonsAlongRay(ray, intersection.t);
+                    foreach (PhotonDistanceSqPair photonDistanceSqPair in photons) {
+                        float photonDistance = (float)Math.Sqrt(photonDistanceSqPair.distanceSq);
+                        mediumLightColor = mediumLightColor + photonDistanceSqPair.photon.power
+                                * Settings.Render.PhotonMapping.MediumEnlightmentAmplifier *
+                                (1f - photonDistance / (Settings.Render.PhotonMapping.MediumConeFilterConstantK
+                                * Settings.Render.PhotonMapping.CapsuleRadius));
+                    }
+                    resultColor = resultColor * surfaceCoefficient
+                            + scene.mediumColor * mediumCoefficient * mediumLightColor;
+                } else
+                    resultColor = resultColor * surfaceCoefficient
+                            + scene.mediumColor * mediumCoefficient * scene.fogAmbientLightColor;
             }
 
             resultColor.Saturate();

@@ -11,25 +11,15 @@ namespace RayTracerFramework.PhotonMapping {
             public Node left;
             public Node right;
             public Photon photon;
+            public BSphere bSphere; // Encloses the space represented by this photon in the kd-tree
 
-            public Node(PhotonMap.Node left, PhotonMap.Node right, Photon photon) {
+            public Node(PhotonMap.Node left, PhotonMap.Node right, Photon photon, BSphere bSphere) {
                 this.left = left;
                 this.right = right;
                 this.photon = photon;
+                this.bSphere = bSphere;
             }
         }
-
-        public static float diffuseScaleDown = 0.4f;
-        public static float powerLevel = 6f;
-        public static float sphereRadius = 0.8f;
-        public static float capsuleRadius = 0.3f;
-        public static float capsuleRadiusSq = capsuleRadius * capsuleRadius;
-        public static float sphereRadiusSq = sphereRadius * sphereRadius;
-
-        public static bool mediumIsParticipating = false;
-        public static float dustLevel = 0.1f;   // estimated number of photons stored on a each ray on each unit length
-
-        public static int storedPhotonsCount = 75000;
 
         public PhotonMap(Photon[] photons) {
             root = MakeTree(new List<Photon>(photons));
@@ -39,10 +29,11 @@ namespace RayTracerFramework.PhotonMapping {
             if (photons.Count == 0)
                 return null;
             if(photons.Count == 1)
-                return new PhotonMap.Node(null, null, photons[0]);
+                return new PhotonMap.Node(null, null, photons[0], new BSphere(photons[0].position, 0f));
             Photon mid;
             Vec3 dimensions;
-            FindMedianAndDimensions(photons, out mid, out dimensions);
+            BSphere nodeBSphere;
+            FindMedianDimensionsAndBoundingSphere(photons, out mid, out dimensions, out nodeBSphere);
             photons.Remove(mid);
             if (dimensions.x >= dimensions.y)
                 if (dimensions.x >= dimensions.z)
@@ -58,7 +49,7 @@ namespace RayTracerFramework.PhotonMapping {
             Split(photons, mid, out leftPhotons, out rightPhotons);
             PhotonMap.Node leftNode = MakeTree(leftPhotons);
             PhotonMap.Node rightNode = MakeTree(rightPhotons);
-            return new PhotonMap.Node(leftNode, rightNode, mid);
+            return new PhotonMap.Node(leftNode, rightNode, mid, nodeBSphere);
         }
 
         private void Split(
@@ -100,10 +91,11 @@ namespace RayTracerFramework.PhotonMapping {
             }
         }
 
-        private void FindMedianAndDimensions(
+        private void FindMedianDimensionsAndBoundingSphere(
                 List<Photon> photons, 
                 out Photon median, 
-                out Vec3 dimensions) {
+                out Vec3 dimensions,
+                out BSphere boundingSphere) {
             Vec3 center = photons[0].position;
             Vec3 leftBottomFront = new Vec3(center.x, center.y, center.z);
             Vec3 rightTopBack = new Vec3(center.x, center.y, center.z);
@@ -125,6 +117,7 @@ namespace RayTracerFramework.PhotonMapping {
                     rightTopBack.z = pos.z;
             }
             dimensions = rightTopBack - leftBottomFront;
+            boundingSphere = new BSphere(center, Vec3.GetLength(rightTopBack - center));
             median = photons[0];
             float median_centerSq = Vec3.GetLengthSq(center - median.position);
             for (int i = 1; i < photons.Count; i++) {
@@ -193,7 +186,7 @@ namespace RayTracerFramework.PhotonMapping {
                 return;
 
             float distToNodeSq = Vec3.GetLengthSq(center - node.photon.position);
-            if (distToNodeSq < sphereRadiusSq) {
+            if (distToNodeSq < Settings.Render.PhotonMapping.SphereRadiusSq) {
                 result.Add(new PhotonDistanceSqPair(node.photon, distToNodeSq));
             }
             float toPlane = 0f;
@@ -210,26 +203,22 @@ namespace RayTracerFramework.PhotonMapping {
             }
 
             float toPlaneSq = toPlane * toPlane;
-            if (toPlane > 0) { // center in left half space
+
+            if (toPlane > 0 || toPlaneSq < Settings.Render.PhotonMapping.SphereRadiusSq)
                 FindPhotonsInSphere(node.left, center, result);
-                if (toPlaneSq < sphereRadiusSq)
-                    FindPhotonsInSphere(node.right, center, result);
-            } else { // center in right half space
+            if (toPlane <= 0 || toPlaneSq < Settings.Render.PhotonMapping.SphereRadiusSq)
                 FindPhotonsInSphere(node.right, center, result);
-                if (toPlaneSq < sphereRadiusSq)
-                    FindPhotonsInSphere(node.left, center, result);
-            }
         }
 
         public List<PhotonDistanceSqPair> FindPhotonsAlongRay(Ray ray, float length) {
             List<PhotonDistanceSqPair> result = new List<PhotonDistanceSqPair>();
-            if(length >= 2 * capsuleRadius)
+            if(length >= 2 * Settings.Render.PhotonMapping.CapsuleRadius)
                 FindPhotonsInCapsule(
-                        root, 
-                        ray.position + ray.direction * capsuleRadius, 
-                        ray.direction, 
-                        length - 2 * capsuleRadius, 
-                        ray.position + ray.direction * (length - capsuleRadius), 
+                        root,
+                        ray.position + ray.direction * Settings.Render.PhotonMapping.CapsuleRadius, 
+                        ray.direction,
+                        length - 2 * Settings.Render.PhotonMapping.CapsuleRadius,
+                        ray.position + ray.direction * (length - Settings.Render.PhotonMapping.CapsuleRadius),
                         result);
             return result;
         }
@@ -253,11 +242,8 @@ namespace RayTracerFramework.PhotonMapping {
             else
                 nearestPoint = lineStart + direction * StNonRay;
             float distToNodeSq = Vec3.GetLengthSq(nearestPoint - node.photon.position);
-            if (distToNodeSq < capsuleRadiusSq) {
+            if (distToNodeSq < Settings.Render.PhotonMapping.CapsuleRadiusSq) {
                 result.Add(new PhotonDistanceSqPair(node.photon, distToNodeSq));
-                FindPhotonsInCapsule(node.left, lineStart, direction, length, lineEnd, result);
-                FindPhotonsInCapsule(node.right, lineStart, direction, length, lineEnd, result);
-                return;
             }
 
             float toPlane = 0f;
@@ -287,15 +273,63 @@ namespace RayTracerFramework.PhotonMapping {
                     toPlane = Math.Max(lineStartToPlane, lineEndToPlane);
             }
 
-            if (toPlane > 0) {
-                FindPhotonsInCapsule(node.right, lineStart, direction, length, lineEnd, result);
-                if (toPlane < capsuleRadius)
-                    FindPhotonsInCapsule(node.left, lineStart, direction, length, lineEnd, result);
-            } else {
-                FindPhotonsInCapsule(node.left, lineStart, direction, length, lineEnd, result);
-                if(toPlane > -capsuleRadius)
-                    FindPhotonsInCapsule(node.right, lineStart, direction, length, lineEnd, result);
+            bool goLeft = false;
+            bool goRight = false;
+            if (toPlane <= 0 || toPlane < Settings.Render.PhotonMapping.CapsuleRadius) {
+                if (IsCapsuleIntersectingNodeBoundingSphere(
+                        lineStart,
+                        direction,
+                        length,
+                        lineEnd,
+                        node.bSphere))
+                    goLeft = true;
             }
+            if (toPlane > 0 || toPlane > -Settings.Render.PhotonMapping.CapsuleRadius) {
+                if (IsCapsuleIntersectingNodeBoundingSphere(
+                        lineStart,
+                        direction,
+                        length,
+                        lineEnd,
+                        node.bSphere))
+                    goRight = true;
+            }
+
+            if (goLeft)
+                FindPhotonsInCapsule(
+                        node.left, 
+                        lineStart, 
+                        direction, 
+                        length, 
+                        lineEnd,
+                        result);
+            if (goRight)
+                FindPhotonsInCapsule(
+                        node.right,
+                        lineStart,
+                        direction,
+                        length,
+                        lineEnd,
+                        result);
         }
+
+        private bool IsCapsuleIntersectingNodeBoundingSphere(                
+                Vec3 lineStart,
+                Vec3 direction,
+                float length,
+                Vec3 lineEnd,
+                BSphere boundingSphere) {
+            Vec3 StC = boundingSphere.center - lineStart;
+            float StNonRay = Vec3.Dot(direction, StC);
+            Vec3 nearestPoint;
+            if (StNonRay < 0f)
+                nearestPoint = lineStart;
+            else if (StNonRay > length)
+                nearestPoint = lineEnd;
+            else
+                nearestPoint = lineStart + direction * StNonRay;
+            float distCenterLineSq = Vec3.GetLengthSq(nearestPoint - boundingSphere.center);
+            float maxDistance = (boundingSphere.radius + Settings.Render.PhotonMapping.CapsuleRadius);
+            return distCenterLineSq < (maxDistance * maxDistance);
+        }  
     }
 }
