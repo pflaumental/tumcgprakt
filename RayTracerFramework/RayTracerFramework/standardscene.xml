@@ -173,7 +173,7 @@
         <specularPower>10</specularPower>
         <reflective>true</reflective>
         <refractive>true</refractive>
-        <refractionRatio>0.95</refractionRatio>
+        <refractionRatio>0.7</refractionRatio>
         <refractionRate>0.85</refractionRate>
         <name>default</name>
       </Material>
