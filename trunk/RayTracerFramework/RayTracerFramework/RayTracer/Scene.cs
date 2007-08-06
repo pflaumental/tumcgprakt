@@ -23,10 +23,11 @@ namespace RayTracerFramework.RayTracer {
         public CubeMap cubeMap;
         public Color backgroundColor;
         public bool useCubeMap;
-        public bool usePhotonMapping;
       
         public float mediumRefractionIndex;
         public Color mediumColor;
+        public Color surfacesAmbientLightColor;
+        public Color fogAmbientLightColor;
 
         public Scene() { }
 
@@ -58,12 +59,11 @@ namespace RayTracerFramework.RayTracer {
         public void ActivatePhotonMapping(
                 int photonMapSize, 
                 System.Windows.Forms.ProgressBar progressBar,
-                System.Windows.Forms.StatusStrip statusBar) {
-            usePhotonMapping = true;
+                System.Windows.Forms.StatusStrip statusBar) {            
             photonTracer = new PhotonTracer(
                     this, 
                     photonMapSize, 
-                    4, 
+                    Settings.Setup.PhotonMapping.TracingMaxRecursionDepth,
                     progressBar,
                     statusBar);
         }
@@ -108,7 +108,19 @@ namespace RayTracerFramework.RayTracer {
             return box;
         }
 
-        public void Setup() {            
+        public void Setup() {
+            surfacesAmbientLightColor = new Color();
+            foreach (Shading.Light light in lightManager.BlinnLightsWorldSpace) {
+                switch (light.lightType) {
+                    case Shading.LightType.Point:
+                        surfacesAmbientLightColor = surfacesAmbientLightColor + ((Shading.PointLight)light).ambient;
+                        break;
+                    case Shading.LightType.Directional:
+                        break;
+                }
+            }
+            fogAmbientLightColor = surfacesAmbientLightColor * Settings.Setup.Scene.fogAmbientLightAmplifier;
+
             kdTree.Optimize();
             if (photonTracer != null) {
                 photonMap = photonTracer.EmitPhotons();

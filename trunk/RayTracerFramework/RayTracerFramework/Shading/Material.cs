@@ -34,7 +34,6 @@ namespace RayTracerFramework.Shading {
         public FastBitmap diffuseTexture;
 
         public string textureName;
-        public static string TexturesBaseDirectory = "../../Textures/";
 
         public string name = "default";
 
@@ -84,7 +83,7 @@ namespace RayTracerFramework.Shading {
             if (textureName == null)
                 this.diffuseTexture = null;
             else
-                this.diffuseTexture = new FastBitmap(new Bitmap(Image.FromFile(TexturesBaseDirectory + textureName)));
+                this.diffuseTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + textureName)));
         }
 
         public Color GetDiffuse(Vec2 textureCoordinates) {
@@ -94,6 +93,13 @@ namespace RayTracerFramework.Shading {
                 return diffuseTexture.GetPixel(
                         textureCoordinates.x * (diffuseTexture.Width - 1), 
                         textureCoordinates.y * (diffuseTexture.Height - 1));
+        }
+
+        public Color GetAmbient(Vec2 textureCoordinates) {
+            if (diffuseTexture == null)
+                return ambient;
+            else
+                return GetDiffuse(textureCoordinates);
         }
     }
 }

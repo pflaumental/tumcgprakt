@@ -23,7 +23,7 @@
     <x>422</x>
     <y>277</y>
   </TargetResolution>
-  <GlobalPhotonCount>75000</GlobalPhotonCount>
+  <GlobalPhotonCount>150000</GlobalPhotonCount>
   <BlinnLights>
     <Light xsi:type="Blinn.PointLight">
       <AmbientColor>
@@ -173,7 +173,7 @@
         <specularPower>10</specularPower>
         <reflective>true</reflective>
         <refractive>true</refractive>
-        <refractionRatio>0.96</refractionRatio>
+        <refractionRatio>0.95</refractionRatio>
         <refractionRate>0.85</refractionRate>
         <name>default</name>
       </Material>

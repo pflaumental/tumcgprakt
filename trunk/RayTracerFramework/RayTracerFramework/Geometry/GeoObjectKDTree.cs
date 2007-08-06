@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    public class GeoObjectKDTree : KDTree {
-        protected readonly static int DefaultMaxDesiredGEOMETRICObjectsPerLeafCount = 2;
+    public class GeoObjectKDTree : KDTree {        
 
         public GeoObjectKDTree() : base() {
-            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredGEOMETRICObjectsPerLeafCount;
+            MaxDesiredObjectsPerLeafCount = Settings.Setup.GeoObjectKDTree.DefaultMaxDesiredObjectsPerLeafCount;
         }
 
         public GeoObjectKDTree(List<IIntersectable> content) : base(content) {
-            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredGEOMETRICObjectsPerLeafCount;
+            MaxDesiredObjectsPerLeafCount = Settings.Setup.GeoObjectKDTree.DefaultMaxDesiredObjectsPerLeafCount;
         }
 
         protected override void SplitOnPlane(List<IIntersectable> splitContent, KDTree.Axis axis, Vec3 position, out List<IIntersectable> leftContent, out List<IIntersectable> rightContent) {

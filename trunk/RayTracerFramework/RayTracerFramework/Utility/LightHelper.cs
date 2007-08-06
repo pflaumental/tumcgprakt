@@ -22,8 +22,8 @@ namespace RayTracerFramework.Utility {
             float r2 = Rnd.RandomFloat();
 
             // x, y, z relative to standard basis
-            float x = (float)(Math.Cos(Trigonometric.TWO_PI * r1) * Math.Sqrt(1 - r2));
-            float y = (float)(Math.Sin(Trigonometric.TWO_PI * r1) * Math.Sqrt(1 - r2));
+            float x = (float)(Math.Cos(Settings.Render.Trigonometric.TwoPi * r1) * Math.Sqrt(1 - r2));
+            float y = (float)(Math.Sin(Settings.Render.Trigonometric.TwoPi * r1) * Math.Sqrt(1 - r2));
             float z = (float)Math.Sqrt(r2);
             return null;
 

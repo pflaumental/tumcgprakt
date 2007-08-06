@@ -43,12 +43,6 @@ namespace RayTracerFramework.Geometry {
             }
         }
 
-        // Constants
-        protected readonly static int DefaultMaxHeight = 25;
-        protected readonly static int DefaultMaxDesiredObjectsPerLeafCount = 12;
-        protected readonly static float DefaultWeightDivisionQuality = 0f;
-        protected readonly static float DefaultWeightSum = 1f - DefaultWeightDivisionQuality;
-
         // Enums
         public enum Axis { X = 0, Y, Z }
 
@@ -93,10 +87,10 @@ namespace RayTracerFramework.Geometry {
         public KDTree() {
             content = new List<IIntersectable>();
             root = new KDTree.Leaf(content);
-            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredObjectsPerLeafCount;
-            MaxHeight = DefaultMaxHeight;
-            WeightSum = DefaultWeightSum;
-            WeightDivisionQuality = DefaultWeightDivisionQuality;
+            MaxDesiredObjectsPerLeafCount = Settings.Setup.KDTree.DefaultMaxDesiredObjectsPerLeafCount;
+            MaxHeight = Settings.Setup.KDTree.DefaultMaxHeight;
+            WeightSum = Settings.Setup.KDTree.DefaultWeightSum;
+            WeightDivisionQuality = Settings.Setup.KDTree.DefaultWeightDivisionQuality;
             Height = 1;
             //LeafesCount = 1;
         }
@@ -104,10 +98,10 @@ namespace RayTracerFramework.Geometry {
         public KDTree(List<IIntersectable> content) {
             root = new KDTree.Leaf(content);
             this.content = content;
-            MaxDesiredObjectsPerLeafCount = DefaultMaxDesiredObjectsPerLeafCount;
-            MaxHeight = DefaultMaxHeight;
-            WeightSum = DefaultWeightSum;
-            WeightDivisionQuality = DefaultWeightDivisionQuality;
+            MaxDesiredObjectsPerLeafCount = Settings.Setup.KDTree.DefaultMaxDesiredObjectsPerLeafCount;
+            MaxHeight = Settings.Setup.KDTree.DefaultMaxHeight;
+            WeightSum = Settings.Setup.KDTree.DefaultWeightSum;
+            WeightDivisionQuality = Settings.Setup.KDTree.DefaultWeightDivisionQuality;
             Height = 1;
             //LeafesCount = 1;
         }

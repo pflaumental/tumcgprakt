@@ -58,7 +58,7 @@ namespace RayTracerFramework.Geometry {
             Vec3 pVec = Vec3.Cross(ray.direction, edge2);
             float det = Vec3.Dot(edge1, pVec);
 
-            if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON)
+            if (det > -Settings.Render.Trigonometric.Epsilon && det < Settings.Render.Trigonometric.Epsilon)
                 return false;
             float invDet = 1.0f / det;
 
@@ -85,7 +85,7 @@ namespace RayTracerFramework.Geometry {
             Vec3 pVec = Vec3.Cross(ray.direction, edge2);
             float det = Vec3.Dot(edge1, pVec);
 
-            if (det < Trigonometric.EPSILON) {
+            if (det < Settings.Render.Trigonometric.Epsilon) {
                 firstIntersection = null;
                 return false;
             }            
@@ -137,7 +137,7 @@ namespace RayTracerFramework.Geometry {
             //Vec3 pVec = Vec3.Cross(ray.direction, edge2);
             //float det = Vec3.Dot(edge1, pVec);
 
-            //if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON) {
+            //if (det > -Settings.Render.Trigonometric.Epsilon && det < Settings.Render.Trigonometric.Epsilon) {
             //    firstIntersection = null;
             //    return false;
             //}
@@ -183,7 +183,7 @@ namespace RayTracerFramework.Geometry {
             Vec3 pVec = Vec3.Cross(ray.direction, edge2);
             float det = Vec3.Dot(edge1, pVec);
 
-            if (det > -Trigonometric.EPSILON && det < Trigonometric.EPSILON) {
+            if (det > -Settings.Render.Trigonometric.Epsilon && det < Settings.Render.Trigonometric.Epsilon) {
                 return 0;
             }
             float invDet = 1.0f / det;

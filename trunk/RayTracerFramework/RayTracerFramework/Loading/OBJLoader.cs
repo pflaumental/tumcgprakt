@@ -18,7 +18,7 @@ namespace RayTracerFramework.Loading {
     public class OBJLoader : IMeshLoader {
         public OBJLoader() { }
 
-        public string standardMeshDirectory = "../../Models/";
+        public string standardMeshDirectory = Settings.Setup.Loading.DefaultStandardMeshDirectory;
 
         public DMesh LoadFromFile(string filename) {
             DMesh mesh = new DMesh(filename);

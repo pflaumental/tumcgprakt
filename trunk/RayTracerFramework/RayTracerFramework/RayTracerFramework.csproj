@@ -79,6 +79,8 @@
     <Compile Include="SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings\Render.cs" />
+    <Compile Include="Settings\Setup.cs" />
     <Compile Include="Shading\BlinnPhongLightingModel.cs" />
     <Compile Include="Shading\Color.cs" />
     <Compile Include="Shading\CubeMap.cs" />
@@ -145,7 +147,6 @@
     <Compile Include="Utility\FastBitmap.cs" />
     <Compile Include="Utility\Rnd.cs" />
     <Compile Include="Utility\LightHelper.cs" />
-    <Compile Include="Utility\Trigonometric.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="standardscene.xml">

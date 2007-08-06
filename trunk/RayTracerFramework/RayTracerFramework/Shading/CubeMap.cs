@@ -26,14 +26,14 @@ namespace RayTracerFramework.Shading {
             this.zMin = -(depth * 0.5f);
             this.zMax = depth * 0.5f;
 
-            xMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NX.png")));
-            xMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PX.png")));
+            xMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "NX.png")));
+            xMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "PX.png")));
 
-            yMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NY.png")));
-            yMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PY.png")));
+            yMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "NY.png")));
+            yMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "PY.png")));
 
-            zMinTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "NZ.png")));
-            zMaxTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/" + texturesBaseName + "PZ.png")));
+            zMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "NZ.png")));
+            zMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "PZ.png")));
         }
 
   
