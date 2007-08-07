@@ -22,12 +22,44 @@ namespace RayTracerFramework {
         private Renderer renderer;
         private Camera cam;
 
-        //private Matrix camTransform = Matrix.GetRotationY(Settings.Render.Trigonometric.PiQuarter);
+        private Bitmap renderBitmap;
+        private byte[] rgbValues;
+        private int rgbValuesLength;
 
         private Vec3 camPos;
         private Vec3 camLookAt;
 
-        private bool sceneReady = false;
+        private bool sceneReady;
+        private bool isRendering;
+        private bool userCanceled;
+
+        private int startMillis;
+        private int lastMillis;
+        int elapsedTime;
+
+        private class RenderArgs {
+            public Scene scene;
+            public byte[] rgbValues;
+            public int rgbValuesLength;
+            public int stride;
+            public int targetWidth;
+            public int targetHeight;
+
+            public RenderArgs(
+                    Scene scene, 
+                    byte[] rgbValues,
+                    int rgbValuesLength,
+                    int stride,
+                    int targetWidth,
+                    int targetHeight) {
+                this.scene = scene;
+                this.rgbValues = rgbValues;
+                this.rgbValuesLength = rgbValuesLength;
+                this.stride = stride;
+                this.targetWidth = targetWidth;
+                this.targetHeight = targetHeight;
+            }
+        }
 
         public RayTracerForm() {
             InitializeComponent();
@@ -45,6 +77,9 @@ namespace RayTracerFramework {
             tbCamLookAtX.Text = camLookAt.x.ToString();
             tbCamLookAtY.Text = camLookAt.y.ToString();
             tbCamLookAtZ.Text = camLookAt.z.ToString();
+            sceneReady = false;
+            isRendering = false;
+            userCanceled = false;
         }
 
         private void Setup() {
@@ -132,10 +167,9 @@ namespace RayTracerFramework {
             scene.Setup();  
         }
 
-        private void Render() {
-            float startMillis = Environment.TickCount;
-
-            Bitmap bitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);
+        private void Render() {            
+            pictureBox.Image = null;
+            renderBitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);
 
             // Parse CamPos and CamLookAt
             cam.eyePos.x = float.Parse(tbCamPosX.Text);
@@ -145,31 +179,31 @@ namespace RayTracerFramework {
             cam.lookAtPos.y = float.Parse(tbCamLookAtY.Text);
             cam.lookAtPos.z = float.Parse(tbCamLookAtZ.Text);
             
-            cam.aspectRatio = ((float)bitmap.Width) / bitmap.Height;
+            cam.aspectRatio = ((float)renderBitmap.Width) / renderBitmap.Height;
 
-            renderer.Render(scene, bitmap);
+            // Generate rgbValues
+            BitmapData bitmapData = renderBitmap.LockBits(new Rectangle(0, 0, renderBitmap.Width, renderBitmap.Height),
+                    ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);            
+            int stride = bitmapData.Stride;
+            renderBitmap.UnlockBits(bitmapData);
+            rgbValuesLength = stride * renderBitmap.Height;
+            rgbValues = new byte[rgbValuesLength];
 
-            //cam.eyePos = Vec3.TransformNormal3(cam.eyePos, camTransform);
-            camPos = cam.eyePos;
+            elapsedTime = 0;
+            lastMillis = startMillis = Environment.TickCount;
 
-            // Update Cam User Controls
-            tbCamPosX.Text = camPos.x.ToString();
-            tbCamPosY.Text = camPos.y.ToString();
-            tbCamPosZ.Text = camPos.z.ToString();
-
-            float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;
-
-            string elapsedTimeString = "Picture (" + bitmap.Width + "x" + bitmap.Height + ") computed in " +
-                                       elapsedTime.ToString("F") + "s. Time per pixel: " +
-                                       (1000000.0 * elapsedTime / (bitmap.Width * bitmap.Height)).ToString("F")
-                                       + "\u00B5s.";
-            statusBar.Items.Clear();
-            statusBar.Items.Add(elapsedTimeString);
-
-            pictureBox.Image = bitmap;
+            renderBackgroundWorker.RunWorkerAsync(new RenderArgs(scene, rgbValues, rgbValuesLength, stride, renderBitmap.Width, renderBitmap.Height));
         }
 
         private void btnRender_Click(object sender, EventArgs e) {
+            if (isRendering) {
+                userCanceled = true;
+                renderBackgroundWorker.CancelAsync();
+                return;
+            }
+            btnRender.Enabled = false;
+            btnSetup.Enabled = false;
+            mainMenu.Enabled = false;
             if (!sceneReady) {
                 statusBar.Items.Clear();
                 statusBar.Items.Add("Setting up scene. This may take some time...");
@@ -178,6 +212,9 @@ namespace RayTracerFramework {
                 Setup();                
                 sceneReady = true;
             }
+            btnRender.Enabled = true;
+            btnRender.Text = "Cancel";
+            isRendering = true;
             Render();
         }
 
@@ -214,6 +251,67 @@ namespace RayTracerFramework {
                     sceneReady = false;
                     btnRender.Text = "Setup + R.";
                 }
+            }
+        }
+
+        private void renderBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            RenderArgs renderArgs = e.Argument as RenderArgs;
+            renderer.Render(
+                    renderArgs.scene, 
+                    renderArgs.rgbValues, 
+                    renderArgs.rgbValuesLength,
+                    renderArgs.stride, 
+                    renderArgs.targetWidth, 
+                    renderArgs.targetHeight, 
+                    worker);
+        }
+
+        private void renderBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            // Show image progress
+            BitmapData bitmapData = renderBitmap.LockBits(new Rectangle(0, 0, renderBitmap.Width, renderBitmap.Height),
+                                ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            IntPtr bitmapDataAddress = bitmapData.Scan0;
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
+            renderBitmap.UnlockBits(bitmapData);
+            pictureBox.Image = renderBitmap;
+
+            // Show progress in numbers
+            progressBar.Value = e.ProgressPercentage;
+            int progress = e.ProgressPercentage == 0 ? 1 : e.ProgressPercentage;
+            int currentMillis = Environment.TickCount;
+            elapsedTime += (currentMillis - lastMillis);
+            int remainingSeconds = ((100 - progress) * elapsedTime) / (progress * 1000);
+            statusBar.Items.Clear();
+            statusBar.Items.Add("Rendering... Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
+            lastMillis = currentMillis;            
+        }
+
+        private void renderBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            BitmapData bitmapData = renderBitmap.LockBits(new Rectangle(0, 0, renderBitmap.Width, renderBitmap.Height),
+                                ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            IntPtr bitmapDataAddress = bitmapData.Scan0;
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
+            renderBitmap.UnlockBits(bitmapData);
+            pictureBox.Image = renderBitmap;
+
+            btnRender.Text = "Render";
+            btnSetup.Enabled = true;
+            mainMenu.Enabled = true;
+            isRendering = false;
+
+            if (userCanceled) {
+                statusBar.Items.Clear();
+                statusBar.Items.Add("User canceled.");
+            } else {
+                float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;
+
+                string elapsedTimeString = "Picture (" + renderBitmap.Width + "x" + renderBitmap.Height + ") computed in " +
+                                           elapsedTime.ToString("F") + "s. Time per pixel: " +
+                                           (1000000.0 * elapsedTime / (renderBitmap.Width * renderBitmap.Height)).ToString("F")
+                                           + "\u00B5s.";
+                statusBar.Items.Clear();
+                statusBar.Items.Add(elapsedTimeString);
             }
         }
     }

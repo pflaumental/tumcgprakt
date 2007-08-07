@@ -40,6 +40,7 @@
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.loadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renderBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.renderPanel.SuspendLayout();
             this.mainMenu.SuspendLayout();
@@ -198,6 +199,14 @@
             this.settingsMenuItem.Text = "Settings";
             this.settingsMenuItem.Click += new System.EventHandler(this.settingsMenuItem_Click);
             // 
+            // renderBackgroundWorker
+            // 
+            this.renderBackgroundWorker.WorkerReportsProgress = true;
+            this.renderBackgroundWorker.WorkerSupportsCancellation = true;
+            this.renderBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.renderBackgroundWorker_DoWork);
+            this.renderBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.renderBackgroundWorker_RunWorkerCompleted);
+            this.renderBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.renderBackgroundWorker_ProgressChanged);
+            // 
             // RayTracerForm
             // 
             this.AcceptButton = this.btnRender;
@@ -249,6 +258,7 @@
         private System.Windows.Forms.MenuStrip mainMenu;
         private System.Windows.Forms.ToolStripMenuItem loadMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsMenuItem;
+        private System.ComponentModel.BackgroundWorker renderBackgroundWorker;
     }
 }
 
