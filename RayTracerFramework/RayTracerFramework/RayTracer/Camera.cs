@@ -22,7 +22,6 @@ namespace RayTracerFramework.RayTracer {
 
         [XmlElement("AspectRatio")]
         public float aspectRatio;
-        //public float vFov; // half vertical view frustrum angle
 
         public Camera()
             : this(new Vec3(0, 0, -5), Vec3.Zero, Vec3.StdYAxis,
@@ -35,17 +34,7 @@ namespace RayTracerFramework.RayTracer {
             this.hFov = hFov;
             this.aspectRatio = aspectRatio;
         }
-
-        /*
-        public void AdjustVerticalFov(float aspectRatio) {
-            vFov = hFov / aspectRatio;
-        }
-
-        public void AdjustHorizontalFov(float aspectRatio) {
-            hFov = vFov * aspectRatio;
-        }
-        */
-
+        
         public float GetViewPlaneWidth() {
             return (float)Math.Tan(hFov) * 2;
         }
@@ -58,12 +47,12 @@ namespace RayTracerFramework.RayTracer {
             get { return Vec3.Normalize(lookAtPos - eyePos); }
         }
 
-        public Matrix GetViewMatrix() {
-            return Matrix.GetView(eyePos, lookAtPos, upDir);
-        }
+        //public Matrix GetViewMatrix() {
+        //    return Matrix.GetView(eyePos, lookAtPos, upDir);
+        //}
 
-        public Matrix GetInverseViewMatrix() {
-            return Matrix.GetInverseView(eyePos, lookAtPos, upDir);
-        }
+        //public Matrix GetInverseViewMatrix() {
+        //    return Matrix.GetInverseView(eyePos, lookAtPos, upDir);
+        //}
     }
 }

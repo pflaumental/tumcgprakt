@@ -6,10 +6,10 @@ namespace RayTracerFramework.Geometry {
 
     public class Vec3 {
         public float x, y, z;
-        public static readonly Vec3 StdXAxis = new Vec3(1, 0, 0);
-        public static readonly Vec3 StdYAxis = new Vec3(0, 1, 0);
-        public static readonly Vec3 StdZAxis = new Vec3(0, 0, 1);
-        public static readonly Vec3 Zero = new Vec3(0, 0, 0);
+        public static Vec3 StdXAxis { get { return new Vec3(1, 0, 0); } }
+        public static Vec3 StdYAxis { get { return new Vec3(0, 1, 0); } }
+        public static Vec3 StdZAxis { get { return new Vec3(0, 0, 1); } }
+        public static Vec3 Zero { get { return new Vec3(0, 0, 0); } }
 
         public Vec3() : this(0, 0, 0) { }
 
