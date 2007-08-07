@@ -170,12 +170,26 @@ namespace RayTracerFramework {
             renderBitmap = new Bitmap(pictureBox.Size.Width, pictureBox.Size.Height, PixelFormat.Format24bppRgb);
 
             // Parse CamPos and CamLookAt
-            cam.eyePos.x = float.Parse(tbCamPosX.Text);
-            cam.eyePos.y = float.Parse(tbCamPosY.Text);
-            cam.eyePos.z = float.Parse(tbCamPosZ.Text);
-            cam.lookAtPos.x = float.Parse(tbCamLookAtX.Text);
-            cam.lookAtPos.y = float.Parse(tbCamLookAtY.Text);
-            cam.lookAtPos.z = float.Parse(tbCamLookAtZ.Text);
+            try {
+                cam.eyePos.x = float.Parse(tbCamPosX.Text);
+                cam.eyePos.y = float.Parse(tbCamPosY.Text);
+                cam.eyePos.z = float.Parse(tbCamPosZ.Text);
+                cam.lookAtPos.x = float.Parse(tbCamLookAtX.Text);
+                cam.lookAtPos.y = float.Parse(tbCamLookAtY.Text);
+                cam.lookAtPos.z = float.Parse(tbCamLookAtZ.Text);
+            } catch {
+                MessageBox.Show("EyePos/LookAt specified in invalid format. "
+                        + "Using standard values (EyePos = (0,0,-5), LookAt = (0,0,0)",
+                        "Input error");
+                cam.eyePos = new Vec3(0, 0, -5);
+                cam.lookAtPos = Vec3.Zero;
+                tbCamPosX.Text = camPos.x.ToString();
+                tbCamPosY.Text = camPos.y.ToString();
+                tbCamPosZ.Text = camPos.z.ToString();
+                tbCamLookAtX.Text = camLookAt.x.ToString();
+                tbCamLookAtY.Text = camLookAt.y.ToString();
+                tbCamLookAtZ.Text = camLookAt.z.ToString();
+            }
             
             cam.aspectRatio = ((float)renderBitmap.Width) / renderBitmap.Height;
 
