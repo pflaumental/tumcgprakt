@@ -215,6 +215,9 @@ namespace RayTracerFramework {
             btnRender.Enabled = true;
             btnRender.Text = "Cancel";
             isRendering = true;
+            statusBar.Items.Clear();
+            statusBar.Items.Add("Rendering...");
+            progressBar.Value = 0;
             Render();
         }
 
@@ -267,24 +270,27 @@ namespace RayTracerFramework {
                     worker);
         }
 
-        private void renderBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+        private void renderBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {            
             // Show image progress
             BitmapData bitmapData = renderBitmap.LockBits(new Rectangle(0, 0, renderBitmap.Width, renderBitmap.Height),
                                 ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
             IntPtr bitmapDataAddress = bitmapData.Scan0;
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
             renderBitmap.UnlockBits(bitmapData);
-            pictureBox.Image = renderBitmap;
-
+            pictureBox.Image = renderBitmap;            
             // Show progress in numbers
-            progressBar.Value = e.ProgressPercentage;
-            int progress = e.ProgressPercentage == 0 ? 1 : e.ProgressPercentage;
-            int currentMillis = Environment.TickCount;
+            int progress = 0;
+            int currentMillis = 0;
+            progress = e.ProgressPercentage < 1 ? 1 : e.ProgressPercentage;
+            progress = progress > 100 ? 100 : progress;
+            progressBar.Value = progress;
+            currentMillis = Environment.TickCount;
+            int remainingSeconds = 0;
             elapsedTime += (currentMillis - lastMillis);
-            int remainingSeconds = ((100 - progress) * elapsedTime) / (progress * 1000);
+            remainingSeconds = ((100 - progress) * elapsedTime) / (progress * 1000);
             statusBar.Items.Clear();
             statusBar.Items.Add("Rendering... Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
-            lastMillis = currentMillis;            
+            lastMillis = currentMillis;
         }
 
         private void renderBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -301,9 +307,11 @@ namespace RayTracerFramework {
             isRendering = false;
 
             if (userCanceled) {
+                progressBar.Value = 0;
                 statusBar.Items.Clear();
                 statusBar.Items.Add("User canceled.");
             } else {
+                progressBar.Value = 100;
                 float elapsedTime = (Environment.TickCount - startMillis) / 1000.0f;
 
                 string elapsedTimeString = "Picture (" + renderBitmap.Width + "x" + renderBitmap.Height + ") computed in " +
