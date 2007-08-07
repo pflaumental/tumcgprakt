@@ -4,8 +4,9 @@ using System.Text;
 using RayTracerFramework.Shading;
 using RayTracerFramework.RayTracer;
 using System.Xml.Serialization;
+using RayTracerFramework.Geometry;
 
-namespace RayTracerFramework.Geometry {
+namespace RayTracerFramework.Shading {
     public class DBox : Box, IObject {
         private Material material;
 
@@ -72,5 +73,9 @@ namespace RayTracerFramework.Geometry {
         }
 
         public Material Material { get { return material; } set { material = value; } }
+
+        public override string ToString() {
+            return "Box";
+        }
     }
 }

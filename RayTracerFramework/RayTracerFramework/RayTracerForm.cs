@@ -65,8 +65,8 @@ namespace RayTracerFramework {
             InitializeComponent();
             sceneManager = new SceneManager();
 
-            //scene = sceneManager.LoadScene("standardscene.xml");
-            //cam = scene.cam;
+            scene = sceneManager.LoadScene("standardscene.xml");
+            cam = scene.cam;
 
             settingsDialog = new SettingsDialog();
             camPos = new Vec3(0, 0, -5);
@@ -84,6 +84,8 @@ namespace RayTracerFramework {
         }
 
         private void Setup() {            
+            
+            /*
             //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Settings.Render.Trigonometric.Pi * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Settings.Render.Trigonometric.Pi * 0.1f)),
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Settings.Render.Trigonometric.PiQuarter, aspectRatio);
@@ -155,7 +157,7 @@ namespace RayTracerFramework {
             // SceneManager sm2 = new SceneManager();
             // sm2.SaveScene("scene.xml", scene, new Vec2(pictureBox.Size.Width, pictureBox.Size.Height));
 
-            
+            */
             if (Settings.Setup.PhotonMapping.EmitPhotons)
                 scene.ActivatePhotonMapping(
                         Settings.Setup.PhotonMapping.StoredPhotonsCount,
@@ -245,17 +247,19 @@ namespace RayTracerFramework {
         }
 
         private void loadMenuItem_Click(object sender, EventArgs e) {
-            
-
             LoadSceneForm loadForm = new LoadSceneForm();
-            loadForm.ShowDialog();
+            if (loadForm.ShowDialog() == DialogResult.OK) {
+                scene = loadForm.scene;
+                cam = scene.cam;
 
-            scene = sceneManager.LoadScene("standardscene.xml");
-            scene.mediumColor = new Color(0.5f, 0.3f, 0.3f);
-            cam = scene.cam;
+                if (sceneReady) {
+                    sceneReady = false;
+                    btnRender.Text = "Setup + R.";
+                }
+            }
 
             statusBar.Items.Clear();
-            statusBar.Items.Add("Scene has been loaded from \"standardscene.xml\".");
+            statusBar.Items.Add("Scene has been loaded from \"" + loadForm.selectedScene + "\".");
         }
 
         private void settingsMenuItem_Click(object sender, EventArgs e) {

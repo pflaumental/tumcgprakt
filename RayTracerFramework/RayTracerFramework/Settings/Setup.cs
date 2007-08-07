@@ -32,5 +32,6 @@ namespace RayTracerFramework.Settings.Setup {
         public static string DefaultStandardMeshDirectory = "../../Models/";
         public static string DefaultStandardTextureDirectory = "../../Textures/";
         public static string DefaultCubeMapName = "stpeters";
+        public static string DefaultCubeMapPrefix = "cube_";
     }
 }

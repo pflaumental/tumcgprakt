@@ -93,6 +93,10 @@ namespace RayTracerFramework.Shading {
             get { return blue; }
             set { blue = value; }
         }
+
+        public override string ToString() {
+            return "(" + RedInt + " / " + GreenInt + " / " + BlueInt + ")";
+        }
     }
 
 

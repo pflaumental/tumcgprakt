@@ -16,5 +16,9 @@ namespace RayTracerFramework.Shading {
         public DirectionalLight(Vec3 direction) : base(LightType.Directional) {
             this.direction = direction;
         }
+
+        public override string ToString() {
+            return "Directional Light";
+        }
     }
 }

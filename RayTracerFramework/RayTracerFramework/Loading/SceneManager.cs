@@ -48,9 +48,9 @@ namespace RayTracerFramework.Loading {
                                         sceneXML.cubeMapScene.cubeMapFilename);
             scene.useCubeMap = sceneXML.cubeMapScene.useCubeMap;
             Settings.Setup.PhotonMapping.StoredPhotonsCount = sceneXML.globalPhotonCount;
-            scene.cam = sceneXML.camera;          
-     
-            // Place objects in the scenez
+            scene.cam = sceneXML.camera;
+
+            // Placing the objects in the scene
             scene.kdTree = new GeoObjectKDTree();
             foreach (SceneObject obj in sceneXML.sceneObjects) {
                 if (obj is SceneBox) {
@@ -91,12 +91,10 @@ namespace RayTracerFramework.Loading {
 
             scene.lightingModel = new BlinnPhongLightingModel();
 
-            scene.backgroundColor = Color.LightSlateGray;
-            scene.cubeMap = new CubeMap(100, 100, 100, Settings.Setup.Loading.DefaultCubeMapName);
-            scene.useCubeMap = true;
-
             // scene.refractionIndex = 1.0f;
-            
+
+            scene.mediumRefractionIndex = 1.0f;
+            scene.mediumColor = new Color(1f, 0.5f, 0.5f);
             return scene;
         }
 
@@ -107,9 +105,7 @@ namespace RayTracerFramework.Loading {
             sceneXML.targetResolution = targetResolution;
             sceneXML.backgroundColor = scene.backgroundColor;
             sceneXML.cubeMapScene = new CubeMapScene(scene.cubeMap.cubeMapFilename,
-                scene.cubeMap.xMax - scene.cubeMap.xMin,
-                scene.cubeMap.yMax - scene.cubeMap.yMin,
-                scene.cubeMap.zMax - scene.cubeMap.zMin, scene.useCubeMap);
+                scene.cubeMap.Width(), scene.cubeMap.Height(), scene.cubeMap.Depth(), scene.useCubeMap);
 
             sceneXML.globalPhotonCount = Settings.Setup.PhotonMapping.StoredPhotonsCount;
 

@@ -29,13 +29,13 @@
     <Blue>0.6</Blue>
   </BackgroundColor>
   <CubeMap>
-    <CubeMapFilename>stpeters</CubeMapFilename>
+    <CubeMapFilename>redsky</CubeMapFilename>
     <Width>100</Width>
     <Height>100</Height>
     <Depth>100</Depth>
     <UseCubeMap>true</UseCubeMap>
   </CubeMap>
-  <GlobalPhotonCount>75000</GlobalPhotonCount>
+  <GlobalPhotonCount>1000</GlobalPhotonCount>
   <BlinnLights>
     <Light xsi:type="Blinn.PointLight">
       <AmbientColor>
@@ -81,28 +81,6 @@
         <z>-0.5</z>
       </Position>
     </Light>
-    <Light xsi:type="Blinn.DirectionalLight">
-      <AmbientColor>
-        <Red>0.3</Red>
-        <Green>0.2</Green>
-        <Blue>0.11</Blue>
-      </AmbientColor>
-      <DiffuseColor>
-        <Red>1</Red>
-        <Green>0</Green>
-        <Blue>0</Blue>
-      </DiffuseColor>
-      <SpecularColor>
-        <Red>0</Red>
-        <Green>0</Green>
-        <Blue>0</Blue>
-      </SpecularColor>
-      <Direction>
-        <x>2</x>
-        <y>3</y>
-        <z>5</z>
-      </Direction>
-    </Light>
   </BlinnLights>
   <PhotonLights>
     <Light xsi:type="Photon.PointLight">
@@ -133,61 +111,6 @@
     </Light>
   </PhotonLights>
   <SceneObjects>
-    <SceneObject xsi:type="Mesh">
-      <MeshFilename>bunny_t4046.obj</MeshFilename>
-      <Scaling>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scaling>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Position>
-        <x>-2</x>
-        <y>0</y>
-        <z>0</z>
-      </Position>
-    </SceneObject>
-    <SceneObject xsi:type="Sphere">
-      <Center>
-        <x>4</x>
-        <y>1</y>
-        <z>-0.5</z>
-      </Center>
-      <Radius>1.5</Radius>
-      <Textured>false</Textured>
-      <Material>
-        <emissive>
-          <Red>0</Red>
-          <Green>0</Green>
-          <Blue>1</Blue>
-        </emissive>
-        <ambient>
-          <Red>1</Red>
-          <Green>0</Green>
-          <Blue>0</Blue>
-        </ambient>
-        <diffuse>
-          <Red>0</Red>
-          <Green>0</Green>
-          <Blue>1</Blue>
-        </diffuse>
-        <specular>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </specular>
-        <specularPower>10</specularPower>
-        <reflective>true</reflective>
-        <refractive>true</refractive>
-        <refractionRatio>0.7</refractionRatio>
-        <refractionRate>0.85</refractionRate>
-        <name>default</name>
-      </Material>
-    </SceneObject>
     <SceneObject xsi:type="Sphere">
       <Center>
         <x>6</x>
@@ -233,56 +156,6 @@
         <z>1</z>
       </Scaling>
       <Rotation>
-        <x>0.785398</x>
-        <y>0.785398</y>
-        <z>0</z>
-      </Rotation>
-      <Position>
-        <x>0.5</x>
-        <y>-0.1</y>
-        <z>0</z>
-      </Position>
-      <Width>1.5</Width>
-      <Height>1.5</Height>
-      <Depth>1.5</Depth>
-      <Textured>true</Textured>
-      <Material>
-        <emissive>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </emissive>
-        <ambient>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </ambient>
-        <diffuse>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </diffuse>
-        <specular>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </specular>
-        <specularPower>30</specularPower>
-        <reflective>false</reflective>
-        <refractive>false</refractive>
-        <refractionRatio>0.1</refractionRatio>
-        <refractionRate>0</refractionRate>
-        <textureName>env2.jpg</textureName>
-        <name>default</name>
-      </Material>
-    </SceneObject>
-    <SceneObject xsi:type="Box">
-      <Scaling>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scaling>
-      <Rotation>
         <x>0</x>
         <y>0</y>
         <z>0</z>
@@ -318,58 +191,9 @@
           <Blue>1</Blue>
         </specular>
         <specularPower>30</specularPower>
-        <reflective>false</reflective>
+        <reflective>true</reflective>
         <refractive>false</refractive>
         <refractionRatio>0.1</refractionRatio>
-        <refractionRate>0</refractionRate>
-        <name>default</name>
-      </Material>
-    </SceneObject>
-    <SceneObject xsi:type="Box">
-      <Scaling>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scaling>
-      <Rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Rotation>
-      <Position>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-      </Position>
-      <Width>16</Width>
-      <Height>16</Height>
-      <Depth>16</Depth>
-      <Textured>false</Textured>
-      <Material>
-        <emissive>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </emissive>
-        <ambient>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </ambient>
-        <diffuse>
-          <Red>0.3</Red>
-          <Green>0.5</Green>
-          <Blue>0.1</Blue>
-        </diffuse>
-        <specular>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
-        </specular>
-        <specularPower>30</specularPower>
-        <reflective>false</reflective>
-        <refractive>false</refractive>
-        <refractionRatio>0</refractionRatio>
         <refractionRate>0</refractionRate>
         <name>default</name>
       </Material>

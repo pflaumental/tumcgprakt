@@ -10,10 +10,15 @@ namespace RayTracerFramework.PhotonMapping {
     // Abstract base class for photon mapping
     [XmlType("Photon.Light")]
     [XmlInclude(typeof(RayTracerFramework.PhotonMapping.PointLight))]
+    [XmlInclude(typeof(RayTracerFramework.PhotonMapping.AreaLight))]
     public abstract class Light {
+        [XmlIgnore()]
         public LightType lightType;
 
+        [XmlElement("DiffuseColor")]
         public Color diffuse;
+
+        [XmlElement("Power")]
         public float power;
 
         public Light() { }

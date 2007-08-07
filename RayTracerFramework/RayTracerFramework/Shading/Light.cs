@@ -35,6 +35,7 @@ namespace RayTracerFramework.Shading {
             ambient = diffuse = specular = Color.White;
             this.lightType = lightType;
         }
+
     }
 
 
