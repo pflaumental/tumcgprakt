@@ -10,12 +10,7 @@ using System.Windows.Forms;
 using System.Threading;
 
 namespace RayTracerFramework.RayTracer {
-    public class Renderer {        
-
-        private ProgressBar progressBar;
-        private StatusStrip statusBar;
-        private PictureBox pictureBox;        
-        
+    public class Renderer {                      
         // Shared MT-Render vars
         private Scene scene;
         private byte[] rgbValues;
@@ -38,10 +33,7 @@ namespace RayTracerFramework.RayTracer {
         private volatile int nextLine;
         private volatile bool renderingFinished;
 
-        public Renderer(ProgressBar progressBar, StatusStrip statusBar, PictureBox pictureBox) {
-            this.progressBar = progressBar;
-            this.statusBar = statusBar;
-            this.pictureBox = pictureBox;
+        public Renderer() {
             renderingFinished = false;
         }
 
