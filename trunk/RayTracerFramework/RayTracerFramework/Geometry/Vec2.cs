@@ -6,13 +6,13 @@ namespace RayTracerFramework.Geometry {
 
     public class Vec2 {
         public float x, y;
-        public static readonly Vec2 StdXAxis = new Vec2(1, 0);
-        public static readonly Vec2 StdYAxis = new Vec2(0, 1);
-        public static readonly Vec2 Zero = new Vec2(0, 0);
-        public static readonly Vec2 Vec00 = new Vec2(0, 0);
-        public static readonly Vec2 Vec01 = new Vec2(0, 1);
-        public static readonly Vec2 Vec10 = new Vec2(1, 0);
-        public static readonly Vec2 Vec11 = new Vec2(1, 1);
+        public static Vec2 StdXAxis { get { return new Vec2(1, 0); } }
+        public static Vec2 StdYAxis { get { return new Vec2(0, 1); } }
+        public static Vec2 Zero { get { return new Vec2(0, 0); } }
+        public static Vec2 Vec00 { get { return new Vec2(0, 0); } }
+        public static Vec2 Vec01 { get { return new Vec2(0, 1); } }
+        public static Vec2 Vec10 { get { return new Vec2(1, 0); } }
+        public static Vec2 Vec11 { get { return new Vec2(1, 1); } }
 
         public Vec2() : this(0, 0) { }
 
