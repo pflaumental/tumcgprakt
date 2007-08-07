@@ -7,15 +7,14 @@ using System.Drawing.Imaging;
 using RayTracerFramework.Shading;
 using Color = RayTracerFramework.Shading.Color;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace RayTracerFramework.RayTracer {
     public class Renderer {        
 
         private ProgressBar progressBar;
         private StatusStrip statusBar;
-        private PictureBox pictureBox;
-        public bool cancelRendering;
-        public bool renderingFinished;
+        private PictureBox pictureBox;        
         
         // Shared MT-Render vars
         private Scene scene;
@@ -33,16 +32,16 @@ namespace RayTracerFramework.RayTracer {
         private Vec3 xOffset;
         private Vec3 yOffset;
         private Vec3 eyePos;
+        private Vec3 firstPixelPos;
         private int stride;
-        private int waste;
 
         private volatile int nextLine;
+        private volatile bool renderingFinished;
 
         public Renderer(ProgressBar progressBar, StatusStrip statusBar, PictureBox pictureBox) {
             this.progressBar = progressBar;
             this.statusBar = statusBar;
             this.pictureBox = pictureBox;
-            cancelRendering = false;
             renderingFinished = false;
         }
 
@@ -77,45 +76,71 @@ namespace RayTracerFramework.RayTracer {
             xOffset = pixelWidth * camX;
             yOffset = -pixelHeight * camY;
 
-            waste = stride - targetWidth * 3;
+            eyePos = scene.cam.eyePos;
+
+            firstPixelPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
+            firstPixelPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
 
             nextLine = 0;
+            
+            int numThreads = System.Environment.ProcessorCount;
+            Thread[] threads = new Thread[numThreads];
+            
+            for (int i = 0; i < numThreads; i++) {
+                threads[i] = new Thread(new ThreadStart(MTRender));
+                threads[i].Priority = ThreadPriority.BelowNormal;
+            }
 
-            System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(MTRender));
             renderingFinished = false;
-            thread.Start();
+
+            foreach (Thread thread in threads) {
+                thread.Start();
+            }
+            
             while (!renderingFinished) {
-                //if (cancelRendering)
-                //    break;
-                System.Threading.Thread.Sleep(1000);
+                Thread.Sleep(1000);
                 if (worker.CancellationPending) {
-                    thread.Abort();
-                    thread.Join();
+                    foreach (Thread thread in threads) {
+                        thread.Abort();
+                    }
+                    foreach (Thread thread in threads) {
+                        thread.Join();
+                    }
                     return;
                 }
                 int progress = (int)((100f * nextLine) / targetHeight);
                 worker.ReportProgress(progress);
             }
-            thread.Join();
+
+            foreach (Thread thread in threads) {
+                thread.Join();
+            }
         }
 
-        private void MTRender() {
-            // Go to center of first line
-            eyePos = scene.cam.eyePos;
-            Vec3 rowStartPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
-            rowStartPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
-            Vec3 pixelCenterPos = new Vec3(rowStartPos);
-
+        private void MTRender() {                        
             Ray rayWS = new Ray(
                     eyePos,
-                    Vec3.Normalize(pixelCenterPos - eyePos),
+                    null,
                     0);
-            
             RayIntersectionPoint firstIntersection;
 
             // Setup bitmap
-            int rgbValuesPos = 0;            
-            for (int y = 0; y < targetHeight; y++) { // pixel lines
+            int rgbValuesPos = 0;
+            int y;
+            Vec3 rowStartPos;
+            Vec3 pixelCenterPos = new Vec3();
+            #pragma warning disable 420
+            while((y = Interlocked.Increment(ref nextLine)) < targetHeight) { // pixel lines
+            #pragma warning restore 420
+                // Calculate ray direction, pixelCenterPos and rowStartPos
+                rowStartPos = firstPixelPos + y * yOffset;
+                rayWS.direction = Vec3.Normalize(rowStartPos - eyePos);
+                pixelCenterPos.x = rowStartPos.x;
+                pixelCenterPos.y = rowStartPos.y;
+                pixelCenterPos.z = rowStartPos.z;
+
+                rgbValuesPos = y * stride;
+
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection and Shade pixel      
                     Color color;
@@ -135,17 +160,6 @@ namespace RayTracerFramework.RayTracer {
                     pixelCenterPos += xOffset;
                     rayWS.direction = Vec3.Normalize(pixelCenterPos - eyePos);
                 }
-
-                // Reset next ray direction, pixelCenterPos and rowStartPos
-                rowStartPos += yOffset;
-                rayWS.direction = Vec3.Normalize(rowStartPos - eyePos);
-                pixelCenterPos.x = rowStartPos.x;
-                pixelCenterPos.y = rowStartPos.y;
-                pixelCenterPos.z = rowStartPos.z;
-
-                rgbValuesPos += waste;
-
-                nextLine++;
             }
             renderingFinished = true;
         }
