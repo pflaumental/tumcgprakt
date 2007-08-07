@@ -50,7 +50,18 @@ namespace RayTracerFramework {
             this.coneFilterConstantKtrackBar = new System.Windows.Forms.TrackBar();
             this.localScaleDownTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBoxSetup = new System.Windows.Forms.GroupBox();
+            this.groupBoxKDTree = new System.Windows.Forms.GroupBox();
+            this.labelKDTreeObjectsPerLeaf = new System.Windows.Forms.Label();
+            this.kdTreeObjectsPerLeafTrackBar = new System.Windows.Forms.TrackBar();
+            this.labelKDTreeMaxHeight = new System.Windows.Forms.Label();
+            this.labelKDTreeObjectsPerLeafValue = new System.Windows.Forms.Label();
+            this.kdTreeMaxHeightTrackBar = new System.Windows.Forms.TrackBar();
+            this.labelKDTreeMaxHeightValue = new System.Windows.Forms.Label();
+            this.labelFogAmbientLightAmplifier = new System.Windows.Forms.Label();
+            this.labelFogAmbientLightAmplifierValue = new System.Windows.Forms.Label();
+            this.fogAmbientLightAmplifierTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBoxRender = new System.Windows.Forms.GroupBox();
+            this.fogEnableCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBoxRenderPhotonMapping = new System.Windows.Forms.GroupBox();
             this.groupBoxRenderSurfacePhotons = new System.Windows.Forms.GroupBox();
             this.renderPhotonsCheckBox = new System.Windows.Forms.CheckBox();
@@ -65,23 +76,22 @@ namespace RayTracerFramework {
             this.lightingAmplifierTrackBar = new System.Windows.Forms.TrackBar();
             this.labelMediumConeFilterConstantK = new System.Windows.Forms.Label();
             this.mediumConeFilterConstantKTrackBar = new System.Windows.Forms.TrackBar();
+            this.labelFogLevel = new System.Windows.Forms.Label();
+            this.fogLevelTrackBar = new System.Windows.Forms.TrackBar();
+            this.labelMaxRecursionDepth = new System.Windows.Forms.Label();
+            this.labelFogLevelValue = new System.Windows.Forms.Label();
             this.maxRecursionDepthTrackBar = new System.Windows.Forms.TrackBar();
             this.labelMaxRecursionDepthValue = new System.Windows.Forms.Label();
-            this.labelMaxRecursionDepth = new System.Windows.Forms.Label();
-            this.fogEnableCheckBox = new System.Windows.Forms.CheckBox();
-            this.labelFogLevelValue = new System.Windows.Forms.Label();
-            this.fogLevelTrackBar = new System.Windows.Forms.TrackBar();
-            this.labelFogLevel = new System.Windows.Forms.Label();
-            this.labelFogAmbientLightAmplifierValue = new System.Windows.Forms.Label();
-            this.fogAmbientLightAmplifierTrackBar = new System.Windows.Forms.TrackBar();
-            this.labelFogAmbientLightAmplifier = new System.Windows.Forms.Label();
-            this.groupBoxKDTree = new System.Windows.Forms.GroupBox();
-            this.kdTreeMaxHeightTrackBar = new System.Windows.Forms.TrackBar();
-            this.labelKDTreeMaxHeightValue = new System.Windows.Forms.Label();
-            this.labelKDTreeMaxHeight = new System.Windows.Forms.Label();
-            this.labelKDTreeObjectsPerLeafValue = new System.Windows.Forms.Label();
-            this.kdTreeObjectsPerLeafTrackBar = new System.Windows.Forms.TrackBar();
-            this.labelKDTreeObjectsPerLeaf = new System.Windows.Forms.Label();
+            this.labelStdFogColor = new System.Windows.Forms.Label();
+            this.fogRedTrackBar = new System.Windows.Forms.TrackBar();
+            this.fogGreenTrackBar = new System.Windows.Forms.TrackBar();
+            this.fogBlueTrackBar = new System.Windows.Forms.TrackBar();
+            this.labelFogRed = new System.Windows.Forms.Label();
+            this.labelFogGreen = new System.Windows.Forms.Label();
+            this.labelFogBlue = new System.Windows.Forms.Label();
+            this.labelFogRedValue = new System.Windows.Forms.Label();
+            this.labelFogGreenValue = new System.Windows.Forms.Label();
+            this.labelFogBlueValue = new System.Windows.Forms.Label();
             this.groupBoxSetupPhotonMapping.SuspendLayout();
             this.groupBoxSetupMedium.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lightingDensityTrackBar)).BeginInit();
@@ -91,6 +101,10 @@ namespace RayTracerFramework {
             ((System.ComponentModel.ISupportInitialize)(this.coneFilterConstantKtrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.localScaleDownTrackBar)).BeginInit();
             this.groupBoxSetup.SuspendLayout();
+            this.groupBoxKDTree.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.kdTreeObjectsPerLeafTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kdTreeMaxHeightTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogAmbientLightAmplifierTrackBar)).BeginInit();
             this.groupBoxRender.SuspendLayout();
             this.groupBoxRenderPhotonMapping.SuspendLayout();
             this.groupBoxRenderSurfacePhotons.SuspendLayout();
@@ -98,12 +112,11 @@ namespace RayTracerFramework {
             ((System.ComponentModel.ISupportInitialize)(this.collectionCapsuleRadiusTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lightingAmplifierTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mediumConeFilterConstantKTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.maxRecursionDepthTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fogLevelTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fogAmbientLightAmplifierTrackBar)).BeginInit();
-            this.groupBoxKDTree.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.kdTreeMaxHeightTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.kdTreeObjectsPerLeafTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxRecursionDepthTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogRedTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogGreenTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogBlueTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -401,6 +414,16 @@ namespace RayTracerFramework {
             // 
             // groupBoxSetup
             // 
+            this.groupBoxSetup.Controls.Add(this.labelFogBlueValue);
+            this.groupBoxSetup.Controls.Add(this.labelFogGreenValue);
+            this.groupBoxSetup.Controls.Add(this.labelFogRedValue);
+            this.groupBoxSetup.Controls.Add(this.labelFogBlue);
+            this.groupBoxSetup.Controls.Add(this.labelFogGreen);
+            this.groupBoxSetup.Controls.Add(this.labelFogRed);
+            this.groupBoxSetup.Controls.Add(this.fogBlueTrackBar);
+            this.groupBoxSetup.Controls.Add(this.fogGreenTrackBar);
+            this.groupBoxSetup.Controls.Add(this.fogRedTrackBar);
+            this.groupBoxSetup.Controls.Add(this.labelStdFogColor);
             this.groupBoxSetup.Controls.Add(this.groupBoxKDTree);
             this.groupBoxSetup.Controls.Add(this.groupBoxSetupPhotonMapping);
             this.groupBoxSetup.Controls.Add(this.labelFogAmbientLightAmplifier);
@@ -413,6 +436,115 @@ namespace RayTracerFramework {
             this.groupBoxSetup.TabIndex = 3;
             this.groupBoxSetup.TabStop = false;
             this.groupBoxSetup.Text = "Setup";
+            // 
+            // groupBoxKDTree
+            // 
+            this.groupBoxKDTree.Controls.Add(this.labelKDTreeObjectsPerLeaf);
+            this.groupBoxKDTree.Controls.Add(this.kdTreeObjectsPerLeafTrackBar);
+            this.groupBoxKDTree.Controls.Add(this.labelKDTreeMaxHeight);
+            this.groupBoxKDTree.Controls.Add(this.labelKDTreeObjectsPerLeafValue);
+            this.groupBoxKDTree.Controls.Add(this.kdTreeMaxHeightTrackBar);
+            this.groupBoxKDTree.Controls.Add(this.labelKDTreeMaxHeightValue);
+            this.groupBoxKDTree.Location = new System.Drawing.Point(6, 382);
+            this.groupBoxKDTree.Name = "groupBoxKDTree";
+            this.groupBoxKDTree.Size = new System.Drawing.Size(301, 111);
+            this.groupBoxKDTree.TabIndex = 9;
+            this.groupBoxKDTree.TabStop = false;
+            this.groupBoxKDTree.Text = "KD Trees";
+            // 
+            // labelKDTreeObjectsPerLeaf
+            // 
+            this.labelKDTreeObjectsPerLeaf.AutoSize = true;
+            this.labelKDTreeObjectsPerLeaf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelKDTreeObjectsPerLeaf.Location = new System.Drawing.Point(159, 16);
+            this.labelKDTreeObjectsPerLeaf.Name = "labelKDTreeObjectsPerLeaf";
+            this.labelKDTreeObjectsPerLeaf.Size = new System.Drawing.Size(81, 13);
+            this.labelKDTreeObjectsPerLeaf.TabIndex = 7;
+            this.labelKDTreeObjectsPerLeaf.Text = "Objects per leaf";
+            // 
+            // kdTreeObjectsPerLeafTrackBar
+            // 
+            this.kdTreeObjectsPerLeafTrackBar.Location = new System.Drawing.Point(159, 32);
+            this.kdTreeObjectsPerLeafTrackBar.Maximum = 50;
+            this.kdTreeObjectsPerLeafTrackBar.Minimum = 1;
+            this.kdTreeObjectsPerLeafTrackBar.Name = "kdTreeObjectsPerLeafTrackBar";
+            this.kdTreeObjectsPerLeafTrackBar.Size = new System.Drawing.Size(138, 45);
+            this.kdTreeObjectsPerLeafTrackBar.TabIndex = 4;
+            this.kdTreeObjectsPerLeafTrackBar.Value = 12;
+            this.kdTreeObjectsPerLeafTrackBar.Scroll += new System.EventHandler(this.kdTreeObjectsPerLeafTrackBar_Scroll);
+            // 
+            // labelKDTreeMaxHeight
+            // 
+            this.labelKDTreeMaxHeight.AutoSize = true;
+            this.labelKDTreeMaxHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelKDTreeMaxHeight.Location = new System.Drawing.Point(6, 16);
+            this.labelKDTreeMaxHeight.Name = "labelKDTreeMaxHeight";
+            this.labelKDTreeMaxHeight.Size = new System.Drawing.Size(59, 13);
+            this.labelKDTreeMaxHeight.TabIndex = 7;
+            this.labelKDTreeMaxHeight.Text = "Max height";
+            // 
+            // labelKDTreeObjectsPerLeafValue
+            // 
+            this.labelKDTreeObjectsPerLeafValue.AutoSize = true;
+            this.labelKDTreeObjectsPerLeafValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelKDTreeObjectsPerLeafValue.Location = new System.Drawing.Point(274, 14);
+            this.labelKDTreeObjectsPerLeafValue.Name = "labelKDTreeObjectsPerLeafValue";
+            this.labelKDTreeObjectsPerLeafValue.Size = new System.Drawing.Size(21, 15);
+            this.labelKDTreeObjectsPerLeafValue.TabIndex = 8;
+            this.labelKDTreeObjectsPerLeafValue.Text = "12";
+            // 
+            // kdTreeMaxHeightTrackBar
+            // 
+            this.kdTreeMaxHeightTrackBar.Location = new System.Drawing.Point(6, 32);
+            this.kdTreeMaxHeightTrackBar.Maximum = 100;
+            this.kdTreeMaxHeightTrackBar.Minimum = 10;
+            this.kdTreeMaxHeightTrackBar.Name = "kdTreeMaxHeightTrackBar";
+            this.kdTreeMaxHeightTrackBar.Size = new System.Drawing.Size(138, 45);
+            this.kdTreeMaxHeightTrackBar.TabIndex = 4;
+            this.kdTreeMaxHeightTrackBar.Value = 25;
+            this.kdTreeMaxHeightTrackBar.Scroll += new System.EventHandler(this.kdTreeMaxHeightTrackBar_Scroll);
+            // 
+            // labelKDTreeMaxHeightValue
+            // 
+            this.labelKDTreeMaxHeightValue.AutoSize = true;
+            this.labelKDTreeMaxHeightValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelKDTreeMaxHeightValue.Location = new System.Drawing.Point(132, 14);
+            this.labelKDTreeMaxHeightValue.Name = "labelKDTreeMaxHeightValue";
+            this.labelKDTreeMaxHeightValue.Size = new System.Drawing.Size(21, 15);
+            this.labelKDTreeMaxHeightValue.TabIndex = 8;
+            this.labelKDTreeMaxHeightValue.Text = "25";
+            // 
+            // labelFogAmbientLightAmplifier
+            // 
+            this.labelFogAmbientLightAmplifier.AutoSize = true;
+            this.labelFogAmbientLightAmplifier.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFogAmbientLightAmplifier.Location = new System.Drawing.Point(6, 18);
+            this.labelFogAmbientLightAmplifier.Name = "labelFogAmbientLightAmplifier";
+            this.labelFogAmbientLightAmplifier.Size = new System.Drawing.Size(128, 13);
+            this.labelFogAmbientLightAmplifier.TabIndex = 7;
+            this.labelFogAmbientLightAmplifier.Text = "Fog ambient light amplifier";
+            // 
+            // labelFogAmbientLightAmplifierValue
+            // 
+            this.labelFogAmbientLightAmplifierValue.AutoSize = true;
+            this.labelFogAmbientLightAmplifierValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFogAmbientLightAmplifierValue.Location = new System.Drawing.Point(132, 16);
+            this.labelFogAmbientLightAmplifierValue.Name = "labelFogAmbientLightAmplifierValue";
+            this.labelFogAmbientLightAmplifierValue.Size = new System.Drawing.Size(21, 15);
+            this.labelFogAmbientLightAmplifierValue.TabIndex = 8;
+            this.labelFogAmbientLightAmplifierValue.Text = "10";
+            // 
+            // fogAmbientLightAmplifierTrackBar
+            // 
+            this.fogAmbientLightAmplifierTrackBar.LargeChange = 1;
+            this.fogAmbientLightAmplifierTrackBar.Location = new System.Drawing.Point(6, 34);
+            this.fogAmbientLightAmplifierTrackBar.Maximum = 20;
+            this.fogAmbientLightAmplifierTrackBar.Minimum = 1;
+            this.fogAmbientLightAmplifierTrackBar.Name = "fogAmbientLightAmplifierTrackBar";
+            this.fogAmbientLightAmplifierTrackBar.Size = new System.Drawing.Size(138, 45);
+            this.fogAmbientLightAmplifierTrackBar.TabIndex = 4;
+            this.fogAmbientLightAmplifierTrackBar.Value = 10;
+            this.fogAmbientLightAmplifierTrackBar.Scroll += new System.EventHandler(this.fogAmbientLightAmplifierTrackBar_Scroll);
             // 
             // groupBoxRender
             // 
@@ -431,6 +563,19 @@ namespace RayTracerFramework {
             this.groupBoxRender.TabIndex = 4;
             this.groupBoxRender.TabStop = false;
             this.groupBoxRender.Text = "Render";
+            // 
+            // fogEnableCheckBox
+            // 
+            this.fogEnableCheckBox.AutoSize = true;
+            this.fogEnableCheckBox.Checked = true;
+            this.fogEnableCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fogEnableCheckBox.Location = new System.Drawing.Point(155, 19);
+            this.fogEnableCheckBox.Name = "fogEnableCheckBox";
+            this.fogEnableCheckBox.Size = new System.Drawing.Size(77, 17);
+            this.fogEnableCheckBox.TabIndex = 9;
+            this.fogEnableCheckBox.Text = "Enable fog";
+            this.fogEnableCheckBox.UseVisualStyleBackColor = true;
+            this.fogEnableCheckBox.CheckedChanged += new System.EventHandler(this.fogEnableCheckBox_CheckedChanged);
             // 
             // groupBoxRenderPhotonMapping
             // 
@@ -598,6 +743,48 @@ namespace RayTracerFramework {
             this.mediumConeFilterConstantKTrackBar.Value = 5;
             this.mediumConeFilterConstantKTrackBar.Scroll += new System.EventHandler(this.mediumConeFilterConstantKTrackBar_Scroll);
             // 
+            // labelFogLevel
+            // 
+            this.labelFogLevel.AutoSize = true;
+            this.labelFogLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFogLevel.Location = new System.Drawing.Point(150, 39);
+            this.labelFogLevel.Name = "labelFogLevel";
+            this.labelFogLevel.Size = new System.Drawing.Size(50, 13);
+            this.labelFogLevel.TabIndex = 7;
+            this.labelFogLevel.Text = "Fog level";
+            // 
+            // fogLevelTrackBar
+            // 
+            this.fogLevelTrackBar.LargeChange = 1;
+            this.fogLevelTrackBar.Location = new System.Drawing.Point(150, 55);
+            this.fogLevelTrackBar.Maximum = 20;
+            this.fogLevelTrackBar.Minimum = 1;
+            this.fogLevelTrackBar.Name = "fogLevelTrackBar";
+            this.fogLevelTrackBar.Size = new System.Drawing.Size(138, 45);
+            this.fogLevelTrackBar.TabIndex = 4;
+            this.fogLevelTrackBar.Value = 6;
+            this.fogLevelTrackBar.Scroll += new System.EventHandler(this.fogLevelTrackBar_Scroll);
+            // 
+            // labelMaxRecursionDepth
+            // 
+            this.labelMaxRecursionDepth.AutoSize = true;
+            this.labelMaxRecursionDepth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMaxRecursionDepth.Location = new System.Drawing.Point(6, 39);
+            this.labelMaxRecursionDepth.Name = "labelMaxRecursionDepth";
+            this.labelMaxRecursionDepth.Size = new System.Drawing.Size(103, 13);
+            this.labelMaxRecursionDepth.TabIndex = 7;
+            this.labelMaxRecursionDepth.Text = "Max recursion depth";
+            // 
+            // labelFogLevelValue
+            // 
+            this.labelFogLevelValue.AutoSize = true;
+            this.labelFogLevelValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFogLevelValue.Location = new System.Drawing.Point(275, 39);
+            this.labelFogLevelValue.Name = "labelFogLevelValue";
+            this.labelFogLevelValue.Size = new System.Drawing.Size(24, 15);
+            this.labelFogLevelValue.TabIndex = 8;
+            this.labelFogLevelValue.Text = "0,6";
+            // 
             // maxRecursionDepthTrackBar
             // 
             this.maxRecursionDepthTrackBar.LargeChange = 1;
@@ -620,169 +807,101 @@ namespace RayTracerFramework {
             this.labelMaxRecursionDepthValue.TabIndex = 8;
             this.labelMaxRecursionDepthValue.Text = "10";
             // 
-            // labelMaxRecursionDepth
+            // labelStdFogColor
             // 
-            this.labelMaxRecursionDepth.AutoSize = true;
-            this.labelMaxRecursionDepth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMaxRecursionDepth.Location = new System.Drawing.Point(6, 39);
-            this.labelMaxRecursionDepth.Name = "labelMaxRecursionDepth";
-            this.labelMaxRecursionDepth.Size = new System.Drawing.Size(103, 13);
-            this.labelMaxRecursionDepth.TabIndex = 7;
-            this.labelMaxRecursionDepth.Text = "Max recursion depth";
+            this.labelStdFogColor.AutoSize = true;
+            this.labelStdFogColor.Location = new System.Drawing.Point(160, 17);
+            this.labelStdFogColor.Name = "labelStdFogColor";
+            this.labelStdFogColor.Size = new System.Drawing.Size(51, 13);
+            this.labelStdFogColor.TabIndex = 10;
+            this.labelStdFogColor.Text = "Fog color";
             // 
-            // fogEnableCheckBox
+            // fogRedTrackBar
             // 
-            this.fogEnableCheckBox.AutoSize = true;
-            this.fogEnableCheckBox.Checked = true;
-            this.fogEnableCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.fogEnableCheckBox.Location = new System.Drawing.Point(155, 19);
-            this.fogEnableCheckBox.Name = "fogEnableCheckBox";
-            this.fogEnableCheckBox.Size = new System.Drawing.Size(77, 17);
-            this.fogEnableCheckBox.TabIndex = 9;
-            this.fogEnableCheckBox.Text = "Enable fog";
-            this.fogEnableCheckBox.UseVisualStyleBackColor = true;
-            this.fogEnableCheckBox.CheckedChanged += new System.EventHandler(this.fogEnableCheckBox_CheckedChanged);
+            this.fogRedTrackBar.AutoSize = false;
+            this.fogRedTrackBar.Location = new System.Drawing.Point(172, 31);
+            this.fogRedTrackBar.Maximum = 20;
+            this.fogRedTrackBar.Name = "fogRedTrackBar";
+            this.fogRedTrackBar.Size = new System.Drawing.Size(104, 21);
+            this.fogRedTrackBar.TabIndex = 11;
+            this.fogRedTrackBar.Value = 10;
+            this.fogRedTrackBar.Scroll += new System.EventHandler(this.fogRedTrackBar_Scroll);
             // 
-            // labelFogLevelValue
+            // fogGreenTrackBar
             // 
-            this.labelFogLevelValue.AutoSize = true;
-            this.labelFogLevelValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelFogLevelValue.Location = new System.Drawing.Point(275, 39);
-            this.labelFogLevelValue.Name = "labelFogLevelValue";
-            this.labelFogLevelValue.Size = new System.Drawing.Size(24, 15);
-            this.labelFogLevelValue.TabIndex = 8;
-            this.labelFogLevelValue.Text = "0,6";
+            this.fogGreenTrackBar.AutoSize = false;
+            this.fogGreenTrackBar.Location = new System.Drawing.Point(172, 58);
+            this.fogGreenTrackBar.Maximum = 20;
+            this.fogGreenTrackBar.Name = "fogGreenTrackBar";
+            this.fogGreenTrackBar.Size = new System.Drawing.Size(104, 21);
+            this.fogGreenTrackBar.TabIndex = 11;
+            this.fogGreenTrackBar.Value = 10;
+            this.fogGreenTrackBar.Scroll += new System.EventHandler(this.fogGreenTrackBar_Scroll);
             // 
-            // fogLevelTrackBar
+            // fogBlueTrackBar
             // 
-            this.fogLevelTrackBar.LargeChange = 1;
-            this.fogLevelTrackBar.Location = new System.Drawing.Point(150, 55);
-            this.fogLevelTrackBar.Maximum = 20;
-            this.fogLevelTrackBar.Minimum = 1;
-            this.fogLevelTrackBar.Name = "fogLevelTrackBar";
-            this.fogLevelTrackBar.Size = new System.Drawing.Size(138, 45);
-            this.fogLevelTrackBar.TabIndex = 4;
-            this.fogLevelTrackBar.Value = 6;
-            this.fogLevelTrackBar.Scroll += new System.EventHandler(this.fogLevelTrackBar_Scroll);
+            this.fogBlueTrackBar.AutoSize = false;
+            this.fogBlueTrackBar.Location = new System.Drawing.Point(172, 85);
+            this.fogBlueTrackBar.Maximum = 20;
+            this.fogBlueTrackBar.Name = "fogBlueTrackBar";
+            this.fogBlueTrackBar.Size = new System.Drawing.Size(104, 21);
+            this.fogBlueTrackBar.TabIndex = 11;
+            this.fogBlueTrackBar.Value = 10;
+            this.fogBlueTrackBar.Scroll += new System.EventHandler(this.fogBlueTrackBar_Scroll);
             // 
-            // labelFogLevel
+            // labelFogRed
             // 
-            this.labelFogLevel.AutoSize = true;
-            this.labelFogLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelFogLevel.Location = new System.Drawing.Point(150, 39);
-            this.labelFogLevel.Name = "labelFogLevel";
-            this.labelFogLevel.Size = new System.Drawing.Size(50, 13);
-            this.labelFogLevel.TabIndex = 7;
-            this.labelFogLevel.Text = "Fog level";
+            this.labelFogRed.AutoSize = true;
+            this.labelFogRed.Location = new System.Drawing.Point(151, 35);
+            this.labelFogRed.Name = "labelFogRed";
+            this.labelFogRed.Size = new System.Drawing.Size(15, 13);
+            this.labelFogRed.TabIndex = 12;
+            this.labelFogRed.Text = "R";
             // 
-            // labelFogAmbientLightAmplifierValue
+            // labelFogGreen
             // 
-            this.labelFogAmbientLightAmplifierValue.AutoSize = true;
-            this.labelFogAmbientLightAmplifierValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelFogAmbientLightAmplifierValue.Location = new System.Drawing.Point(132, 16);
-            this.labelFogAmbientLightAmplifierValue.Name = "labelFogAmbientLightAmplifierValue";
-            this.labelFogAmbientLightAmplifierValue.Size = new System.Drawing.Size(21, 15);
-            this.labelFogAmbientLightAmplifierValue.TabIndex = 8;
-            this.labelFogAmbientLightAmplifierValue.Text = "10";
+            this.labelFogGreen.AutoSize = true;
+            this.labelFogGreen.Location = new System.Drawing.Point(151, 60);
+            this.labelFogGreen.Name = "labelFogGreen";
+            this.labelFogGreen.Size = new System.Drawing.Size(15, 13);
+            this.labelFogGreen.TabIndex = 13;
+            this.labelFogGreen.Text = "G";
             // 
-            // fogAmbientLightAmplifierTrackBar
+            // labelFogBlue
             // 
-            this.fogAmbientLightAmplifierTrackBar.LargeChange = 1;
-            this.fogAmbientLightAmplifierTrackBar.Location = new System.Drawing.Point(6, 34);
-            this.fogAmbientLightAmplifierTrackBar.Maximum = 20;
-            this.fogAmbientLightAmplifierTrackBar.Minimum = 1;
-            this.fogAmbientLightAmplifierTrackBar.Name = "fogAmbientLightAmplifierTrackBar";
-            this.fogAmbientLightAmplifierTrackBar.Size = new System.Drawing.Size(138, 45);
-            this.fogAmbientLightAmplifierTrackBar.TabIndex = 4;
-            this.fogAmbientLightAmplifierTrackBar.Value = 10;
-            this.fogAmbientLightAmplifierTrackBar.Scroll += new System.EventHandler(this.fogAmbientLightAmplifierTrackBar_Scroll);
+            this.labelFogBlue.AutoSize = true;
+            this.labelFogBlue.Location = new System.Drawing.Point(151, 85);
+            this.labelFogBlue.Name = "labelFogBlue";
+            this.labelFogBlue.Size = new System.Drawing.Size(14, 13);
+            this.labelFogBlue.TabIndex = 14;
+            this.labelFogBlue.Text = "B";
             // 
-            // labelFogAmbientLightAmplifier
+            // labelFogRedValue
             // 
-            this.labelFogAmbientLightAmplifier.AutoSize = true;
-            this.labelFogAmbientLightAmplifier.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelFogAmbientLightAmplifier.Location = new System.Drawing.Point(6, 18);
-            this.labelFogAmbientLightAmplifier.Name = "labelFogAmbientLightAmplifier";
-            this.labelFogAmbientLightAmplifier.Size = new System.Drawing.Size(128, 13);
-            this.labelFogAmbientLightAmplifier.TabIndex = 7;
-            this.labelFogAmbientLightAmplifier.Text = "Fog ambient light amplifier";
+            this.labelFogRedValue.AutoSize = true;
+            this.labelFogRedValue.Location = new System.Drawing.Point(275, 35);
+            this.labelFogRedValue.Name = "labelFogRedValue";
+            this.labelFogRedValue.Size = new System.Drawing.Size(22, 13);
+            this.labelFogRedValue.TabIndex = 15;
+            this.labelFogRedValue.Text = "0,5";
             // 
-            // groupBoxKDTree
+            // labelFogGreenValue
             // 
-            this.groupBoxKDTree.Controls.Add(this.labelKDTreeObjectsPerLeaf);
-            this.groupBoxKDTree.Controls.Add(this.kdTreeObjectsPerLeafTrackBar);
-            this.groupBoxKDTree.Controls.Add(this.labelKDTreeMaxHeight);
-            this.groupBoxKDTree.Controls.Add(this.labelKDTreeObjectsPerLeafValue);
-            this.groupBoxKDTree.Controls.Add(this.kdTreeMaxHeightTrackBar);
-            this.groupBoxKDTree.Controls.Add(this.labelKDTreeMaxHeightValue);
-            this.groupBoxKDTree.Location = new System.Drawing.Point(6, 382);
-            this.groupBoxKDTree.Name = "groupBoxKDTree";
-            this.groupBoxKDTree.Size = new System.Drawing.Size(301, 111);
-            this.groupBoxKDTree.TabIndex = 9;
-            this.groupBoxKDTree.TabStop = false;
-            this.groupBoxKDTree.Text = "KD Trees";
+            this.labelFogGreenValue.AutoSize = true;
+            this.labelFogGreenValue.Location = new System.Drawing.Point(275, 60);
+            this.labelFogGreenValue.Name = "labelFogGreenValue";
+            this.labelFogGreenValue.Size = new System.Drawing.Size(22, 13);
+            this.labelFogGreenValue.TabIndex = 15;
+            this.labelFogGreenValue.Text = "0,5";
             // 
-            // kdTreeMaxHeightTrackBar
+            // labelFogBlueValue
             // 
-            this.kdTreeMaxHeightTrackBar.Location = new System.Drawing.Point(6, 32);
-            this.kdTreeMaxHeightTrackBar.Maximum = 100;
-            this.kdTreeMaxHeightTrackBar.Minimum = 10;
-            this.kdTreeMaxHeightTrackBar.Name = "kdTreeMaxHeightTrackBar";
-            this.kdTreeMaxHeightTrackBar.Size = new System.Drawing.Size(138, 45);
-            this.kdTreeMaxHeightTrackBar.TabIndex = 4;
-            this.kdTreeMaxHeightTrackBar.Value = 25;
-            this.kdTreeMaxHeightTrackBar.Scroll += new System.EventHandler(this.kdTreeMaxHeightTrackBar_Scroll);
-            // 
-            // labelKDTreeMaxHeightValue
-            // 
-            this.labelKDTreeMaxHeightValue.AutoSize = true;
-            this.labelKDTreeMaxHeightValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelKDTreeMaxHeightValue.Location = new System.Drawing.Point(132, 14);
-            this.labelKDTreeMaxHeightValue.Name = "labelKDTreeMaxHeightValue";
-            this.labelKDTreeMaxHeightValue.Size = new System.Drawing.Size(21, 15);
-            this.labelKDTreeMaxHeightValue.TabIndex = 8;
-            this.labelKDTreeMaxHeightValue.Text = "25";
-            // 
-            // labelKDTreeMaxHeight
-            // 
-            this.labelKDTreeMaxHeight.AutoSize = true;
-            this.labelKDTreeMaxHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelKDTreeMaxHeight.Location = new System.Drawing.Point(6, 16);
-            this.labelKDTreeMaxHeight.Name = "labelKDTreeMaxHeight";
-            this.labelKDTreeMaxHeight.Size = new System.Drawing.Size(59, 13);
-            this.labelKDTreeMaxHeight.TabIndex = 7;
-            this.labelKDTreeMaxHeight.Text = "Max height";
-            // 
-            // labelKDTreeObjectsPerLeafValue
-            // 
-            this.labelKDTreeObjectsPerLeafValue.AutoSize = true;
-            this.labelKDTreeObjectsPerLeafValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelKDTreeObjectsPerLeafValue.Location = new System.Drawing.Point(274, 14);
-            this.labelKDTreeObjectsPerLeafValue.Name = "labelKDTreeObjectsPerLeafValue";
-            this.labelKDTreeObjectsPerLeafValue.Size = new System.Drawing.Size(21, 15);
-            this.labelKDTreeObjectsPerLeafValue.TabIndex = 8;
-            this.labelKDTreeObjectsPerLeafValue.Text = "12";
-            // 
-            // kdTreeObjectsPerLeafTrackBar
-            // 
-            this.kdTreeObjectsPerLeafTrackBar.Location = new System.Drawing.Point(159, 32);
-            this.kdTreeObjectsPerLeafTrackBar.Maximum = 50;
-            this.kdTreeObjectsPerLeafTrackBar.Minimum = 1;
-            this.kdTreeObjectsPerLeafTrackBar.Name = "kdTreeObjectsPerLeafTrackBar";
-            this.kdTreeObjectsPerLeafTrackBar.Size = new System.Drawing.Size(138, 45);
-            this.kdTreeObjectsPerLeafTrackBar.TabIndex = 4;
-            this.kdTreeObjectsPerLeafTrackBar.Value = 12;
-            this.kdTreeObjectsPerLeafTrackBar.Scroll += new System.EventHandler(this.kdTreeObjectsPerLeafTrackBar_Scroll);
-            // 
-            // labelKDTreeObjectsPerLeaf
-            // 
-            this.labelKDTreeObjectsPerLeaf.AutoSize = true;
-            this.labelKDTreeObjectsPerLeaf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelKDTreeObjectsPerLeaf.Location = new System.Drawing.Point(159, 16);
-            this.labelKDTreeObjectsPerLeaf.Name = "labelKDTreeObjectsPerLeaf";
-            this.labelKDTreeObjectsPerLeaf.Size = new System.Drawing.Size(81, 13);
-            this.labelKDTreeObjectsPerLeaf.TabIndex = 7;
-            this.labelKDTreeObjectsPerLeaf.Text = "Objects per leaf";
+            this.labelFogBlueValue.AutoSize = true;
+            this.labelFogBlueValue.Location = new System.Drawing.Point(275, 85);
+            this.labelFogBlueValue.Name = "labelFogBlueValue";
+            this.labelFogBlueValue.Size = new System.Drawing.Size(22, 13);
+            this.labelFogBlueValue.TabIndex = 15;
+            this.labelFogBlueValue.Text = "0,5";
             // 
             // SettingsDialog
             // 
@@ -812,6 +931,11 @@ namespace RayTracerFramework {
             ((System.ComponentModel.ISupportInitialize)(this.localScaleDownTrackBar)).EndInit();
             this.groupBoxSetup.ResumeLayout(false);
             this.groupBoxSetup.PerformLayout();
+            this.groupBoxKDTree.ResumeLayout(false);
+            this.groupBoxKDTree.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.kdTreeObjectsPerLeafTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kdTreeMaxHeightTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogAmbientLightAmplifierTrackBar)).EndInit();
             this.groupBoxRender.ResumeLayout(false);
             this.groupBoxRender.PerformLayout();
             this.groupBoxRenderPhotonMapping.ResumeLayout(false);
@@ -822,13 +946,11 @@ namespace RayTracerFramework {
             ((System.ComponentModel.ISupportInitialize)(this.collectionCapsuleRadiusTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lightingAmplifierTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mediumConeFilterConstantKTrackBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.maxRecursionDepthTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fogLevelTrackBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fogAmbientLightAmplifierTrackBar)).EndInit();
-            this.groupBoxKDTree.ResumeLayout(false);
-            this.groupBoxKDTree.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.kdTreeMaxHeightTrackBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.kdTreeObjectsPerLeafTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxRecursionDepthTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogRedTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogGreenTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fogBlueTrackBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -894,5 +1016,15 @@ namespace RayTracerFramework {
         private System.Windows.Forms.Label labelKDTreeObjectsPerLeaf;
         private System.Windows.Forms.TrackBar kdTreeObjectsPerLeafTrackBar;
         private System.Windows.Forms.Label labelKDTreeObjectsPerLeafValue;
+        private System.Windows.Forms.Label labelFogRed;
+        private System.Windows.Forms.TrackBar fogBlueTrackBar;
+        private System.Windows.Forms.TrackBar fogGreenTrackBar;
+        private System.Windows.Forms.TrackBar fogRedTrackBar;
+        private System.Windows.Forms.Label labelStdFogColor;
+        private System.Windows.Forms.Label labelFogBlueValue;
+        private System.Windows.Forms.Label labelFogGreenValue;
+        private System.Windows.Forms.Label labelFogRedValue;
+        private System.Windows.Forms.Label labelFogBlue;
+        private System.Windows.Forms.Label labelFogGreen;
     }
 }

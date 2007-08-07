@@ -18,8 +18,17 @@ namespace RayTracerFramework {
 
         private void LoadControlValues() {
             // Setup
-            fogAmbientLightAmplifierTrackBar.Value = (int)Settings.Setup.Scene.fogAmbientLightAmplifier;
-            labelFogAmbientLightAmplifierValue.Text = Settings.Setup.Scene.fogAmbientLightAmplifier.ToString();
+            fogAmbientLightAmplifierTrackBar.Value = (int)Settings.Setup.Scene.FogAmbientLightAmplifier;
+            labelFogAmbientLightAmplifierValue.Text = Settings.Setup.Scene.FogAmbientLightAmplifier.ToString();
+
+            fogRedTrackBar.Value = (int)(Settings.Setup.Scene.StdFogColor.RedFloat * 20f);
+            labelFogRedValue.Text = Settings.Setup.Scene.StdFogColor.RedFloat.ToString();
+
+            fogGreenTrackBar.Value = (int)(Settings.Setup.Scene.StdFogColor.GreenFloat * 20f);
+            labelFogGreenValue.Text = Settings.Setup.Scene.StdFogColor.GreenFloat.ToString();
+
+            fogBlueTrackBar.Value = (int)(Settings.Setup.Scene.StdFogColor.BlueFloat * 20f);
+            labelFogBlueValue.Text = Settings.Setup.Scene.StdFogColor.BlueFloat.ToString();
 
             emitPhotonsCheckBox.Checked = Settings.Setup.PhotonMapping.EmitPhotons;
 
@@ -76,7 +85,10 @@ namespace RayTracerFramework {
 
         private void buttonOK_Click(object sender, EventArgs e) {
             if(
-                    (int)Settings.Setup.Scene.fogAmbientLightAmplifier != fogAmbientLightAmplifierTrackBar.Value ||
+                    (int)Settings.Setup.Scene.FogAmbientLightAmplifier != fogAmbientLightAmplifierTrackBar.Value ||
+                    Math.Round(Settings.Setup.Scene.StdFogColor.RedFloat * 20) != fogRedTrackBar.Value ||
+                    Math.Round(Settings.Setup.Scene.StdFogColor.GreenFloat * 20) != fogGreenTrackBar.Value ||
+                    Math.Round(Settings.Setup.Scene.StdFogColor.BlueFloat * 20) != fogBlueTrackBar.Value ||
                     Settings.Setup.PhotonMapping.EmitPhotons != emitPhotonsCheckBox.Checked ||
                     Settings.Setup.PhotonMapping.StoredPhotonsCount != int.Parse(storedPhotonsComboBox.Text) ||
                     (int)Settings.Setup.PhotonMapping.PowerLevel != powerLevelTrackBar.Value ||
@@ -88,7 +100,11 @@ namespace RayTracerFramework {
                 setupSettingsChanged = true;
 
             // Setup
-            Settings.Setup.Scene.fogAmbientLightAmplifier = fogAmbientLightAmplifierTrackBar.Value;
+            Settings.Setup.Scene.FogAmbientLightAmplifier = fogAmbientLightAmplifierTrackBar.Value;
+
+            Settings.Setup.Scene.StdFogColor.RedFloat = fogRedTrackBar.Value / 20f;
+            Settings.Setup.Scene.StdFogColor.GreenFloat = fogGreenTrackBar.Value / 20f;
+            Settings.Setup.Scene.StdFogColor.BlueFloat = fogBlueTrackBar.Value / 20f;
 
             Settings.Setup.PhotonMapping.EmitPhotons = emitPhotonsCheckBox.Checked;
 
@@ -180,6 +196,18 @@ namespace RayTracerFramework {
 
         private void fogAmbientLightAmplifierTrackBar_Scroll(object sender, EventArgs e) {
             labelFogAmbientLightAmplifierValue.Text = ((TrackBar)sender).Value.ToString();
+        }
+
+        private void fogRedTrackBar_Scroll(object sender, EventArgs e) {
+            labelFogRedValue.Text = (((TrackBar)sender).Value / 20f).ToString();
+        }
+
+        private void fogGreenTrackBar_Scroll(object sender, EventArgs e) {
+            labelFogGreenValue.Text = (((TrackBar)sender).Value / 20f).ToString();
+        }
+
+        private void fogBlueTrackBar_Scroll(object sender, EventArgs e) {
+            labelFogBlueValue.Text = (((TrackBar)sender).Value / 20f).ToString();
         }
 
         private void powerLevelTrackBar_Scroll(object sender, EventArgs e) {
