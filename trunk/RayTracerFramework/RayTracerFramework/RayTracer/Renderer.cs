@@ -15,70 +15,106 @@ namespace RayTracerFramework.RayTracer {
         private StatusStrip statusBar;
         private PictureBox pictureBox;
         public bool cancelRendering;
+        public bool renderingFinished;
+        
+        // Shared MT-Render vars
+        private Scene scene;
+        private byte[] rgbValues;
+        private int rgbValuesLength;
+        private int targetWidth;
+        private int targetHeight;
+        private float viewPlaneWidth;
+        private float viewPlaneHeight;
+        private float pixelWidth;
+        private float pixelHeight;
+        private Vec3 camZ;
+        private Vec3 camX;
+        private Vec3 camY;
+        private Vec3 xOffset;
+        private Vec3 yOffset;
+        private Vec3 eyePos;
+        private int stride;
+        private int waste;
+
+        private volatile int nextLine;
 
         public Renderer(ProgressBar progressBar, StatusStrip statusBar, PictureBox pictureBox) {
             this.progressBar = progressBar;
             this.statusBar = statusBar;
             this.pictureBox = pictureBox;
             cancelRendering = false;
+            renderingFinished = false;
         }
 
-        public void Render(Scene scene, Bitmap target) {            
-            int targetWidth = target.Width;
-            int targetHeight = target.Height;
-
-            // View frustrum starts at 1.0f
-            float viewPlaneWidth = scene.cam.GetViewPlaneWidth();
-            float viewPlaneHeight = scene.cam.GetViewPlaneHeight();
+        public void Render(
+                Scene scene, 
+                byte[] rgbValues,
+                int rgbValuesLength,
+                int stride,
+                int targetWidth,
+                int targetHeight,
+                System.ComponentModel.BackgroundWorker worker) {
+            this.scene = scene;
+            this.rgbValues = rgbValues;
+            this.rgbValuesLength = rgbValuesLength;
+            this.stride = stride;
+            this.targetWidth = targetWidth;
+            this.targetHeight = targetHeight;
             
-            float pixelWidth = viewPlaneWidth / targetWidth;
-            float pixelHeight = viewPlaneHeight / targetHeight;
+            // View frustrum starts at 1.0f
+            viewPlaneWidth = scene.cam.GetViewPlaneWidth();
+            viewPlaneHeight = scene.cam.GetViewPlaneHeight();
+            
+            pixelWidth = viewPlaneWidth / targetWidth;
+            pixelHeight = viewPlaneHeight / targetHeight;
 
             // Calculate orthonormal basis for the camera
-            Vec3 camZ = scene.cam.ViewDir;
-            Vec3 camX = Vec3.Cross(scene.cam.upDir, camZ);
-            Vec3 camY = Vec3.Cross(camZ, camX);
+            camZ = scene.cam.ViewDir;
+            camX = Vec3.Cross(scene.cam.upDir, camZ);
+            camY = Vec3.Cross(camZ, camX);
             
             // Calculate pixel center offset vectors
-            Vec3 xOffset = pixelWidth * camX;
-            Vec3 yOffset = -pixelHeight * camY;
+            xOffset = pixelWidth * camX;
+            yOffset = -pixelHeight * camY;
 
+            waste = stride - targetWidth * 3;
+
+            nextLine = 0;
+
+            System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(MTRender));
+            renderingFinished = false;
+            thread.Start();
+            while (!renderingFinished) {
+                //if (cancelRendering)
+                //    break;
+                System.Threading.Thread.Sleep(1000);
+                if (worker.CancellationPending) {
+                    thread.Abort();
+                    thread.Join();
+                    return;
+                }
+                int progress = (int)((100f * nextLine) / targetHeight);
+                worker.ReportProgress(progress);
+            }
+            thread.Join();
+        }
+
+        private void MTRender() {
             // Go to center of first line
-            Vec3 eyePos = scene.cam.eyePos;
+            eyePos = scene.cam.eyePos;
             Vec3 rowStartPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
             rowStartPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
             Vec3 pixelCenterPos = new Vec3(rowStartPos);
-            
+
             Ray rayWS = new Ray(
                     eyePos,
                     Vec3.Normalize(pixelCenterPos - eyePos),
                     0);
-
-            // Setup bitmap
-            BitmapData bitmapData = target.LockBits(new Rectangle(0, 0, targetWidth, targetHeight),
-                    ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-
-            IntPtr bitmapDataAddress = bitmapData.Scan0;
-            int stride = bitmapData.Stride;
-            int rgbValuesLength = stride * targetHeight;            
-            int waste = stride - targetWidth * 3;
-            byte[] rgbValues = new byte[rgbValuesLength];
-            int rgbValuesPos = 0;
-
+            
             RayIntersectionPoint firstIntersection;
 
-            #region Initizalize members for progress information
-            progressBar.Minimum = 0;
-            progressBar.Maximum = targetHeight;
-            int resolution = targetWidth * targetHeight;
-            float lastMillis = Environment.TickCount;
-            float currentMillis;
-            float elapsedTime = 0;
-            float stepTime = 0;
-            float stepTimeSum = 0;
-            int computedPixels = 0;
-            #endregion
-
+            // Setup bitmap
+            int rgbValuesPos = 0;            
             for (int y = 0; y < targetHeight; y++) { // pixel lines
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection and Shade pixel      
@@ -89,9 +125,9 @@ namespace RayTracerFramework.RayTracer {
                     } else {
                         color = scene.GetBackgroundColor(rayWS);
                     }
-                    rgbValues[rgbValuesPos]     = color.BlueInt;
+                    rgbValues[rgbValuesPos] = color.BlueInt;
                     rgbValues[rgbValuesPos + 1] = color.GreenInt;
-                    rgbValues[rgbValuesPos + 2] = color.RedInt;                    
+                    rgbValues[rgbValuesPos + 2] = color.RedInt;
 
                     rgbValuesPos += 3;
 
@@ -100,45 +136,18 @@ namespace RayTracerFramework.RayTracer {
                     rayWS.direction = Vec3.Normalize(pixelCenterPos - eyePos);
                 }
 
-                #region Calculate remaining time
-                computedPixels += targetWidth;
-                currentMillis = Environment.TickCount;
-                elapsedTime += stepTime = (currentMillis - lastMillis);
-                stepTimeSum += stepTime;
-                if (stepTimeSum > 1000) {
-                    stepTimeSum = 0f;
-                    int remainingSeconds = (int)(((resolution - computedPixels) * elapsedTime) / (computedPixels * 1000f));
-                    statusBar.Items.Clear();
-                    statusBar.Items.Add("Rendering... Elapsed time: " + (int)(elapsedTime / 1000f) + "s. Estimated remaining time: " + remainingSeconds + "s.");
-                    statusBar.Update();
-                    progressBar.Value = y;                   
-                    System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
-                    target.UnlockBits(bitmapData);
-                    pictureBox.Image = target;
-                    pictureBox.Update();
-                    if (cancelRendering)
-                        break;
-                    bitmapData = target.LockBits(new Rectangle(0, 0, targetWidth, targetHeight),
-                                        ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-                    bitmapDataAddress = bitmapData.Scan0;
-                }
-                
-                lastMillis = currentMillis;
-                #endregion
-
                 // Reset next ray direction, pixelCenterPos and rowStartPos
                 rowStartPos += yOffset;
-                rayWS.direction = Vec3.Normalize(rowStartPos -eyePos);
+                rayWS.direction = Vec3.Normalize(rowStartPos - eyePos);
                 pixelCenterPos.x = rowStartPos.x;
                 pixelCenterPos.y = rowStartPos.y;
                 pixelCenterPos.z = rowStartPos.z;
 
                 rgbValuesPos += waste;
+
+                nextLine++;
             }
-            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bitmapDataAddress, rgbValuesLength);
-            target.UnlockBits(bitmapData);
-            progressBar.Value = targetHeight;
+            renderingFinished = true;
         }
-        
     }
 }

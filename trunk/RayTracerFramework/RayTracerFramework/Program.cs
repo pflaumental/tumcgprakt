@@ -12,9 +12,7 @@ namespace RayTracerFramework {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new RayTracerForm());
-            
-            
+            Application.Run(new RayTracerForm());                        
         }
     }
 }
