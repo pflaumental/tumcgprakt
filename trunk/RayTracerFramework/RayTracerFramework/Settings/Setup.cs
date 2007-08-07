@@ -4,7 +4,8 @@ using System.Text;
 
 namespace RayTracerFramework.Settings.Setup {
     public static class Scene {
-        public static float fogAmbientLightAmplifier = 10f;
+        public static float FogAmbientLightAmplifier = 10f;
+        public static RayTracerFramework.Shading.Color StdFogColor = new RayTracerFramework.Shading.Color(0.5f, 0.5f, 0.5f);
     }
 
     public static class GeoObjectKDTree {

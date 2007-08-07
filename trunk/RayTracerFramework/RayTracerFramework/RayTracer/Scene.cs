@@ -44,7 +44,7 @@ namespace RayTracerFramework.RayTracer {
             useCubeMap = true;          
 
             mediumRefractionIndex = 1.0f;
-            mediumColor = new Color(1f, 0.5f, 0.5f);
+            mediumColor = Settings.Setup.Scene.StdFogColor;
         }
 
         public float GetTotalPhotonLightPower() {
@@ -114,7 +114,7 @@ namespace RayTracerFramework.RayTracer {
                         break;
                 }
             }
-            fogAmbientLightColor = surfacesAmbientLightColor * Settings.Setup.Scene.fogAmbientLightAmplifier;
+            fogAmbientLightColor = surfacesAmbientLightColor * Settings.Setup.Scene.FogAmbientLightAmplifier;
 
             kdTree.Optimize();
             if (photonTracer != null) {
