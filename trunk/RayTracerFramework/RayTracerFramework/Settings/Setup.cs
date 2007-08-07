@@ -19,7 +19,7 @@ namespace RayTracerFramework.Settings.Setup {
     }
 
     public static class PhotonMapping {
-        public static bool EmitPhotons = true;
+        public static bool EmitPhotons = false;
         public static int StoredPhotonsCount = 200000;
         public static float PowerLevel = 5f;
         public static int TracingMaxRecursionDepth = 4;

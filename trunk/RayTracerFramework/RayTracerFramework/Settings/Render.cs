@@ -7,7 +7,7 @@ namespace RayTracerFramework.Settings.Render {
         public static int MaxRecursionDepth = 10;
     }
     public static class PhotonMapping {
-        public static bool RenderSurfacePhotons = true;
+        public static bool RenderSurfacePhotons = false;
         public static float LocalScaleDown = 0.5f;
         public static float SphereRadius = 0.8f;
         public static float SphereRadiusSq = SphereRadius * SphereRadius;

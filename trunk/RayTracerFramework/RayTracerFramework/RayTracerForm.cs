@@ -80,12 +80,10 @@ namespace RayTracerFramework {
             sceneReady = false;
             isRendering = false;
             userCanceled = false;
+            renderer = new Renderer();
         }
 
-        private void Setup() {
-            renderer = new Renderer(progressBar, statusBar, pictureBox);
-
-
+        private void Setup() {            
             //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Settings.Render.Trigonometric.Pi * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Settings.Render.Trigonometric.Pi * 0.1f)),
             //                        new Vec3(0, 0, 0f),
             //                        Vec3.StdYAxis, Settings.Render.Trigonometric.PiQuarter, aspectRatio);
