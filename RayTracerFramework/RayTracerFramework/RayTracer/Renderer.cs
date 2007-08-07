@@ -10,7 +10,8 @@ using System.Windows.Forms;
 using System.Threading;
 
 namespace RayTracerFramework.RayTracer {
-    public class Renderer {                      
+    public class Renderer {        
+
         // Shared MT-Render vars
         private Scene scene;
         private byte[] rgbValues;
@@ -34,7 +35,7 @@ namespace RayTracerFramework.RayTracer {
         private volatile bool renderingFinished;
 
         public Renderer() {
-            renderingFinished = false;
+            renderingFinished = false;            
         }
 
         public void Render(
@@ -45,6 +46,7 @@ namespace RayTracerFramework.RayTracer {
                 int targetWidth,
                 int targetHeight,
                 System.ComponentModel.BackgroundWorker worker) {
+            // Collect input
             this.scene = scene;
             this.rgbValues = rgbValues;
             this.rgbValuesLength = rgbValuesLength;
@@ -52,43 +54,41 @@ namespace RayTracerFramework.RayTracer {
             this.targetWidth = targetWidth;
             this.targetHeight = targetHeight;
             
-            // View frustrum starts at 1.0f
-            viewPlaneWidth = scene.cam.GetViewPlaneWidth();
-            viewPlaneHeight = scene.cam.GetViewPlaneHeight();
-            
+            // Initialize thread-global render vars
+            viewPlaneWidth = scene.cam.GetViewPlaneWidth(); // View frustrum starts at 1.0f
+            viewPlaneHeight = scene.cam.GetViewPlaneHeight();            
             pixelWidth = viewPlaneWidth / targetWidth;
             pixelHeight = viewPlaneHeight / targetHeight;
-
             // Calculate orthonormal basis for the camera
             camZ = scene.cam.ViewDir;
             camX = Vec3.Cross(scene.cam.upDir, camZ);
-            camY = Vec3.Cross(camZ, camX);
-            
+            camY = Vec3.Cross(camZ, camX);            
             // Calculate pixel center offset vectors
             xOffset = pixelWidth * camX;
             yOffset = -pixelHeight * camY;
-
             eyePos = scene.cam.eyePos;
-
             firstPixelPos = eyePos + camZ + camY * ((viewPlaneHeight - pixelHeight) * 0.5f);
             firstPixelPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
 
-            nextLine = 0;
-            
+            // Reset render position
+            nextLine = 0;            
+            renderingFinished = false;
+
+            // Create render threads
             int numThreads = System.Environment.ProcessorCount;
             Thread[] threads = new Thread[numThreads];
-            
+
             for (int i = 0; i < numThreads; i++) {
                 threads[i] = new Thread(new ThreadStart(MTRender));
                 threads[i].Priority = ThreadPriority.BelowNormal;
             }
 
-            renderingFinished = false;
-
+            // Start rendering
             foreach (Thread thread in threads) {
                 thread.Start();
             }
             
+            // Report progress
             while (!renderingFinished) {
                 Thread.Sleep(1000);
                 if (worker.CancellationPending) {
@@ -104,23 +104,25 @@ namespace RayTracerFramework.RayTracer {
                 worker.ReportProgress(progress);
             }
 
+            // Wait for all threads
             foreach (Thread thread in threads) {
                 thread.Join();
             }
         }
 
-        private void MTRender() {                        
+        private void MTRender() {
+            // Initialize per thread render vars
             Ray rayWS = new Ray(
                     eyePos,
                     null,
                     0);
             RayIntersectionPoint firstIntersection;
-
-            // Setup bitmap
             int rgbValuesPos = 0;
             int y;
             Vec3 rowStartPos;
             Vec3 pixelCenterPos = new Vec3();
+
+            // Render next line until finished
             #pragma warning disable 420
             while((y = Interlocked.Increment(ref nextLine)) < targetHeight) { // pixel lines
             #pragma warning restore 420
@@ -131,8 +133,10 @@ namespace RayTracerFramework.RayTracer {
                 pixelCenterPos.y = rowStartPos.y;
                 pixelCenterPos.z = rowStartPos.z;
 
+                // Calculate render target destination
                 rgbValuesPos = y * stride;
 
+                // Render line
                 for (int x = 0; x < targetWidth; x++) { // pixel columns                     
                     // Find nearest object intersection and Shade pixel      
                     Color color;
