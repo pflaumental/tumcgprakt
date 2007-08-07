@@ -153,7 +153,6 @@ namespace RayTracerFramework.Shading {
                 // Add reflection color to resultColor
                 resultColor += (reflectionColor * reflectionPartSum);
             }
-
             // Fog
             if (Settings.Render.StdShading.enableFog) {
                 // Medium illumination
@@ -176,6 +175,7 @@ namespace RayTracerFramework.Shading {
                             + scene.mediumColor * mediumCoefficient * scene.fogAmbientLightColor;
             }
 
+            resultColor.Saturate();
             resultColor.Saturate();
             return resultColor;
         }

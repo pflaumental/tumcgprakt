@@ -4,13 +4,25 @@ using System.Text;
 using RayTracerFramework.Geometry;
 using RayTracerFramework.Shading;
 using RayTracerFramework.Utility;
+using System.Xml.Serialization;
 
 namespace RayTracerFramework.PhotonMapping {
+    [XmlType("Photon.AreaLight")]
     public class AreaLight : Light {
+        [XmlElement("TopLeftPosition")]
         public Vec3 topLeftPos;
+
+        [XmlElement("Normal")]
         public Vec3 normal;
+
+        [XmlElement("Tangent")]
         public Vec3 tangent;
+
+        [XmlElement("Binormal")]
         public Vec3 binormal;
+
+        public AreaLight() : this(Vec3.Zero, Vec3.StdYAxis, Vec3.StdXAxis, Vec3.StdZAxis) { }
+
 
         public AreaLight(Vec3 topLeftPos, Vec3 normal, Vec3 tangent, Vec3 binormal) : base(LightType.Area, Color.White) {
             this.topLeftPos = topLeftPos;
@@ -37,6 +49,10 @@ namespace RayTracerFramework.PhotonMapping {
             Vec3 binormalRandom = Rnd.RandomFloat() * binormal;
             position = topLeftPos + tangentRandom + binormalRandom;
 
+        }
+
+        public override string ToString() {
+            return "Area Light";
         }
     }
 }

@@ -10,7 +10,7 @@ namespace RayTracerFramework.PhotonMapping {
 
     [XmlType("Photon.PointLight")]
     public class PointLight : Light {
-
+        [XmlElement("Position")]
         public Vec3 position;
 
         public PointLight() : this(Vec3.Zero) { }
@@ -25,6 +25,10 @@ namespace RayTracerFramework.PhotonMapping {
 
         public void GetRandomSample(out Vec3 direction) {
             direction = Rnd.RandomVec3();
+        }
+
+        public override string ToString() {
+            return "Point Light";
         }
 
     }

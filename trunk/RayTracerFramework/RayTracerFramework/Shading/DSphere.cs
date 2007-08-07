@@ -60,5 +60,9 @@ namespace RayTracerFramework.Shading {
         }
 
         public Material Material { get { return material; } set { material = value; } }
+
+        public override string ToString() {
+            return "Sphere";
+        }
     }
 }

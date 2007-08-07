@@ -19,10 +19,12 @@ namespace RayTracerFramework.Shading {
         }
 
         public PointLight(Vec3 position) : base(LightType.Point) {
-            this.position = new Vec3(position);
-           
+            this.position = new Vec3(position);         
         }
-        
+
+        public override string ToString() {
+            return "Point Light";
+        }
 
     }
 }

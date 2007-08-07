@@ -39,5 +39,9 @@ namespace RayTracerFramework.Shading {
             }
         }
 
+        public override string ToString() {
+            return "Mesh";
+        }
+
     }
 }

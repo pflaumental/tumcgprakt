@@ -10,9 +10,9 @@ namespace RayTracerFramework.Shading {
     public class CubeMap {
         public float xMin, xMax, yMin, yMax, zMin, zMax;
 
-        private FastBitmap xMinTexture, xMaxTexture;
-        private FastBitmap yMinTexture, yMaxTexture;
-        private FastBitmap zMinTexture, zMaxTexture;
+        public FastBitmap xMinTexture, xMaxTexture;
+        public FastBitmap yMinTexture, yMaxTexture;
+        public FastBitmap zMinTexture, zMaxTexture;
 
         public string cubeMapFilename;
 
@@ -26,15 +26,21 @@ namespace RayTracerFramework.Shading {
             this.zMin = -(depth * 0.5f);
             this.zMax = depth * 0.5f;
 
-            xMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "NX.png")));
-            xMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "PX.png")));
+            xMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + Settings.Setup.Loading.DefaultCubeMapPrefix + texturesBaseName + "NX.jpg")));
+            xMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + Settings.Setup.Loading.DefaultCubeMapPrefix + texturesBaseName + "PX.jpg")));
 
-            yMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "NY.png")));
-            yMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "PY.png")));
+            yMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + Settings.Setup.Loading.DefaultCubeMapPrefix + texturesBaseName + "NY.jpg")));
+            yMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + Settings.Setup.Loading.DefaultCubeMapPrefix + texturesBaseName + "PY.jpg")));
 
-            zMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "NZ.png")));
-            zMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + texturesBaseName + "PZ.png")));
+            zMinTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + Settings.Setup.Loading.DefaultCubeMapPrefix + texturesBaseName + "NZ.jpg")));
+            zMaxTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + Settings.Setup.Loading.DefaultCubeMapPrefix + texturesBaseName + "PZ.jpg")));
         }
+
+        public float Width() { return xMax - xMin; }
+
+        public float Height() { return yMax - yMin; }
+
+        public float Depth() { return zMax - zMin; }
 
   
         public Color getColor(Ray ray) {
