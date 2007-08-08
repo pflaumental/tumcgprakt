@@ -35,7 +35,6 @@ namespace RayTracerFramework.Loading {
 
             // Fill scene with the deserialized sceneXML
             Scene scene = new Scene();
-            scene.photonTracer = null;
             scene.photonMap = null;
             resolutionX = (int)sceneXML.targetResolution.x;
             resolutionY = (int)sceneXML.targetResolution.y;

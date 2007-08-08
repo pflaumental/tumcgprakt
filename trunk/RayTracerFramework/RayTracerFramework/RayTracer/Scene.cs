@@ -16,7 +16,6 @@ namespace RayTracerFramework.RayTracer {
         public ILightingModel lightingModel;
         public LightManager lightManager;
         public PhotonMap photonMap;
-        public PhotonTracer photonTracer;
         public Camera cam;
 
         public CubeMap cubeMap;
@@ -31,7 +30,6 @@ namespace RayTracerFramework.RayTracer {
         public Scene() { }
 
         public Scene(Camera cam) {
-            photonTracer = null;
             photonMap = null;
             this.cam = cam;
             kdTree = new GeoObjectKDTree();
@@ -54,16 +52,11 @@ namespace RayTracerFramework.RayTracer {
             return totalPhotonLightPower;
         }
 
-        public void ActivatePhotonMapping(
+        public void SetupPhotonMapping(
                 int photonMapSize, 
                 System.Windows.Forms.ProgressBar progressBar,
-                System.Windows.Forms.StatusStrip statusBar) {            
-            photonTracer = new PhotonTracer(
-                    this, 
-                    photonMapSize, 
-                    Settings.Setup.PhotonMapping.TracingMaxRecursionDepth,
-                    progressBar,
-                    statusBar);
+                System.Windows.Forms.StatusStrip statusBar) {
+
         }
 
         public DPoint AddDPoint(Vec3 position) { 
@@ -103,7 +96,10 @@ namespace RayTracerFramework.RayTracer {
             return box;
         }
 
-        public void Setup() {
+        public void Setup(
+                System.Windows.Forms.ProgressBar progressBar, 
+                System.Windows.Forms.StatusStrip statusBar) {
+            // Setup ambient light
             surfacesAmbientLightColor = new Color();
             foreach (Shading.Light light in lightManager.BlinnLightsWorldSpace) {
                 switch (light.lightType) {
@@ -116,9 +112,18 @@ namespace RayTracerFramework.RayTracer {
             }
             fogAmbientLightColor = surfacesAmbientLightColor * Settings.Setup.Scene.FogAmbientLightAmplifier;
 
+            // Optimize KD-Tree
             kdTree.Optimize();
-            if (photonTracer != null) {
-                photonMap = photonTracer.EmitPhotons();
+
+            // Emit photons
+            if (Settings.Setup.PhotonMapping.EmitPhotons) {
+                PhotonTracer photonTracer = new PhotonTracer(
+                        this,
+                        Settings.Setup.PhotonMapping.StoredPhotonsCount,
+                        Settings.Setup.PhotonMapping.TracingMaxRecursionDepth,
+                        progressBar,
+                        statusBar);
+                photonTracer.EmitPhotons();
             }
         }
 

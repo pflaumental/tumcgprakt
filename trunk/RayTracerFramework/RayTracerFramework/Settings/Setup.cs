@@ -31,6 +31,8 @@ namespace RayTracerFramework.Settings.Setup {
     public static class Loading {
         public static string DefaultStandardMeshDirectory = "../../Models/";
         public static string DefaultStandardTextureDirectory = "../../Textures/";
+        public static string DefaultStandardSceneDirectory = "../../Scenes/";
+        public static string DefaultSceneName = "standardscene.xml";
         public static string DefaultCubeMapName = "stpeters";
         public static string DefaultCubeMapPrefix = "cube_";
     }
