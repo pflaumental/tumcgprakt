@@ -65,7 +65,7 @@ namespace RayTracerFramework {
             InitializeComponent();
             sceneManager = new SceneManager();
 
-            scene = sceneManager.LoadScene("standardscene.xml");
+            scene = sceneManager.LoadScene("scenes\\standardscene.xml");
             cam = scene.cam;
 
             settingsDialog = new SettingsDialog();
@@ -80,7 +80,7 @@ namespace RayTracerFramework {
             sceneReady = false;
             isRendering = false;
             userCanceled = false;
-            renderer = new Renderer();
+            renderer = new Renderer(renderBackgroundWorker);
         }
 
         private void Setup() {            
@@ -282,8 +282,7 @@ namespace RayTracerFramework {
                     renderArgs.rgbValuesLength,
                     renderArgs.stride, 
                     renderArgs.targetWidth, 
-                    renderArgs.targetHeight, 
-                    worker);
+                    renderArgs.targetHeight);
         }
 
         private void renderBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {            
