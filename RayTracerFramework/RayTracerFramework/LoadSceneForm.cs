@@ -53,7 +53,13 @@ namespace RayTracerFramework {
           
 
         private void FillFormFromSceneFile(string sceneFile) {
-            scene = sceneManager.LoadScene(sceneFileBaseDirectory + sceneFile);
+            try {
+                scene = sceneManager.LoadScene(sceneFileBaseDirectory + sceneFile);
+            } catch (Exception e) {
+                MessageBox.Show("Error while loading the scene file \"" + sceneFile + "\":\n" + e.InnerException.Message, "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+           
 
             txtEyePosX.Text = scene.cam.eyePos.x.ToString();
             txtEyePosY.Text = scene.cam.eyePos.y.ToString();
