@@ -2,9 +2,9 @@
 <Scene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Camera>
     <EyePos>
-      <x>-2</x>
-      <y>1</y>
-      <z>-5</z>
+      <x>10</x>
+      <y>5</y>
+      <z>15</z>
     </EyePos>
     <LookAtPos>
       <x>0</x>
@@ -44,18 +44,18 @@
         <Blue>0.05</Blue>
       </AmbientColor>
       <DiffuseColor>
-        <Red>0.5</Red>
-        <Green>0.5</Green>
-        <Blue>0.5</Blue>
+        <Red>1</Red>
+        <Green>1</Green>
+        <Blue>1</Blue>
       </DiffuseColor>
       <SpecularColor>
-        <Red>0.5</Red>
-        <Green>0.5</Green>
-        <Blue>0.5</Blue>
+        <Red>0</Red>
+        <Green>0</Green>
+        <Blue>0</Blue>
       </SpecularColor>
       <Position>
         <x>0</x>
-        <y>-1</y>
+        <y>-2</y>
         <z>0</z>
       </Position>
     </Light>
@@ -63,18 +63,19 @@
   <PhotonLights>
     <Light xsi:type="Photon.PointLight">
       <DiffuseColor>
-        <Red>0.5</Red>
-        <Green>0.5</Green>
-        <Blue>0.5</Blue>
+        <Red>1</Red>
+        <Green>1</Green>
+        <Blue>1</Blue>
       </DiffuseColor>
       <Power>250</Power>
       <Position>
         <x>0</x>
-        <y>-1</y>
+        <y>-2</y>
         <z>0</z>
       </Position>
     </Light>
   </PhotonLights>
+  <!--Room-->
   <SceneObjects>
     <SceneObject xsi:type="Box">
       <Scaling>
@@ -89,12 +90,12 @@
       </Rotation>
       <Position>
         <x>0</x>
-        <y>-1.5</y>
+        <y>0</y>
         <z>0</z>
       </Position>
-      <Width>20</Width>
-      <Height>0.3</Height>
-      <Depth>20</Depth>
+      <Width>100</Width>
+      <Height>100</Height>
+      <Depth>100</Depth>
       <Textured>false</Textured>
       <Material>
         <emissive>
@@ -103,24 +104,123 @@
           <Blue>0</Blue>
         </emissive>
         <ambient>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
         </ambient>
         <diffuse>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
         </diffuse>
         <specular>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
         </specular>
         <specularPower>30</specularPower>
         <reflective>false</reflective>
         <refractive>false</refractive>
         <refractionRatio>0.1</refractionRatio>
+        <refractionRate>0</refractionRate>
+        <name>default</name>
+      </Material>
+    </SceneObject>    
+    <SceneObject xsi:type="Box">
+      <Scaling>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scaling>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Position>
+        <x>0</x>
+        <y>-4</y>
+        <z>0</z>
+      </Position>
+      <Width>100</Width>
+      <Height>2</Height>
+      <Depth>100</Depth>
+      <Textured>false</Textured>
+      <Material>
+        <emissive>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </emissive>
+        <ambient>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
+        </ambient>
+        <diffuse>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
+        </diffuse>
+        <specular>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
+        </specular>
+        <specularPower>30</specularPower>
+        <reflective>false</reflective>
+        <refractive>false</refractive>
+        <refractionRatio>0.1</refractionRatio>
+        <refractionRate>0</refractionRate>
+        <name>default</name>
+      </Material>
+    </SceneObject>    
+    <!--Interieur-->
+    <SceneObject xsi:type="Box">
+      <Scaling>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scaling>
+      <Rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </Rotation>
+      <Position>
+        <x>-3.5</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Width>6</Width>
+      <Height>6</Height>
+      <Depth>6</Depth>
+      <Textured>false</Textured>
+      <Material>
+        <emissive>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </emissive>
+        <ambient>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
+        </ambient>
+        <diffuse>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
+        </diffuse>
+        <specular>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
+        </specular>
+        <specularPower>30</specularPower>
+        <reflective>false</reflective>
+        <refractive>false</refractive>
+        <refractionRatio>0.5</refractionRatio>
         <refractionRate>0</refractionRate>
         <name>default</name>
       </Material>
@@ -137,13 +237,13 @@
         <z>0</z>
       </Rotation>
       <Position>
-        <x>0</x>
+        <x>3.5</x>
         <y>0</y>
         <z>0</z>
       </Position>
-      <Width>80</Width>
-      <Height>80</Height>
-      <Depth>80</Depth>
+      <Width>6</Width>
+      <Height>6</Height>
+      <Depth>6</Depth>
       <Textured>false</Textured>
       <Material>
         <emissive>
@@ -152,27 +252,27 @@
           <Blue>0</Blue>
         </emissive>
         <ambient>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
         </ambient>
         <diffuse>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
         </diffuse>
         <specular>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0.5</Red>
+          <Green>0.5</Green>
+          <Blue>0.5</Blue>
         </specular>
         <specularPower>30</specularPower>
         <reflective>false</reflective>
         <refractive>false</refractive>
-        <refractionRatio>0</refractionRatio>
+        <refractionRatio>0.1</refractionRatio>
         <refractionRate>0</refractionRate>
         <name>default</name>
       </Material>
-    </SceneObject>
+    </SceneObject>    
   </SceneObjects>
 </Scene>

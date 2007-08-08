@@ -259,7 +259,7 @@ namespace RayTracerFramework {
         }
 
         private void mediumConeFilterConstantKTrackBar_Scroll(object sender, EventArgs e) {
-            labelMediumConeFilterConstantKValue.Text = (((TrackBar)sender).Value / 20f).ToString();
+            labelMediumConeFilterConstantKValue.Text = ((((TrackBar)sender).Value + 10) / 10f).ToString();
         }
     }
 }
