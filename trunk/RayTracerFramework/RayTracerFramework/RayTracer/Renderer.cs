@@ -31,11 +31,14 @@ namespace RayTracerFramework.RayTracer {
         private Vec3 firstPixelPos;
         private int stride;
 
-        private volatile int nextLine;
+        private volatile int lastRenderedLine;
         private volatile bool renderingFinished;
 
-        public Renderer() {
-            renderingFinished = false;            
+        System.ComponentModel.BackgroundWorker worker;
+
+        public Renderer(System.ComponentModel.BackgroundWorker worker) {
+            renderingFinished = false;
+            this.worker = worker;
         }
 
         public void Render(
@@ -44,8 +47,7 @@ namespace RayTracerFramework.RayTracer {
                 int rgbValuesLength,
                 int stride,
                 int targetWidth,
-                int targetHeight,
-                System.ComponentModel.BackgroundWorker worker) {
+                int targetHeight) {
             // Collect input
             this.scene = scene;
             this.rgbValues = rgbValues;
@@ -71,7 +73,7 @@ namespace RayTracerFramework.RayTracer {
             firstPixelPos -= camX * ((viewPlaneWidth - pixelWidth) * 0.5f);
 
             // Reset render position
-            nextLine = 0;            
+            lastRenderedLine = -1;
             renderingFinished = false;
 
             // Create render threads
@@ -100,7 +102,7 @@ namespace RayTracerFramework.RayTracer {
                     }
                     return;
                 }
-                int progress = (int)((100f * nextLine) / targetHeight);
+                int progress = (int)((100f * lastRenderedLine) / targetHeight);
                 worker.ReportProgress(progress);
             }
 
@@ -124,7 +126,7 @@ namespace RayTracerFramework.RayTracer {
 
             // Render next line until finished
             #pragma warning disable 420
-            while((y = Interlocked.Increment(ref nextLine)) < targetHeight) { // pixel lines
+            while((y = Interlocked.Increment(ref lastRenderedLine)) < targetHeight) { // pixel lines
             #pragma warning restore 420
                 // Calculate ray direction, pixelCenterPos and rowStartPos
                 rowStartPos = firstPixelPos + y * yOffset;
