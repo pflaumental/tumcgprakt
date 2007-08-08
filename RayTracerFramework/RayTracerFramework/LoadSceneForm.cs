@@ -18,8 +18,8 @@ namespace RayTracerFramework {
         public Scene scene;       
         public int resolutionX, resolutionY;
 
-        public string sceneFileBaseDirectory = "../../Scenes/";
-        public string standardSceneFilename = "standardscene.xml";
+        public string sceneFileBaseDirectory = Settings.Setup.Loading.DefaultStandardSceneDirectory;
+        public string standardSceneFilename = Settings.Setup.Loading.DefaultSceneName;
         public string selectedScene;
 
         public LoadSceneForm() {

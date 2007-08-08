@@ -20,14 +20,14 @@ namespace RayTracerFramework {
         private Scene scene;
         private SceneManager sceneManager;
         private Renderer renderer;
-        private Camera cam;
+        //private Camera cam;
 
         private Bitmap renderBitmap;
         private byte[] rgbValues;
         private int rgbValuesLength;
 
-        private Vec3 camPos;
-        private Vec3 camLookAt;
+        //private Vec3 camPos;
+        //private Vec3 camLookAt;
 
         private bool sceneReady;
         private bool isRendering;
@@ -65,106 +65,25 @@ namespace RayTracerFramework {
             InitializeComponent();
             sceneManager = new SceneManager();
 
-            scene = sceneManager.LoadScene("scenes\\standardscene.xml");
-            cam = scene.cam;
+            scene = sceneManager.LoadScene("scenes\\standardscene.xml");            
+            LoadCameraControlValues();
 
             settingsDialog = new SettingsDialog();
-            camPos = new Vec3(0, 0, -5);
-            camLookAt = Vec3.Zero;
-            tbCamPosX.Text = camPos.x.ToString();
-            tbCamPosY.Text = camPos.y.ToString();
-            tbCamPosZ.Text = camPos.z.ToString();
-            tbCamLookAtX.Text = camLookAt.x.ToString();
-            tbCamLookAtY.Text = camLookAt.y.ToString();
-            tbCamLookAtZ.Text = camLookAt.z.ToString();
+            Vec3 camPos = new Vec3(0, 0, -5);
+            Vec3 camLookAt = Vec3.Zero;
             sceneReady = false;
             isRendering = false;
             userCanceled = false;
             renderer = new Renderer(renderBackgroundWorker);
         }
 
-        private void Setup() {            
-            
-            /*
-            //Camera cam = new Camera(new Vec3(-5f * (float)Math.Sin(pos * Settings.Render.Trigonometric.Pi * 0.1f), 0f, -5 * (float)Math.Cos(pos++ * Settings.Render.Trigonometric.Pi * 0.1f)),
-            //                        new Vec3(0, 0, 0f),
-            //                        Vec3.StdYAxis, Settings.Render.Trigonometric.PiQuarter, aspectRatio);
-
-            cam = new Camera(camPos, camLookAt, Vec3.StdYAxis, Settings.Render.Trigonometric.PiQuarter, 4f / 3f);
-            //cam.aspectRatio = aspectRatio;
-
-            scene = new Scene(cam);
-
-            PointLight l = new PointLight(new Vec3(1, 4, -3));
-            l.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l.diffuse = new Color(0.7f, 0.7f, 0.7f);
-            l.specular = new Color(0.5f, 0.5f, 0.5f);
-
-            PhotonMapping.Light pl = new PhotonMapping.PointLight(l.position);
-            pl.diffuse = l.diffuse;
-            pl.power = 100;
-
-            PointLight l2 = new PointLight(new Vec3(4.0f, 6.0f, -0.5f));
-            l2.ambient = l.ambient;
-            l2.diffuse = l.diffuse;
-            l2.specular = l.specular;
-
-            PhotonMapping.Light pl2 = new PhotonMapping.PointLight(l2.position);
-            pl2.diffuse = l2.diffuse;
-            pl2.power = 50;
-
-            PointLight l3 = new PointLight(new Vec3(2, -2, -2));
-            l3.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l3.diffuse = new Color(0.0f, 0.2f, 0.8f);
-            l3.specular = new Color(0.5f, 0.5f, 0.5f);
-
-            PointLight l4 = new PointLight(new Vec3(-2, -2, -2));
-            l4.ambient = new Color(0.05f, 0.05f, 0.05f);
-            l4.diffuse = new Color(0.2f, 0.3f, 0.2f);
-            l4.specular = new Color(0.5f, 0.5f, 0.3f);
-
-            scene.useCubeMap = false;
-
-            DirectionalLight l5 = new DirectionalLight(new Vec3(2, 3, 5));
-            l5.ambient = new Color(0.3f, 0.2f, 0.11f);
-            l5.diffuse = Color.Red;
-            l5.specular = Color.Black;
-
-            scene.lightManager.AddBlinnWorldSpaceLight(l);
-            scene.lightManager.AddPhotonWorldSpaceLight(pl);
-
-            scene.lightManager.AddBlinnWorldSpaceLight(l2);
-            scene.lightManager.AddPhotonWorldSpaceLight(pl2);
-
-            scene.lightManager.AddBlinnWorldSpaceLight(l5);
-
-            OBJLoader loader = new OBJLoader();
-            DMesh mesh = loader.LoadFromFile("bunny_t4046.obj");
-
-            scene.AddDMesh(mesh, Matrix.GetTranslation(-2, 0, 0));
-            //FastBitmap earthTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/earth.jpg")));
-            scene.AddDSphere(new Vec3(4.0f, 1.0f, -0.5f), 1.5f, new Material(Color.Blue, Color.Red, Color.Blue, Color.White, 10, true, true, 0.70f, 0.85f, null));
-            scene.AddDSphere(new Vec3(6.0f, 2.5f, 5.0f), 4, new Material(Color.White, Color.White, Color.White, Color.White, 15, true, false, 0.6f, 0f, "earth.jpg"));
-
-            //FastBitmap wallTexture = new FastBitmap(new Bitmap(Image.FromFile("../../Textures/env2.jpg")));
-            Matrix boxTransform = Matrix.GetRotationY(Settings.Render.Trigonometric.PiQuarter);
-            boxTransform *= Matrix.GetRotationX(Settings.Render.Trigonometric.PiQuarter);
-            boxTransform *= Matrix.GetTranslation(0.5f, -0.1f, 0f);
-            scene.AddDBox(boxTransform, 1.5f, 1.5f, 1.5f, true, new Material(Color.White, Color.White, Color.White, Color.White, 30, false, false, 0.1f, 0f, "env2.jpg"));
-            scene.AddDBox(Matrix.GetTranslation(0f, -1.5f, 0f), 20f, 0.3f, 20f, false, new Material(Color.White, Color.White, new Color(0.8f, 0.8f, 0.8f), Color.White, 30, false, false, 0.1f, 0f, null));
-            scene.AddDBox(Matrix.Identity, 16f, 16f, 16f, false, new Material(Color.White, Color.White, new Color(0.3f, 0.5f, 0.1f), Color.White, 30, false, false, 0f, 0f, null));
-            
-            // SceneManager sm2 = new SceneManager();
-            // sm2.SaveScene("scene.xml", scene, new Vec2(pictureBox.Size.Width, pictureBox.Size.Height));
-
-            */
-            if (Settings.Setup.PhotonMapping.EmitPhotons)
-                scene.ActivatePhotonMapping(
-                        Settings.Setup.PhotonMapping.StoredPhotonsCount,
-                        progressBar,
-                        statusBar);
-            // Do not forget:
-            scene.Setup();  
+        private void LoadCameraControlValues() {
+            tbCamPosX.Text = scene.cam.eyePos.x.ToString();
+            tbCamPosY.Text = scene.cam.eyePos.y.ToString();
+            tbCamPosZ.Text = scene.cam.eyePos.z.ToString();
+            tbCamLookAtX.Text = scene.cam.lookAtPos.x.ToString();
+            tbCamLookAtY.Text = scene.cam.lookAtPos.y.ToString();
+            tbCamLookAtZ.Text = scene.cam.lookAtPos.z.ToString();
         }
 
         private void Render() {            
@@ -173,27 +92,22 @@ namespace RayTracerFramework {
 
             // Parse CamPos and CamLookAt
             try {
-                cam.eyePos.x = float.Parse(tbCamPosX.Text);
-                cam.eyePos.y = float.Parse(tbCamPosY.Text);
-                cam.eyePos.z = float.Parse(tbCamPosZ.Text);
-                cam.lookAtPos.x = float.Parse(tbCamLookAtX.Text);
-                cam.lookAtPos.y = float.Parse(tbCamLookAtY.Text);
-                cam.lookAtPos.z = float.Parse(tbCamLookAtZ.Text);
+                scene.cam.eyePos.x = float.Parse(tbCamPosX.Text);
+                scene.cam.eyePos.y = float.Parse(tbCamPosY.Text);
+                scene.cam.eyePos.z = float.Parse(tbCamPosZ.Text);
+                scene.cam.lookAtPos.x = float.Parse(tbCamLookAtX.Text);
+                scene.cam.lookAtPos.y = float.Parse(tbCamLookAtY.Text);
+                scene.cam.lookAtPos.z = float.Parse(tbCamLookAtZ.Text);
             } catch {
                 MessageBox.Show("EyePos/LookAt specified in invalid format. "
                         + "Using standard values (EyePos = (0,0,-5), LookAt = (0,0,0)",
                         "Input error");
-                cam.eyePos = new Vec3(0, 0, -5);
-                cam.lookAtPos = Vec3.Zero;
-                tbCamPosX.Text = camPos.x.ToString();
-                tbCamPosY.Text = camPos.y.ToString();
-                tbCamPosZ.Text = camPos.z.ToString();
-                tbCamLookAtX.Text = camLookAt.x.ToString();
-                tbCamLookAtY.Text = camLookAt.y.ToString();
-                tbCamLookAtZ.Text = camLookAt.z.ToString();
+                scene.cam.eyePos = new Vec3(0, 0, -5);
+                scene.cam.lookAtPos = Vec3.Zero;
+                LoadCameraControlValues();
             }
-            
-            cam.aspectRatio = ((float)renderBitmap.Width) / renderBitmap.Height;
+
+            scene.cam.aspectRatio = ((float)renderBitmap.Width) / renderBitmap.Height;
 
             // Generate rgbValues
             BitmapData bitmapData = renderBitmap.LockBits(new Rectangle(0, 0, renderBitmap.Width, renderBitmap.Height),
@@ -223,7 +137,7 @@ namespace RayTracerFramework {
                 statusBar.Items.Add("Setting up scene. This may take some time...");
                 btnRender.Text = "Render";
                 this.Update();
-                Setup();                
+                scene.Setup(progressBar, statusBar);
                 sceneReady = true;
             }
             btnRender.Enabled = true;
@@ -241,7 +155,7 @@ namespace RayTracerFramework {
             btnRender.Text = "Render";
             this.Update();
             sceneReady = true;
-            Setup();
+            scene.Setup(progressBar, statusBar);
             statusBar.Items.Clear();
             statusBar.Items.Add("Setup done.");
         }
@@ -250,14 +164,12 @@ namespace RayTracerFramework {
             LoadSceneForm loadForm = new LoadSceneForm();
             if (loadForm.ShowDialog() == DialogResult.OK) {
                 scene = loadForm.scene;
-                cam = scene.cam;
-
                 if (sceneReady) {
                     sceneReady = false;
                     btnRender.Text = "Setup + R.";
                 }
+                LoadCameraControlValues();
             }
-
             statusBar.Items.Clear();
             statusBar.Items.Add("Scene has been loaded from \"" + loadForm.selectedScene + "\".");
         }

@@ -16,7 +16,7 @@ namespace RayTracerFramework {
             LoadControlValues();
         }
 
-        private void LoadControlValues() {
+        public void LoadControlValues() {
             // Setup
             fogAmbientLightAmplifierTrackBar.Value = (int)Settings.Setup.Scene.FogAmbientLightAmplifier;
             labelFogAmbientLightAmplifierValue.Text = Settings.Setup.Scene.FogAmbientLightAmplifier.ToString();
