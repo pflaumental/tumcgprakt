@@ -47,6 +47,9 @@ namespace RayTracerFramework {
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtBackgroundTechnique = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.pictureBoxCubeMap = new System.Windows.Forms.PictureBox();
             this.label14 = new System.Windows.Forms.Label();
             this.pnlBackgroundColor = new System.Windows.Forms.Panel();
             this.label13 = new System.Windows.Forms.Label();
@@ -111,18 +114,15 @@ namespace RayTracerFramework {
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.pictureBoxCubeMap = new System.Windows.Forms.PictureBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txtBackgroundTechnique = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCubeMap)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCubeMap)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -350,6 +350,32 @@ namespace RayTracerFramework {
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Global Settings";
+            // 
+            // txtBackgroundTechnique
+            // 
+            this.txtBackgroundTechnique.Location = new System.Drawing.Point(128, 80);
+            this.txtBackgroundTechnique.Name = "txtBackgroundTechnique";
+            this.txtBackgroundTechnique.Size = new System.Drawing.Size(102, 20);
+            this.txtBackgroundTechnique.TabIndex = 14;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 83);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(119, 13);
+            this.label12.TabIndex = 13;
+            this.label12.Text = "Background Technique";
+            // 
+            // pictureBoxCubeMap
+            // 
+            this.pictureBoxCubeMap.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBoxCubeMap.Location = new System.Drawing.Point(333, 19);
+            this.pictureBoxCubeMap.Name = "pictureBoxCubeMap";
+            this.pictureBoxCubeMap.Size = new System.Drawing.Size(87, 80);
+            this.pictureBoxCubeMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxCubeMap.TabIndex = 12;
+            this.pictureBoxCubeMap.TabStop = false;
             // 
             // label14
             // 
@@ -896,36 +922,12 @@ namespace RayTracerFramework {
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Scene Content";
             // 
-            // pictureBoxCubeMap
-            // 
-            this.pictureBoxCubeMap.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBoxCubeMap.Location = new System.Drawing.Point(333, 19);
-            this.pictureBoxCubeMap.Name = "pictureBoxCubeMap";
-            this.pictureBoxCubeMap.Size = new System.Drawing.Size(87, 80);
-            this.pictureBoxCubeMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxCubeMap.TabIndex = 12;
-            this.pictureBoxCubeMap.TabStop = false;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 83);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(119, 13);
-            this.label12.TabIndex = 13;
-            this.label12.Text = "Background Technique";
-            // 
-            // txtBackgroundTechnique
-            // 
-            this.txtBackgroundTechnique.Location = new System.Drawing.Point(128, 80);
-            this.txtBackgroundTechnique.Name = "txtBackgroundTechnique";
-            this.txtBackgroundTechnique.Size = new System.Drawing.Size(102, 20);
-            this.txtBackgroundTechnique.TabIndex = 14;
-            // 
             // LoadSceneForm
             // 
+            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(446, 597);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.btnOK);
@@ -942,6 +944,7 @@ namespace RayTracerFramework {
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCubeMap)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -949,7 +952,6 @@ namespace RayTracerFramework {
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCubeMap)).EndInit();
             this.ResumeLayout(false);
 
         }
