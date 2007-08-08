@@ -64,8 +64,9 @@ namespace RayTracerFramework {
         public RayTracerForm() {
             InitializeComponent();
             sceneManager = new SceneManager();
-
-            scene = sceneManager.LoadScene("scenes\\standardscene.xml");            
+            string stdSceneFile = Settings.Setup.Loading.DefaultStandardSceneDirectory
+                    + Settings.Setup.Loading.DefaultSceneName;
+            scene = sceneManager.LoadScene(stdSceneFile);
             LoadCameraControlValues();
 
             settingsDialog = new SettingsDialog();

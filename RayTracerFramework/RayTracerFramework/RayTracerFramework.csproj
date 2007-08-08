@@ -149,8 +149,10 @@
     <Compile Include="Utility\LightHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scenes\fog scene.xml" />
+    <Content Include="Scenes\outdoor scene.xml" />
+    <Content Include="Scenes\scene 2.xml" />
     <Content Include="Scenes\standardscene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
