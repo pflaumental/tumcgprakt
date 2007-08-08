@@ -66,7 +66,12 @@ namespace RayTracerFramework {
             sceneManager = new SceneManager();
             string stdSceneFile = Settings.Setup.Loading.DefaultStandardSceneDirectory
                     + Settings.Setup.Loading.DefaultSceneName;
-            scene = sceneManager.LoadScene(stdSceneFile);
+            try {
+                scene = sceneManager.LoadScene(stdSceneFile);
+            } catch (Exception e) {
+                MessageBox.Show("Error while loading the scene file \"" + stdSceneFile + "\":\n" + e.InnerException.Message, "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0); 
+            }
             LoadCameraControlValues();
 
             settingsDialog = new SettingsDialog();
