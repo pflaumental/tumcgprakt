@@ -39,61 +39,43 @@
   <BlinnLights>
     <Light xsi:type="Blinn.PointLight">
       <AmbientColor>
-        <Red>0.02</Red>
-        <Green>0.02</Green>
+        <Red>0.05</Red>
+        <Green>0.05</Green>
         <Blue>0.05</Blue>
       </AmbientColor>
       <DiffuseColor>
-        <Red>0.2</Red>
-        <Green>0.2</Green>
+        <Red>0.5</Red>
+        <Green>0.5</Green>
         <Blue>0.5</Blue>
       </DiffuseColor>
       <SpecularColor>
         <Red>0.5</Red>
         <Green>0.5</Green>
-        <Blue>0.9</Blue>
+        <Blue>0.5</Blue>
       </SpecularColor>
       <Position>
-        <x>1</x>
-        <y>4</y>
-        <z>-3</z>
+        <x>0</x>
+        <y>-1</y>
+        <z>0</z>
       </Position>
     </Light>
   </BlinnLights>
   <PhotonLights>
     <Light xsi:type="Photon.PointLight">
       <DiffuseColor>
-        <Red>0.1</Red>
-        <Green>0.2</Green>
-        <Blue>0.7</Blue>
+        <Red>0.5</Red>
+        <Green>0.5</Green>
+        <Blue>0.5</Blue>
       </DiffuseColor>
       <Power>250</Power>
       <Position>
-        <x>2</x>
-        <y>2</y>
-        <z>-0.5</z>
+        <x>0</x>
+        <y>-1</y>
+        <z>0</z>
       </Position>
     </Light>
   </PhotonLights>
   <SceneObjects>
-    <SceneObject xsi:type="Mesh">
-      <MeshFilename>bunny_t4046.obj</MeshFilename>
-      <Scaling>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
-      </Scaling>
-      <Rotation>
-        <x>0</x>
-        <y>3</y>
-        <z>0</z>
-      </Rotation>
-      <Position>
-        <x>0</x>
-        <y>0</y>
-        <z>-1</z>
-      </Position>
-    </SceneObject>
     <SceneObject xsi:type="Box">
       <Scaling>
         <x>1</x>
@@ -116,9 +98,9 @@
       <Textured>false</Textured>
       <Material>
         <emissive>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
         </emissive>
         <ambient>
           <Red>1</Red>
@@ -126,9 +108,9 @@
           <Blue>1</Blue>
         </ambient>
         <diffuse>
-          <Red>0.8</Red>
-          <Green>0.8</Green>
-          <Blue>0.8</Blue>
+          <Red>1</Red>
+          <Green>1</Green>
+          <Blue>1</Blue>
         </diffuse>
         <specular>
           <Red>1</Red>
@@ -159,15 +141,15 @@
         <y>0</y>
         <z>0</z>
       </Position>
-      <Width>16</Width>
-      <Height>16</Height>
-      <Depth>16</Depth>
+      <Width>80</Width>
+      <Height>80</Height>
+      <Depth>80</Depth>
       <Textured>false</Textured>
       <Material>
         <emissive>
-          <Red>1</Red>
-          <Green>1</Green>
-          <Blue>1</Blue>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
         </emissive>
         <ambient>
           <Red>1</Red>
@@ -175,9 +157,9 @@
           <Blue>1</Blue>
         </ambient>
         <diffuse>
-          <Red>0.3</Red>
-          <Green>0.3</Green>
-          <Blue>0.3</Blue>
+          <Red>1</Red>
+          <Green>1</Green>
+          <Blue>1</Blue>
         </diffuse>
         <specular>
           <Red>1</Red>

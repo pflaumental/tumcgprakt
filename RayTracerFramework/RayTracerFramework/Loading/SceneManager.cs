@@ -93,7 +93,7 @@ namespace RayTracerFramework.Loading {
             // scene.refractionIndex = 1.0f;
 
             scene.mediumRefractionIndex = 1.0f;
-            scene.mediumColor = new Color(1f, 0.5f, 0.5f);
+            scene.mediumColor = Settings.Setup.Scene.StdFogColor;
             return scene;
         }
 
