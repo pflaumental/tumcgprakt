@@ -104,6 +104,7 @@ namespace RayTracerFramework.RayTracer {
                 }
             }
             fogAmbientLightColor = surfacesAmbientLightColor * Settings.Setup.Scene.FogAmbientLightAmplifier;
+            mediumColor = Settings.Setup.Scene.StdFogColor;
 
             // Optimize KD-Tree
             kdTree.Optimize();

@@ -55,8 +55,6 @@ namespace RayTracerFramework.Shading {
                 resultColor += (localColor * localPart);
             }
 
-            // TODO insert fogging here
-
             bool continueRecursion = ray.recursionDepth + 1 <= Settings.Render.Renderer.MaxRecursionDepth;
             float reflectionPartSum = fresnelReflectionPart;            
 
@@ -153,6 +151,7 @@ namespace RayTracerFramework.Shading {
                 // Add reflection color to resultColor
                 resultColor += (reflectionColor * reflectionPartSum);
             }
+
             // Fog
             if (Settings.Render.StdShading.enableFog) {
                 // Medium illumination
