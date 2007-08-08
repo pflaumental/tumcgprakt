@@ -52,13 +52,6 @@ namespace RayTracerFramework.RayTracer {
             return totalPhotonLightPower;
         }
 
-        public void SetupPhotonMapping(
-                int photonMapSize, 
-                System.Windows.Forms.ProgressBar progressBar,
-                System.Windows.Forms.StatusStrip statusBar) {
-
-        }
-
         public DPoint AddDPoint(Vec3 position) { 
             DPoint point = new DPoint(position);
             kdTree.content.Add(point);
@@ -123,8 +116,9 @@ namespace RayTracerFramework.RayTracer {
                         Settings.Setup.PhotonMapping.TracingMaxRecursionDepth,
                         progressBar,
                         statusBar);
-                photonTracer.EmitPhotons();
-            }
+                photonMap = photonTracer.EmitPhotons();
+            } else
+                photonMap = null;
         }
 
         public Color GetBackgroundColor(Ray ray) {
