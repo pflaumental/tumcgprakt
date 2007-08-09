@@ -40,33 +40,39 @@ namespace RayTracerFramework.Shading {
             // Local lighting model
             Color localContribution = new Color(); // diffuse and specular color
             foreach (Light light in scene.lightManager.BlinnLightsWorldSpace) {
+                Vec3 N, L, V, H, toLightRayPos;
+                Ray toLightRay;
+                RayIntersectionPoint firstIntersection;
+                float diffuse, specular;
+                 
                 switch (light.lightType) {
+
                     case LightType.Point:
                         PointLight pointLight = (PointLight)light;
                         
-                        Vec3 N = intersection.normal;
+                        N = intersection.normal;
                         Vec3 posToLight = pointLight.position - intersection.position;
-                        Vec3 L = Vec3.Normalize(posToLight);
+                        L = Vec3.Normalize(posToLight);
                         // Points normal away from light?
-                        float diffuse = Vec3.Dot(L, N);
+                        diffuse = Vec3.Dot(L, N);
                         if (diffuse < 0)
                             continue;                        
                         
                         // Is light in shadow?
-                        Vec3 toLightRayPos = new Vec3(intersection.position + Settings.Render.Ray.PositionEpsilon * intersection.normal);
-                        Ray toLightRay = new Ray(toLightRayPos, L, 0);
+                        toLightRayPos = new Vec3(intersection.position + Settings.Render.Ray.PositionEpsilon * intersection.normal);
+                        toLightRay = new Ray(toLightRayPos, L, 0);
                         float distanceToLight = posToLight.Length;
-                        RayIntersectionPoint firstIntersection;
+                      
                         if (scene.Intersect(toLightRay, out firstIntersection) && firstIntersection.t < distanceToLight) {                            
                             continue;
                         }
  
                         // Light is seen
                         //Vec3 V = -ray.direction;
-                        Vec3 V = Vec3.Normalize(scene.cam.eyePos - intersection.position);
-                        Vec3 H = Vec3.Normalize(L + V);
+                        V = Vec3.Normalize(scene.cam.eyePos - intersection.position);
+                        H = Vec3.Normalize(L + V);
                        
-                        float specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
+                        specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
                         // assert if (material.diffuseTexture != null && (intersection.textureCoordinates.x < 0f || intersection.textureCoordinates.x > 1f || intersection.textureCoordinates.y < 0f || intersection.textureCoordinates.y > 1f)) throw new Exception("Texture coordinates out of bounds");
                         
                         // Diffuse color
@@ -77,7 +83,34 @@ namespace RayTracerFramework.Shading {
 
                         break;
                     case LightType.Directional:
+                        DirectionalLight dirLight = (DirectionalLight)light;
+                       
+                        N = intersection.normal;
+                        L = dirLight.direction;
+                        diffuse = Vec3.Dot(L, N);
+                        if (diffuse < 0)
+                            continue;
+
+                        // Is light in shadow?
+                        toLightRayPos = new Vec3(intersection.position + Settings.Render.Ray.PositionEpsilon * intersection.normal);
+                        toLightRay = new Ray(toLightRayPos, L, 0);
+                       
+                        if (scene.Intersect(toLightRay, out firstIntersection)) 
+                            continue;
+                        // Light is seen
+                        //Vec3 V = -ray.direction;
+                        V = Vec3.Normalize(scene.cam.eyePos - intersection.position);
+                        H = Vec3.Normalize(L + V);
+
+                        specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
+
+                        // Diffuse color
+                        localContribution = localContribution + (material.GetDiffuse(intersection.textureCoordinates) * dirLight.diffuse * diffuse);
+
+                        // Specular color
+                        localContribution = localContribution + (material.specular * dirLight.specular * specular);
                         break;
+
                 } // end switch                
             } // end foreach
             if (Settings.Render.PhotonMapping.RenderSurfacePhotons)
