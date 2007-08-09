@@ -55,6 +55,8 @@ namespace RayTracerFramework {
         private void FillFormFromSceneFile(string sceneFile) {
             try {
                 scene = sceneManager.LoadScene(sceneFileBaseDirectory + sceneFile);
+                resolutionX = sceneManager.resolutionX;
+                resolutionY = sceneManager.resolutionY;
             } catch (Exception e) {
                 MessageBox.Show("Error while loading the scene file \"" + sceneFile + "\":\n" + e.InnerException.Message, "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

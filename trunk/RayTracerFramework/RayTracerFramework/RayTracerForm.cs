@@ -68,6 +68,10 @@ namespace RayTracerFramework {
                     + Settings.Setup.Loading.DefaultSceneName;
             try {
                 scene = sceneManager.LoadScene(stdSceneFile);
+                this.Size = new Size(sceneManager.resolutionX + 32,
+                                     sceneManager.resolutionY + 144);
+                pictureBox.Width = sceneManager.resolutionX;
+                pictureBox.Height = sceneManager.resolutionY;
             } catch (Exception e) {
                 MessageBox.Show("Error while loading the scene file \"" + stdSceneFile + "\":\n" + e.InnerException.Message, "Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0); 
@@ -170,6 +174,11 @@ namespace RayTracerFramework {
             LoadSceneForm loadForm = new LoadSceneForm();
             if (loadForm.ShowDialog() == DialogResult.OK) {
                 scene = loadForm.scene;
+                this.Size = new Size(loadForm.resolutionX + 32,
+                                     loadForm.resolutionY + 144);
+                pictureBox.Width = loadForm.resolutionX;
+                pictureBox.Height = loadForm.resolutionY;
+
                 if (sceneReady) {
                     sceneReady = false;
                     btnRender.Text = "Setup + R.";
