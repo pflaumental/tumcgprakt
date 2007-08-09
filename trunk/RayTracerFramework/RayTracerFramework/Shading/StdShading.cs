@@ -19,7 +19,11 @@ namespace RayTracerFramework.Shading {
                 Material material, 
                 float contribution) {
 
+            // Related assignement: 4.2.a
+
             Color resultColor = new Color();
+
+            // Related assignement: 6.2.a
 
             float fresnelReflectionPart, refractionPart, localPart;
             if (material.reflective) {

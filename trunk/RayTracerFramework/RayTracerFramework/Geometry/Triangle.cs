@@ -5,6 +5,8 @@ using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Geometry {
 
+    // Related assignement: 5.1
+
     public class Triangle : IGeometricObject {
         public Vec3 p1, p2, p3;
         public Vec3 n1, n2, n3;

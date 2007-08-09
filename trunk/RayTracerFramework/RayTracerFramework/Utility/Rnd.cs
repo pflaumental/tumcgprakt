@@ -8,6 +8,7 @@ namespace RayTracerFramework.Utility {
         private static Random random = new Random(1);
 
         public static Vec3 RandomVec3() {
+            #region alternative
             /*float f1 = (float)(random.NextDouble() * 2 -1);
             float f2 = (float)(random.NextDouble() * 2 - 1);
             float f3 = (float)(random.NextDouble() * 2 -1);
@@ -20,6 +21,7 @@ namespace RayTracerFramework.Utility {
             float y = (float)(Math.Sin(phi) * Math.Cos(theta));
             float z = (float)Math.Cos(theta);
             return new Vec3(x, y, z);*/
+            #endregion
 
             float r1 = (float)Rnd.RandomFloat();
             float r2 = (float)Rnd.RandomFloat();

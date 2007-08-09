@@ -11,6 +11,9 @@ namespace RayTracerFramework.Utility {
         }
 
         public static Vec3 GetUniformRndDirection(Vec3 normal) {
+
+            // Related assignement: 8.2.a
+
             Vec3 direction = Rnd.RandomVec3();
             if (Vec3.Dot(direction, normal) < 0)
                 direction = -direction;
@@ -18,6 +21,9 @@ namespace RayTracerFramework.Utility {
         }
 
         public static Vec3 GetRndDirectionCosWeightedPDF(Vec3 normal) {
+
+            // Related assignement: 8.2.a
+
             float r1 = Rnd.RandomFloat();
             float r2 = Rnd.RandomFloat();
 
@@ -25,9 +31,21 @@ namespace RayTracerFramework.Utility {
             float x = (float)(Math.Cos(Settings.Render.Trigonometric.TwoPi * r1) * Math.Sqrt(1 - r2));
             float y = (float)(Math.Sin(Settings.Render.Trigonometric.TwoPi * r1) * Math.Sqrt(1 - r2));
             float z = (float)Math.Sqrt(r2);
-            return null;
+            return new Vec3(x,y,z);
+        }
 
-            
+        public static Vec3 GetRndSpecularPhongPDF(Vec3 normal, float n) {
+
+            // Related assignement: 8.2.b
+
+            float r1 = Rnd.RandomFloat();
+            float r2 = Rnd.RandomFloat();
+
+            // x, y, z relative to standard basis
+            float x = (float)(Math.Cos(Settings.Render.Trigonometric.TwoPi * r1) * Math.Sqrt(1 - Math.Pow(r2, 2f / (n + 1f))));
+            float y = (float)(Math.Sin(Settings.Render.Trigonometric.TwoPi * r1) * Math.Sqrt(1 - Math.Pow(r2, 2f / (n + 1f))));
+            float z = (float)Math.Pow(r2, (1f / (n + 1f)));
+            return new Vec3(x, y, z);
         }
     }
 }

@@ -8,6 +8,8 @@ using RayTracerFramework.Utility;
 
 namespace RayTracerFramework.Shading {
     public class CubeMap {
+        // Related assignement: 4.2.b
+
         public float xMin, xMax, yMin, yMax, zMin, zMax;
 
         public FastBitmap xMinTexture, xMaxTexture;
@@ -60,12 +62,9 @@ namespace RayTracerFramework.Shading {
                     float pixelX = (xTex * (xMaxTexture.Width - 1));
                     float pixelY = (yTex * (xMaxTexture.Height - 1));
 
-                    //int pixelX = (int)(xTex * (xMaxTexture.Width-1));
-                    //int pixelY = (int)(yTex * (xMaxTexture.Height-1));
                     return xMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
-            // Left Plane DONE
             else if (dirWS.x < 0) {
                 t = (xMin - posWS.x) / dirWS.x;
                 Vec3 p = posWS + dirWS * t;
@@ -82,7 +81,6 @@ namespace RayTracerFramework.Shading {
                 }
             }
 
-            // Upper plane todo
             if (dirWS.y > 0) {
                 t = (yMax - posWS.y) / dirWS.y;
                 Vec3 p = posWS + dirWS * t;
@@ -93,13 +91,10 @@ namespace RayTracerFramework.Shading {
                     float pixelX = (xTex * (yMaxTexture.Width - 1));
                     float pixelY = (yTex * (yMaxTexture.Height - 1));
 
-                    //int pixelX = (int)(xTex * (yMaxTexture.Width-1));
-                    //int pixelY = (int)(yTex * (yMaxTexture.Height - 1));
-
                     return yMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
-            // lower plane todo
+
             else if (dirWS.y < 0) {
                 t = (yMin - posWS.y) / dirWS.y;
                 Vec3 p = posWS + dirWS * t;
@@ -110,14 +105,10 @@ namespace RayTracerFramework.Shading {
                     float pixelX = (xTex * (yMinTexture.Width - 1));
                     float pixelY = (yTex * (yMinTexture.Height - 1));
 
-                    //int pixelX = (int)(xTex * (yMinTexture.Width - 1));
-                    //int pixelY = (int)(yTex * (yMinTexture.Height - 1));
-
                     return yMinTexture.GetPixel(pixelX, pixelY);
                 }
             }
 
-            // Back plane DONE
             if (dirWS.z > 0) {
                 t = (zMax - posWS.z) / dirWS.z;
                 Vec3 p = posWS + dirWS * t;
@@ -128,13 +119,9 @@ namespace RayTracerFramework.Shading {
                     float pixelX = xTex * (zMaxTexture.Width - 1);
                     float pixelY = yTex * (zMaxTexture.Height - 1);                    
 
-                    //int pixelX = (int) xTex * (zMaxTexture.Width - 1);
-                    //int pixelY = (int) yTex * (zMaxTexture.Height - 1);
-
                     return zMaxTexture.GetPixel(pixelX, pixelY);
                 }
             } 
-            // Front Plane DONE
             else if (dirWS.z < 0) {
                 t = (zMin - posWS.z) / dirWS.z;
                 Vec3 p = posWS + dirWS * t;
@@ -144,9 +131,6 @@ namespace RayTracerFramework.Shading {
 
                     float pixelX = (xTex * (zMinTexture.Width - 1));
                     float pixelY = (yTex * (zMinTexture.Height - 1));                    
-
-                    //int pixelX = (int)(xTex * (zMinTexture.Width-1));
-                    //int pixelY = (int)(yTex * (zMinTexture.Height-1));
 
                     return zMinTexture.GetPixel(pixelX, pixelY);
                 }

@@ -8,6 +8,9 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace RayTracerFramework.Loading {
+    
+    // Related assignement: 6.1
+
     public class OBJPointLoader : IPointLoader {
 
         public string standardMeshDirectory = Settings.Setup.Loading.DefaultStandardMeshDirectory;

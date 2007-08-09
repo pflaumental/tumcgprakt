@@ -18,16 +18,6 @@ namespace RayTracerFramework.Shading {
             RayMeshIntersectionPoint subsetIntersection = (RayMeshIntersectionPoint)intersection;
             DMeshSubset hitSubset = (DMeshSubset)subsetIntersection.hitSubset;
             return StdShading.RecursiveShade(ray, intersection, scene, hitSubset.material, contribution);
-
-            //return scene.lightingModel.CalculateColor(ray, intersection, /*hitSubset.material*/Material.WhiteMaterial, scene);
-            //foreach (DMeshSubset subset in subsets) {
-            //    if (subset.triangles.Contains(subsetIntersection.hitSubset)) {
-                   
-            //        return scene.lightingModel.CalculateColor(ray, intersection, Material.WhiteMaterial, scene);
-            //        //return StdShading.RecursiveShade(ray, intersection, scene, Material.RedMaterial, contribution);
-            //    }
-            //}
-            //throw new Exception("The hit triangle does not belong to this mesh.");
         }
 
         public Material Material {

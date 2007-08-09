@@ -6,6 +6,8 @@ namespace RayTracerFramework.Geometry {
 
     abstract public class KDTree : IIntersectable {
 
+        // Related assignement: 5.3
+
         // Variables
         public List<IIntersectable> content;
         public KDTree.Node root;
@@ -217,36 +219,6 @@ namespace RayTracerFramework.Geometry {
             return new KDTree.Inner(leftNode, rightNode, splitAxis, planePosition);
         }
 
-        protected bool Traverse(Ray ray, KDTree.Node node, float tMin, float tMax) {
-            if (node.isLeaf) {
-                KDTree.Leaf leaf = (KDTree.Leaf)node;
-
-                foreach (IIntersectable obj in leaf.content) {
-                    if (obj.Intersect(ray)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            KDTree.Inner inner = (KDTree.Inner)node;
-
-            KDTree.Node near, far;
-            float tSplit;
-            CalculateInner(ray, inner, out near, out far, out tSplit);
-
-            if ((tSplit >= tMax) || (tSplit < 0f))
-                return Traverse(ray, near, tMin, tMax);
-            else if (tSplit < tMin)
-                return Traverse(ray, far, tMin, tMax);
-            else {
-                if (Traverse(ray, near, tMin, tSplit))
-                    return true;
-                return Traverse(ray, far, tSplit, tMax);
-            }
-        }
-
         protected bool Traverse(Ray ray, KDTree.Node node, float tMin, float tMax, out RayIntersectionPoint firstIntersection) {
             if (node.isLeaf) {
                 KDTree.Leaf leaf = (KDTree.Leaf)node;
@@ -371,7 +343,8 @@ namespace RayTracerFramework.Geometry {
         }
 
         public bool Intersect(Ray ray) {
-            return Traverse(ray, root, 0f, float.PositiveInfinity);
+            RayIntersectionPoint dummy;
+            return Traverse(ray, root, 0f, float.PositiveInfinity, out dummy);
         }
 
         public bool Intersect(Ray ray, out RayIntersectionPoint firstIntersection) {

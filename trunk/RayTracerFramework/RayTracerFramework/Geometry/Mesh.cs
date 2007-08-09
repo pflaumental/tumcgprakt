@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RayTracerFramework.Geometry {
-    
+
+    // Related assignement: 5.2
     
     public class Mesh : IGeometricObject {
         public string meshFilename;

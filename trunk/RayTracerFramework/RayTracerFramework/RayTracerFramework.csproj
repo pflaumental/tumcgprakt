@@ -125,7 +125,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -138,7 +137,6 @@
     <Compile Include="RayTracer\Camera.cs" />
     <Compile Include="RayTracer\Renderer.cs" />
     <Compile Include="RayTracer\Scene.cs" />
-    <Compile Include="RayTracer\Test.cs" />
     <Compile Include="Shading\Light.cs" />
     <Compile Include="Shading\LightManager.cs" />
     <Compile Include="Shading\Material.cs" />
@@ -149,6 +147,7 @@
     <Compile Include="Utility\LightHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scenes\dir scene.xml" />
     <Content Include="Scenes\fog scene.xml" />
     <Content Include="Scenes\outdoor scene.xml" />
     <Content Include="Scenes\scene 2.xml" />

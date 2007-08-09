@@ -86,6 +86,8 @@ namespace RayTracerFramework.Shading {
                 this.diffuseTexture = new FastBitmap(new Bitmap(Image.FromFile(Settings.Setup.Loading.DefaultStandardTextureDirectory + textureName)));
         }
 
+        // Related assignement: 4.2.b
+
         public Color GetDiffuse(Vec2 textureCoordinates) {
             if (diffuseTexture == null)
                 return diffuse;

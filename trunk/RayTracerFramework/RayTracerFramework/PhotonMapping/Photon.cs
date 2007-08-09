@@ -5,9 +5,11 @@ using RayTracerFramework.Shading;
 using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.PhotonMapping {
-
     
     public class Photon {
+
+        // Related assignement: 8.1.b
+
         public Color power;
         public Vec3 position;
         public Vec3 direction;
