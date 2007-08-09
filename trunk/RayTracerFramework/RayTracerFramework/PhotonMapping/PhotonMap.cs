@@ -5,6 +5,9 @@ using RayTracerFramework.Geometry;
 
 namespace RayTracerFramework.PhotonMapping {
     public class PhotonMap {
+
+        // Related assignement: 8.3.a
+
         private Node root;
 
         private class Node {

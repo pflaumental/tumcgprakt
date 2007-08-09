@@ -82,7 +82,7 @@ namespace RayTracerFramework.RayTracer {
 
             for (int i = 0; i < numThreads; i++) {
                 threads[i] = new Thread(new ThreadStart(MTRender));
-                threads[i].Priority = ThreadPriority.BelowNormal;
+                threads[i].Priority = ThreadPriority.Lowest;
             }
 
             // Start rendering
