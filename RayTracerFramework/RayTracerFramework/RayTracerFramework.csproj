@@ -81,7 +81,7 @@
     </Compile>
     <Compile Include="Settings\Render.cs" />
     <Compile Include="Settings\Setup.cs" />
-    <Compile Include="Shading\BlinnPhongLightingModel.cs" />
+    <Compile Include="Shading\StdLightingModel.cs" />
     <Compile Include="Shading\Color.cs" />
     <Compile Include="Shading\CubeMap.cs" />
     <Compile Include="Shading\DBox.cs" />

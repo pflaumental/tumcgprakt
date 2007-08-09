@@ -16,6 +16,8 @@ using RayTracerFramework.Utility;
 namespace RayTracerFramework.Loading {
     public class SceneManager {
 
+        // Related assignement: 11
+
         public string meshBaseDirectory = Settings.Setup.Loading.DefaultStandardMeshDirectory;
         public string textureBaseDirectory = Settings.Setup.Loading.DefaultStandardTextureDirectory;
 
@@ -88,7 +90,7 @@ namespace RayTracerFramework.Loading {
             foreach (PhotonLight light in sceneXML.photonLights) 
                 scene.lightManager.AddPhotonWorldSpaceLight(light);
 
-            scene.lightingModel = new BlinnPhongLightingModel();
+            scene.lightingModel = new StdLightingModel();
 
             // scene.refractionIndex = 1.0f;
 

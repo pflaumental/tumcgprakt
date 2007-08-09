@@ -126,7 +126,10 @@ namespace RayTracerFramework.PhotonMapping {
             if (intersection == null)
                 return 0;
 
-            if (Settings.Setup.PhotonMapping.MediumIsParticipating) { 
+            if (Settings.Setup.PhotonMapping.MediumIsParticipating) {
+
+                // Related assignement: 10
+
                 int inMediumStoredPhotons = StorePhotonsInMedium(ray, power, intersection, arrayIndex);
                 if ((arrayIndex += inMediumStoredPhotons) >= photons.Length)
                     return inMediumStoredPhotons;
@@ -174,10 +177,16 @@ namespace RayTracerFramework.PhotonMapping {
             Color newPower = power;
             float border = pDiffuse * (1f - pMirror - pRefraction);
             int storedPhotonCnt = 0;
+
+            // Related assignement: 8.3.b
+
             if (rndVal <= border) {
                 newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
                 newPower = powerXdiffuse * (1f / pDiffuse);
                 if (ray.recursionDepth > 1) {
+
+                    // Related assignement: 8.3.c
+
                     photons[arrayIndex] = new Photon(power, intersection.position, ray.direction, 0);
                     storedPhotonCnt = 1;
                 }
@@ -189,10 +198,16 @@ namespace RayTracerFramework.PhotonMapping {
                 newPower = powerXglossy * (1f / pGlossy);
                 newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pMirror)) {
+
+                // Related assignement: 10
+
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 newRayDirection = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
                 newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pRefraction)) {
+
+                // Related assignement: 10
+
                 float NV = Vec3.Dot(intersection.normal, -ray.direction);
                 float cosThetaR = (float)Math.Sqrt(1f - mat.refractionRatio * mat.refractionRatio * (1f - NV * NV));
                 // Do nothing if formula can not be hold
@@ -231,6 +246,9 @@ namespace RayTracerFramework.PhotonMapping {
         }
 
         private int StorePhotonsInMedium(Ray ray, Color power, RayIntersectionPoint intersection, int arrayIndex) {
+
+            // Related assignement: 10
+
             float distFromOrigin = 0f;
             int result = 0;
             while (true){

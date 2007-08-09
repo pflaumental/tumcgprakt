@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace RayTracerFramework.Shading {
 
-    public class BlinnPhongLightingModel : ILightingModel {
+    public class StdLightingModel : ILightingModel {
 
         public Color CalculateColor(Ray ray, RayIntersectionPoint intersection,
                                              Material material, Scene scene) {
@@ -18,6 +18,9 @@ namespace RayTracerFramework.Shading {
 
             // Ambient color
             if (Settings.Render.PhotonMapping.RenderSurfacePhotons) {
+
+                // Related assignement: 9.1
+
                 // Global illumination
                 Color globalIlluminationAmbientColor = new Color();
                 photons = scene.photonMap.FindPhotonsInSphere(intersection.position);
@@ -28,6 +31,9 @@ namespace RayTracerFramework.Shading {
                     //    minDistSq = photonDistanceSqPair.distanceSq;
                     //    globalIlluminationAmbientColor = Color.Blue * (0.0006f / photonDistanceSqPair.distanceSq);
                     //}
+
+                    // Related assignement: 9.2
+
                     float photonDistance = (float)Math.Sqrt(photonDistanceSqPair.distanceSq);
                     globalIlluminationAmbientColor = globalIlluminationAmbientColor + photonDistanceSqPair.photon.power
                              * (1f - photonDistance / (Settings.Render.PhotonMapping.ConeFilterConstantK * Settings.Render.PhotonMapping.SphereRadius));

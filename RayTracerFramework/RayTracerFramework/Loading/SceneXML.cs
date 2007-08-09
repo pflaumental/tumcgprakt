@@ -13,6 +13,9 @@ using RayTracerFramework.Shading;
 namespace RayTracerFramework.Loading {
     [XmlRoot("Scene")]
     public class SceneXML {
+
+        // Related assignement: 11
+
         public SceneXML() { }
 
         [XmlElement("Camera")]

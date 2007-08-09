@@ -34,7 +34,7 @@ namespace RayTracerFramework.RayTracer {
             this.cam = cam;
             kdTree = new GeoObjectKDTree();
             
-            lightingModel = new BlinnPhongLightingModel();
+            lightingModel = new StdLightingModel();
             lightManager = new LightManager();
 
             backgroundColor = Color.LightSlateGray;
