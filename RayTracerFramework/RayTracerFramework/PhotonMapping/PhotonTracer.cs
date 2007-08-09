@@ -10,7 +10,10 @@ using RayTracerFramework.Shading;
 
 namespace RayTracerFramework.PhotonMapping {
 
-    public class PhotonTracer {        
+    public class PhotonTracer {
+
+        // Related assignement: 8.1.a
+
         private Photon[] photons;
         private int maxStoredPhotons;
 
@@ -38,6 +41,9 @@ namespace RayTracerFramework.PhotonMapping {
         }
      
         public PhotonMap EmitPhotons() {
+
+            // Related assignement: 8.1.d
+
             if (scene.lightManager.PhotonLightsWorldSpace.Count < 1)
                 throw new Exception("No photon emitting lights in the scene.");
             
@@ -159,9 +165,9 @@ namespace RayTracerFramework.PhotonMapping {
                     : 0f;
             float rndVal = (float) rnd.NextDouble();
 
-            float pMirrorOrRefraction = (1f - pMirror - pRefraction);
-            pDiffuse *= pMirrorOrRefraction;
-            pGlossy *= pMirrorOrRefraction;
+            float pNotMirrorOrRefraction = (1f - pMirror - pRefraction);
+            pDiffuse *= pNotMirrorOrRefraction;
+            pGlossy *= pNotMirrorOrRefraction;
 
             Vec3 newRayPosition = intersection.position;
             Vec3 newRayDirection;
@@ -177,8 +183,9 @@ namespace RayTracerFramework.PhotonMapping {
                 }
                 newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pGlossy)) {
-                // TODO: calculate GLOSSY direction instead
-                newRayDirection = LightHelper.GetUniformRndDirection(intersection.normal);
+                float NV = Vec3.Dot(intersection.normal, -ray.direction);
+                Vec3 mirrorDirection = Vec3.Normalize(2.0f * NV * intersection.normal + ray.direction);
+                newRayDirection = LightHelper.GetRndSpecularPhongPDF(mirrorDirection, mat.specularPower);
                 newPower = powerXglossy * (1f / pGlossy);
                 newRayPosition = intersection.position + intersection.normal * Settings.Render.Ray.PositionEpsilon;
             } else if (rndVal <= (border += pMirror)) {

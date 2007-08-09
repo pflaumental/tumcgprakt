@@ -56,8 +56,10 @@ namespace RayTracerFramework.Shading {
                         // Points normal away from light?
                         diffuse = Vec3.Dot(L, N);
                         if (diffuse < 0)
-                            continue;                        
-                        
+                            continue;
+
+                        // Related assignement: 4.1.b
+
                         // Is light in shadow?
                         toLightRayPos = new Vec3(intersection.position + Settings.Render.Ray.PositionEpsilon * intersection.normal);
                         toLightRay = new Ray(toLightRayPos, L, 0);
@@ -74,8 +76,10 @@ namespace RayTracerFramework.Shading {
                        
                         specular = (float)Math.Pow(Vec3.Dot(H, N), material.specularPower);
                         // assert if (material.diffuseTexture != null && (intersection.textureCoordinates.x < 0f || intersection.textureCoordinates.x > 1f || intersection.textureCoordinates.y < 0f || intersection.textureCoordinates.y > 1f)) throw new Exception("Texture coordinates out of bounds");
-                        
-                        // Diffuse color
+
+                        // Related assignement: 4.1.a
+
+                        // Diffuse color                        
                         localContribution = localContribution + (material.GetDiffuse(intersection.textureCoordinates) * pointLight.diffuse * diffuse);
 
                         // Specular color
@@ -95,7 +99,7 @@ namespace RayTracerFramework.Shading {
                         toLightRayPos = new Vec3(intersection.position + Settings.Render.Ray.PositionEpsilon * intersection.normal);
                         toLightRay = new Ray(toLightRayPos, L, 0);
                        
-                        if (scene.Intersect(toLightRay, out firstIntersection)) 
+                        if (scene.Intersect(toLightRay)) 
                             continue;
                         // Light is seen
                         //Vec3 V = -ray.direction;

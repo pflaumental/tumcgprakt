@@ -20,14 +20,10 @@ namespace RayTracerFramework {
         private Scene scene;
         private SceneManager sceneManager;
         private Renderer renderer;
-        //private Camera cam;
 
         private Bitmap renderBitmap;
         private byte[] rgbValues;
         private int rgbValuesLength;
-
-        //private Vec3 camPos;
-        //private Vec3 camLookAt;
 
         private bool sceneReady;
         private bool isRendering;

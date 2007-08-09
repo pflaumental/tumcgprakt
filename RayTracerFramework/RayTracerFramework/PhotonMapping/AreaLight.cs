@@ -41,6 +41,9 @@ namespace RayTracerFramework.PhotonMapping {
 
 
         public void GetRandomSample(out Vec3 position, out Vec3 direction) {
+
+            // Related assignement: 8.1.c
+
             direction = Rnd.RandomVec3();
             if (Vec3.Dot(direction, normal) < 0)
                 direction = -direction;
